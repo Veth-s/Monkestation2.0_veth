@@ -24,7 +24,7 @@
 						ANNOUNCER_OUTBREAK5 = 'monkestation/sound/ai/vethbirthday/vethBiohazard5.ogg',
 						ANNOUNCER_OUTBREAK7 = 'monkestation/sound/ai/vethbirthday/chenVirus.ogg',
 						ANNOUNCER_POWEROFF = 'monkestation/sound/ai/vethbirthday/chenPoweroff.ogg',
-						ANNOUNCER_POWERON = 'monkestation/sound/ai/vethbirthday/abPowerOn.ogg',
+						ANNOUNCER_POWERON = 'monkestation/sound/ai/vethbirthday/poobsPowerOn.ogg',
 						ANNOUNCER_RADIATION = 'monkestation/sound/ai/vethbirthday/chenRadiation.ogg',
 						ANNOUNCER_SHUTTLECALLED = 'monkestation/sound/ai/vethbirthday/abShuttleCalled.ogg',
 						ANNOUNCER_SHUTTLEDOCK = 'monkestation/sound/ai/vethbirthday/abShuttleDocked.ogg',
