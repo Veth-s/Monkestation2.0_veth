@@ -19411,12 +19411,6 @@
 /obj/effect/decal/cleanable/blood/tracks,
 /turf/open/floor/grass,
 /area/centcom/central_command_areas/admin)
-"buU" = (
-/obj/structure/railing/wooden_fence{
-	dir = 4
-	},
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "bwb" = (
 /obj/structure/railing/wooden_fence{
 	dir = 8
@@ -19507,6 +19501,10 @@
 	},
 /turf/open/floor/wood/large,
 /area/centcom/central_command_areas/adminroom)
+"bHt" = (
+/obj/item/kirbyplants/organic/plant16,
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "bJu" = (
 /obj/item/storage/toolbox/fishing,
 /turf/open/misc/dirt/jungle/dark,
@@ -19699,11 +19697,8 @@
 /turf/open/floor/wood,
 /area/centcom/central_command_areas/adminroom)
 "cCn" = (
-/obj/machinery/light/directional/east{
-	dir = 1
-	},
-/obj/structure/chair/stool/bamboo,
-/turf/open/floor/bamboo/lavaland,
+/obj/item/kirbyplants/organic/plant4,
+/turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "cDd" = (
 /obj/structure/chair/office{
@@ -19777,6 +19772,10 @@
 /obj/machinery/door/puzzle/keycard/assault_ops_chemistry,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
+"cLe" = (
+/obj/structure/chair/stool/bamboo,
+/turf/open/floor/bamboo/lavaland,
+/area/centcom/central_command_areas/admin)
 "cMo" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 4
@@ -19836,10 +19835,6 @@
 /obj/structure/flora/bush/style_3,
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/misc/dirt/jungle/dark,
-/area/centcom/central_command_areas/admin)
-"cVL" = (
-/obj/item/kirbyplants/organic/plant24,
-/turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "cWC" = (
 /obj/effect/turf_decal/trimline/red/real_red/filled/line{
@@ -19915,10 +19910,6 @@
 /obj/structure/closet/firecloset,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
-"dqZ" = (
-/obj/item/kirbyplants/organic/plant20,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "drb" = (
 /obj/effect/turf_decal/siding/wideplating_new/dark{
 	dir = 10
@@ -20095,12 +20086,6 @@
 	},
 /turf/open/floor/iron/dark/textured,
 /area/centcom/central_command_areas/admin)
-"ebK" = (
-/obj/structure/railing/wooden_fence{
-	dir = 10
-	},
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "efj" = (
 /obj/machinery/door/poddoor/shutters/indestructible/preopen{
 	id = "donutstealthisid"
@@ -20256,10 +20241,6 @@
 /obj/structure/closet/mini_fridge,
 /turf/open/floor/iron/dark/small,
 /area/centcom/central_command_areas/adminroom)
-"eLU" = (
-/obj/item/kirbyplants/organic/plant21,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "eMa" = (
 /obj/structure/table/wood,
 /obj/item/melee/rune_carver,
@@ -20348,6 +20329,10 @@
 "fbd" = (
 /mob/living/simple_animal/pet/gondola,
 /turf/open/floor/eighties/red,
+/area/centcom/central_command_areas/admin)
+"fcD" = (
+/obj/item/kirbyplants/organic/plant20,
+/turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "fcP" = (
 /obj/machinery/light/neon_lining{
@@ -20742,6 +20727,10 @@
 /obj/effect/spawner/random/entertainment/dice,
 /turf/open/floor/iron/dark/herringbone,
 /area/centcom/central_command_areas/evacuation)
+"gDd" = (
+/obj/item/kirbyplants/organic/plant24,
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "gEP" = (
 /obj/structure/railing/wood,
 /obj/structure/railing/wood{
@@ -20905,6 +20894,11 @@
 /obj/effect/turf_decal/trimline/purple/filled/line,
 /turf/open/floor/iron/dark,
 /area/centcom/central_command_areas/admin)
+"haX" = (
+/obj/structure/fake_stairs/wood/directional/north,
+/obj/structure/stairs/stone,
+/turf/open/floor/sandy_dirt,
+/area/centcom/central_command_areas/admin)
 "hbQ" = (
 /obj/effect/turf_decal/siding/wood,
 /obj/effect/turf_decal/siding/wood{
@@ -21059,6 +21053,10 @@
 /obj/machinery/light/cold/directional/east,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
+"hrV" = (
+/obj/item/kirbyplants/organic/plant21,
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "hsh" = (
 /obj/effect/turf_decal/siding/wideplating_new/dark{
 	dir = 8
@@ -21205,10 +21203,6 @@
 	},
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
-"hKW" = (
-/obj/item/kirbyplants/organic/plant2,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "hLv" = (
 /obj/structure/sign/warning/directional/south,
 /obj/effect/turf_decal/trimline/yellow/filled/line{
@@ -21325,10 +21319,6 @@
 	},
 /turf/open/floor/iron/dark,
 /area/centcom/central_command_areas/admin)
-"ioH" = (
-/obj/item/kirbyplants/organic/plant16,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "ioX" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8;
@@ -21354,6 +21344,10 @@
 	name = "IS Armory"
 	},
 /turf/open/floor/iron/dark/textured,
+/area/centcom/central_command_areas/admin)
+"isN" = (
+/obj/item/kirbyplants/organic/plant8,
+/turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "iuf" = (
 /obj/machinery/light/directional/east,
@@ -21409,6 +21403,12 @@
 "iDX" = (
 /turf/open/floor/catwalk_floor/iron_smooth,
 /area/cruiser_dock)
+"iEZ" = (
+/obj/structure/railing/wooden_fence{
+	dir = 6
+	},
+/turf/open/water/jungle,
+/area/centcom/central_command_areas/admin)
 "iIV" = (
 /obj/structure/chair/sofa/right,
 /obj/machinery/light/directional/east{
@@ -21515,14 +21515,6 @@
 	},
 /turf/open/floor/glass/reinforced/plasma,
 /area/centcom/central_command_areas/adminroom)
-"iWT" = (
-/obj/machinery/button/door/directional/north{
-	name = "Emergency Assistants Fuck Off Button";
-	id = "donutstealthisid";
-	req_access = "cent_captain"
-	},
-/turf/open/floor/bamboo/lavaland,
-/area/centcom/central_command_areas/admin)
 "iYt" = (
 /obj/structure/chair/sofa/left,
 /obj/item/toy/plush/slimeplushie,
@@ -21580,10 +21572,6 @@
 /obj/effect/baseturf_helper/asteroid,
 /turf/closed/indestructible/syndicate,
 /area/cruiser_dock)
-"jpM" = (
-/obj/structure/railing/wooden_fence,
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "jsm" = (
 /obj/effect/turf_decal/siding/dark{
 	dir = 10
@@ -21660,6 +21648,9 @@
 	},
 /turf/open/floor/iron/dark,
 /area/centcom/central_command_areas/admin)
+"jEa" = (
+/turf/open/water/jungle,
+/area/centcom/central_command_areas/admin)
 "jEO" = (
 /obj/structure/fence/door{
 	name = "coven corner"
@@ -21696,6 +21687,12 @@
 "jJO" = (
 /obj/effect/turf_decal/siding/wood,
 /turf/open/floor/wood/tile,
+/area/centcom/central_command_areas/admin)
+"jKA" = (
+/obj/structure/railing/wooden_fence{
+	dir = 4
+	},
+/turf/open/water/jungle,
 /area/centcom/central_command_areas/admin)
 "jME" = (
 /obj/effect/landmark/prisonwarp,
@@ -21772,7 +21769,7 @@
 /turf/open/water,
 /area/centcom/central_command_areas/admin)
 "jWH" = (
-/turf/closed/wall/mineral/silver,
+/turf/open/floor/bamboo/lavaland,
 /area/centcom/central_command_areas/admin)
 "jZA" = (
 /turf/open/water,
@@ -21858,6 +21855,12 @@
 	dir = 4
 	},
 /area/cruiser_dock)
+"kqB" = (
+/obj/structure/railing/wooden_fence{
+	dir = 8
+	},
+/turf/open/water/jungle,
+/area/centcom/central_command_areas/admin)
 "kqQ" = (
 /turf/open/floor/iron/stairs/left,
 /area/cruiser_dock)
@@ -21901,9 +21904,6 @@
 	},
 /turf/open/floor/wood/parquet,
 /area/centcom/central_command_areas/admin)
-"kHW" = (
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "kIi" = (
 /obj/structure/railing/wood{
 	dir = 8
@@ -21932,12 +21932,20 @@
 /obj/structure/flora/grass/jungle/b/style_4,
 /turf/open/misc/dirt/jungle/dark,
 /area/centcom/central_command_areas/admin)
+"kPK" = (
+/obj/machinery/light/directional/east{
+	dir = 1
+	},
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "kPZ" = (
 /obj/structure/fake_stairs/wood/directional/north,
 /turf/open/floor/sandy_dirt,
 /area/centcom/central_command_areas/admin)
 "kSU" = (
-/obj/machinery/door/airlock/bronze/seethru,
+/obj/machinery/door/airlock/titanium/glass{
+	name = "Veth's Office"
+	},
 /turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "kTt" = (
@@ -21945,7 +21953,8 @@
 /turf/open/floor/carpet/orange,
 /area/centcom/central_command_areas/admin)
 "kTO" = (
-/turf/open/floor/bamboo/lavaland,
+/obj/item/kirbyplants/organic/plant2,
+/turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "kTQ" = (
 /obj/effect/turf_decal/tile/dark/opposingcorners,
@@ -22070,6 +22079,10 @@
 	},
 /turf/open/water,
 /area/centcom/central_command_areas/admin)
+"lEJ" = (
+/obj/structure/railing/wooden_fence,
+/turf/open/water/jungle,
+/area/centcom/central_command_areas/admin)
 "lFj" = (
 /obj/structure/stone_tile/surrounding_tile{
 	dir = 1
@@ -22114,8 +22127,7 @@
 /turf/open/floor/iron/dark/herringbone,
 /area/centcom/central_command_areas/evacuation)
 "lRr" = (
-/obj/item/kirbyplants/organic/plant23,
-/turf/open/misc/dirt/dark/jungle,
+/turf/closed/wall/mineral/silver,
 /area/centcom/central_command_areas/admin)
 "lRs" = (
 /obj/effect/turf_decal/siding/white{
@@ -22123,17 +22135,26 @@
 	},
 /turf/open/floor/grass,
 /area/centcom/central_command_areas/admin)
-"lWg" = (
-/obj/machinery/light/directional/east{
-	dir = 1
+"lTH" = (
+/obj/machinery/button/door/directional/north{
+	name = "Emergency Assistants Fuck Off Button";
+	id = "donutstealthisid";
+	req_access = "cent_captain"
 	},
-/turf/open/misc/dirt/dark/jungle,
+/turf/open/floor/bamboo/lavaland,
 /area/centcom/central_command_areas/admin)
 "lWT" = (
 /turf/open/floor/iron/smooth_edge{
 	dir = 1
 	},
 /area/cruiser_dock)
+"mae" = (
+/obj/structure/table/reinforced/plasmarglass,
+/obj/item/toy/plush/bubbleplush{
+	desc = "The lovable megafauna who my wife kills all the time."
+	},
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "mbG" = (
 /obj/structure/sink/kitchen/directional/west,
 /obj/machinery/light/cold/directional/east,
@@ -22313,11 +22334,6 @@
 "mWN" = (
 /mob/living/basic/mega_arachnid,
 /turf/open/misc/dirt/station,
-/area/centcom/central_command_areas/admin)
-"mYq" = (
-/obj/structure/fake_stairs/wood/directional/north,
-/obj/structure/stairs/stone,
-/turf/open/floor/sandy_dirt,
 /area/centcom/central_command_areas/admin)
 "nbv" = (
 /turf/open/floor/iron/dark/herringbone,
@@ -22516,6 +22532,12 @@
 "nSa" = (
 /obj/machinery/light/small/red/dim/directional/south,
 /turf/open/floor/sandy_dirt,
+/area/centcom/central_command_areas/admin)
+"nTh" = (
+/obj/structure/railing/wooden_fence{
+	dir = 10
+	},
+/turf/open/water/jungle,
 /area/centcom/central_command_areas/admin)
 "nUK" = (
 /obj/docking_port/stationary{
@@ -23135,10 +23157,6 @@
 /obj/structure/flora/grass/jungle/a/style_random,
 /turf/open/misc/dirt/station,
 /area/centcom/central_command_areas/admin)
-"qlK" = (
-/obj/structure/chair/stool/bamboo,
-/turf/open/floor/bamboo/lavaland,
-/area/centcom/central_command_areas/admin)
 "qne" = (
 /obj/machinery/light/neon_lining{
 	dir = 1;
@@ -23649,12 +23667,6 @@
 /obj/effect/turf_decal/siding/wood,
 /turf/open/floor/wood,
 /area/centcom/central_command_areas/adminroom)
-"rZR" = (
-/obj/structure/railing/wooden_fence{
-	dir = 8
-	},
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "saC" = (
 /obj/effect/turf_decal/plaque{
 	icon_state = "L1"
@@ -23876,10 +23888,6 @@
 /obj/structure/flora/bush/large/style_3,
 /turf/open/floor/grass,
 /area/centcom/central_command_areas/evacuation)
-"tmb" = (
-/obj/item/kirbyplants/organic/plant8,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "tmF" = (
 /obj/item/trench_tool,
 /obj/item/tank/internals/emergency_oxygen/double,
@@ -24208,13 +24216,6 @@
 	},
 /turf/open/floor/iron/dark/herringbone,
 /area/centcom/central_command_areas/evacuation)
-"uFA" = (
-/obj/structure/table/reinforced/plasmarglass,
-/obj/item/toy/plush/bubbleplush{
-	desc = "The lovable megafauna who my wife kills all the time."
-	},
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "uGL" = (
 /obj/structure/reagent_dispensers/water_cooler,
 /obj/effect/turf_decal/bot_white,
@@ -24233,6 +24234,12 @@
 	},
 /turf/open/floor/mineral/titanium/tiled/white,
 /area/centcom/central_command_areas/adminroom)
+"uLu" = (
+/obj/structure/table/reinforced/plasmarglass,
+/obj/item/clothing/suit/apron/chef,
+/obj/item/knife/butcher,
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "uNf" = (
 /obj/machinery/light/neon_lining{
 	icon_state = "pink2_1"
@@ -24527,12 +24534,6 @@
 	},
 /turf/open/water,
 /area/centcom/central_command_areas/admin)
-"vOB" = (
-/obj/structure/railing/wooden_fence{
-	dir = 6
-	},
-/turf/open/water/jungle,
-/area/centcom/central_command_areas/admin)
 "vOK" = (
 /obj/machinery/light/neon_lining{
 	dir = 1;
@@ -24562,14 +24563,17 @@
 	dir = 4
 	},
 /area/cruiser_dock)
-"vRc" = (
-/obj/item/kirbyplants/organic/plant4,
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "vRz" = (
 /obj/effect/landmark/ctf,
 /turf/open/space/basic,
 /area/space)
+"vWz" = (
+/obj/machinery/light/directional/east{
+	dir = 1
+	},
+/obj/structure/chair/stool/bamboo,
+/turf/open/floor/bamboo/lavaland,
+/area/centcom/central_command_areas/admin)
 "vZN" = (
 /obj/effect/turf_decal/trimline/yellow/warning{
 	dir = 4
@@ -24861,6 +24865,9 @@
 	},
 /turf/open/floor/glass/reinforced,
 /area/centcom/central_command_areas/evacuation)
+"xiu" = (
+/turf/open/misc/dirt/dark/jungle,
+/area/centcom/central_command_areas/admin)
 "xiw" = (
 /obj/structure/chair/office{
 	dir = 8
@@ -24962,9 +24969,6 @@
 /obj/machinery/coffeemaker/impressa,
 /turf/open/floor/carpet/royalblue,
 /area/centcom/central_command_areas/admin)
-"xAE" = (
-/turf/open/misc/dirt/dark/jungle,
-/area/centcom/central_command_areas/admin)
 "xAF" = (
 /obj/effect/turf_decal/trimline/purple/filled/line{
 	dir = 1
@@ -25023,10 +25027,8 @@
 /obj/effect/turf_decal/bot_white,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
-"xQJ" = (
-/obj/structure/table/reinforced/plasmarglass,
-/obj/item/clothing/suit/apron/chef,
-/obj/item/knife/butcher,
+"xRA" = (
+/obj/item/kirbyplants/organic/plant23,
 /turf/open/misc/dirt/dark/jungle,
 /area/centcom/central_command_areas/admin)
 "xSw" = (
@@ -58337,16 +58339,16 @@ aaa
 aaa
 aaa
 aaa
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-rZR
-ebK
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+kqB
+nTh
 sEm
 juR
 kmP
@@ -58594,16 +58596,16 @@ aaa
 aaa
 aaa
 aaa
-jWH
-dqZ
-tmb
-vRc
-hKW
-uFA
+lRr
+fcD
+isN
+cCn
+kTO
+mae
 oum
-jWH
-kHW
-jpM
+lRr
+jEa
+lEJ
 sVB
 pOQ
 quY
@@ -58851,17 +58853,17 @@ aaa
 aaa
 aaa
 aaa
+lRr
 jWH
-kTO
 jJi
-kTO
-kTO
-kTO
-kTO
 jWH
-lWg
-xAE
-mYq
+jWH
+jWH
+jWH
+lRr
+kPK
+xiu
+haX
 oyf
 hjV
 bdR
@@ -59108,17 +59110,17 @@ aaa
 aaa
 aaa
 aaa
-jWH
-cCn
+lRr
+vWz
 lpd
-qlK
-kTO
-kTO
-kTO
+cLe
+jWH
+jWH
+jWH
 kSU
-xAE
-xAE
-mYq
+xiu
+xiu
+haX
 ewk
 pgF
 bdR
@@ -59365,17 +59367,17 @@ aaa
 aaa
 aaa
 aaa
-jWH
-iWT
+lRr
+lTH
 jJi
-kTO
-kTO
-kTO
-kTO
 jWH
-lWg
-xAE
-mYq
+jWH
+jWH
+jWH
+lRr
+kPK
+xiu
+haX
 qKL
 ulw
 bdR
@@ -59622,16 +59624,16 @@ aaa
 aaa
 aaa
 aaa
-jWH
-eLU
 lRr
-cVL
-ioH
-xQJ
+hrV
+xRA
+gDd
+bHt
+uLu
 oum
-jWH
-kHW
-jpM
+lRr
+jEa
+lEJ
 qYP
 qZk
 qZk
@@ -59879,16 +59881,16 @@ aaa
 aaa
 aaa
 aaa
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-jWH
-buU
-vOB
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+lRr
+jKA
+iEZ
 duN
 exa
 qZk
