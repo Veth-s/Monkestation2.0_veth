@@ -3871,6 +3871,9 @@
 /area/centcom/central_command_areas/retirement_yard)
 "aky" = (
 /obj/structure/chair/office,
+/obj/machinery/door/airlock/centcom{
+	name = "Intern Fortune's Suppl- errr /'Office/'"
+	},
 /turf/open/floor/iron/white/side,
 /area/centcom/central_command_areas/adminroom)
 "akz" = (
@@ -19694,9 +19697,6 @@
 	},
 /turf/open/floor/iron/white/textured,
 /area/centcom/central_command_areas/admin)
-"ctA" = (
-/turf/closed/indestructible/riveted,
-/area/centcom)
 "cvB" = (
 /obj/machinery/armament_station/assault_operatives,
 /turf/open/floor/iron/smooth_large,
@@ -20190,6 +20190,9 @@
 /obj/machinery/light/directional/north,
 /turf/open/floor/mineral/titanium/tiled/white,
 /area/centcom/central_command_areas/adminroom)
+"eoD" = (
+/turf/closed/indestructible/riveted,
+/area/centcom)
 "erK" = (
 /obj/structure/flora/bush/fullgrass/style_2,
 /turf/open/floor/grass,
@@ -20945,9 +20948,6 @@
 /obj/item/clothing/under/costume/gondola,
 /turf/open/floor/eighties/red,
 /area/centcom/central_command_areas/admin)
-"gUA" = (
-/turf/open/floor/mineral/plastitanium/red,
-/area/centcom)
 "gXp" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
@@ -22618,6 +22618,9 @@
 /obj/machinery/chem_heater/withbuffer,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
+"nNw" = (
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom)
 "nNA" = (
 /obj/machinery/door/airlock/centcom{
 	name = "Vault G-07"
@@ -54712,13 +54715,13 @@ kpH
 aMc
 aMc
 aMc
-ctA
-ctA
-ctA
-ctA
-ctA
-ctA
-ctA
+eoD
+eoD
+eoD
+eoD
+eoD
+eoD
+eoD
 kpH
 kpH
 kpH
@@ -54969,12 +54972,12 @@ kpH
 aMc
 aMc
 aMc
-ctA
+eoD
 eyO
 neL
 dCT
 aXN
-gUA
+nNw
 aHp
 kpH
 aOb
@@ -55226,12 +55229,12 @@ kpH
 aMc
 aMc
 aMc
-ctA
+eoD
 pYR
 dRH
 dCT
 aeU
-gUA
+nNw
 aHp
 kpH
 apk
@@ -55486,7 +55489,7 @@ aMc
 aCS
 kKc
 kKc
-ctA
+eoD
 aNK
 aJC
 tOn
@@ -55740,11 +55743,11 @@ kpH
 aMc
 aMc
 aMc
-ctA
+eoD
 fAH
 grU
 eBX
-ctA
+eoD
 jsr
 tYb
 kpH
@@ -55997,11 +56000,11 @@ kpH
 qXd
 aMc
 aMc
-ctA
+eoD
 aEK
 bLX
 aSI
-ctA
+eoD
 ydI
 aLy
 kpH
