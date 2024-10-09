@@ -21325,6 +21325,12 @@
 "hVj" = (
 /turf/open/floor/iron/stairs/right,
 /area/cruiser_dock)
+"hVA" = (
+/obj/machinery/hypnochair{
+	icon_state = "hypnochair_open"
+	},
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom/central_command_areas/admin)
 "iad" = (
 /obj/machinery/light/floor/has_bulb,
 /turf/open/floor/iron/dark/herringbone,
@@ -22157,12 +22163,6 @@
 	},
 /turf/open/floor/iron/smooth_large,
 /area/cruiser_dock)
-"lxi" = (
-/obj/machinery/hypnochair{
-	icon_state = "hypnochair_open"
-	},
-/turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
 "lAc" = (
 /obj/effect/turf_decal/weather/dirt{
 	dir = 9
@@ -54970,7 +54970,7 @@ aOn
 eyO
 neL
 dCT
-lxi
+hVA
 aXN
 aHp
 kpH
