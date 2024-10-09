@@ -3872,7 +3872,7 @@
 "aky" = (
 /obj/structure/chair/office,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- errr /'Office/'"
+	name = "Intern Fortune's Suppl- errr 'Office'"
 	},
 /turf/open/floor/iron/white/side,
 /area/centcom/central_command_areas/adminroom)
@@ -23202,7 +23202,7 @@
 "pYR" = (
 /obj/structure/table/wood,
 /obj/machinery/computer/pod/old/syndicate{
-	desc = "Fortune's /'stateoftheart/' work computer";
+	desc = "Fortune's 'stateoftheart' work computer";
 	name = "Fortune's Desktop Computer"
 	},
 /turf/open/floor/iron/dark/small,
