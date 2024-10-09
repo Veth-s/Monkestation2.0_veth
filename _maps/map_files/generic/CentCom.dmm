@@ -1851,7 +1851,7 @@
 	req_access = list("genetics")
 	},
 /turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aeV" = (
 /obj/structure/table/reinforced,
 /obj/item/book/manual/wiki/security_space_law,
@@ -10729,10 +10729,10 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- errr /"Office"/"
+	name = "Intern Fortune's Suppl- errr /"Office/""
 	},
 /turf/open/space/basic,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aCT" = (
 /obj/structure/table/reinforced,
 /obj/structure/railing{
@@ -11422,7 +11422,7 @@
 "aEK" = (
 /obj/structure/closet/crate/trashcart,
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aEL" = (
 /obj/effect/turf_decal/siding/wideplating_new/dark{
 	dir = 4
@@ -12356,7 +12356,7 @@
 	req_access = list("genetics")
 	},
 /turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aHq" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
@@ -13136,7 +13136,7 @@
 "aJC" = (
 /obj/structure/flora/bush/flowers_pp/style_3,
 /turf/open/misc/grass,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aJD" = (
 /obj/machinery/door/airlock{
 	icon = 'icons/obj/doors/airlocks/station/uranium.dmi';
@@ -13893,7 +13893,7 @@
 /obj/structure/flora/tree/jungle/small/style_3,
 /obj/structure/flora/bush/fullgrass,
 /turf/open/misc/grass,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aLz" = (
 /obj/structure/railing{
 	dir = 10;
@@ -14705,7 +14705,7 @@
 	pixel_y = -9
 	},
 /turf/closed/indestructible/riveted,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aNL" = (
 /obj/item/kirbyplants{
 	icon_state = "plant-22"
@@ -16578,7 +16578,7 @@
 	desc = "The framework for an artificial intelligence core. You have a strange feeling it might start calling you darling any moment now"
 	},
 /turf/open/floor/bitrunning_transport,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aSJ" = (
 /obj/machinery/light/directional/east,
 /obj/structure/flora/bush/fullgrass/style_random,
@@ -18489,7 +18489,7 @@
 /area/centcom/syndicate_mothership/control)
 "aXN" = (
 /turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "aXO" = (
 /obj/machinery/light/floor/has_bulb,
 /turf/open/floor/iron/dark/textured_half{
@@ -19551,7 +19551,7 @@
 	color = "#ffcc66"
 	},
 /turf/open/floor/bitrunning_transport,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "bNV" = (
 /obj/machinery/light/directional/east{
 	dir = 2
@@ -20032,7 +20032,7 @@
 	},
 /obj/structure/window_sill,
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "dEH" = (
 /obj/effect/turf_decal/siding/thinplating_new/dark{
 	dir = 8
@@ -20107,7 +20107,7 @@
 	dir = 1
 	},
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "dSX" = (
 /obj/machinery/light/directional/east,
 /turf/open/floor/carpet/red,
@@ -20246,7 +20246,7 @@
 	pixel_y = 2
 	},
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "eAb" = (
 /turf/open/floor/iron/stairs/medium{
 	dir = 1
@@ -20262,7 +20262,7 @@
 	desc = "A comfy-looking pet bed. This is where Kbity sleeps :3"
 	},
 /turf/open/floor/bitrunning_transport,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "eCc" = (
 /obj/structure/closet/crate/trashcart,
 /obj/effect/turf_decal/bot_white,
@@ -20519,7 +20519,7 @@
 	},
 /obj/item/mop,
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "fDz" = (
 /obj/effect/turf_decal/weather/dirt{
 	dir = 9
@@ -20723,7 +20723,7 @@
 	desc = "D'aaawwww. Fortune's best friend"
 	},
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "guM" = (
 /obj/structure/railing/wooden_fencing{
 	pixel_y = 16
@@ -21325,12 +21325,6 @@
 "hVj" = (
 /turf/open/floor/iron/stairs/right,
 /area/cruiser_dock)
-"hVA" = (
-/obj/machinery/hypnochair{
-	icon_state = "hypnochair_open"
-	},
-/turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
 "iad" = (
 /obj/machinery/light/floor/has_bulb,
 /turf/open/floor/iron/dark/herringbone,
@@ -21690,7 +21684,7 @@
 /obj/structure/flora/bush/lavendergrass/style_2,
 /obj/structure/flora/bush/flowers_yw/style_3,
 /turf/open/misc/grass,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "jth" = (
 /obj/machinery/light/directional/east,
 /turf/open/floor/carpet/donk,
@@ -22025,7 +22019,7 @@
 /area/centcom/central_command_areas/admin)
 "kKc" = (
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "kLl" = (
 /obj/effect/turf_decal/siding/thinplating_new/dark,
 /turf/open/floor/iron/smooth_large,
@@ -22457,7 +22451,7 @@
 	pixel_y = 10
 	},
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "nfO" = (
 /obj/effect/turf_decal/weather/dirt{
 	dir = 8
@@ -22558,6 +22552,9 @@
 	},
 /turf/closed/indestructible/fakeglass,
 /area/centcom/central_command_areas/adminroom)
+"nBD" = (
+/turf/closed/indestructible/riveted,
+/area/centcom)
 "nDJ" = (
 /obj/machinery/power/energy_accumulator/tesla_coil/anchored,
 /turf/open/floor/plating/reinforced,
@@ -23200,7 +23197,7 @@
 	name = "Fortune's Desktop Computer"
 	},
 /turf/open/floor/iron/dark/small,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "qag" = (
 /obj/machinery/modular_computer/preset/id/centcom{
 	dir = 1
@@ -24222,7 +24219,7 @@
 	dir = 2
 	},
 /turf/open/floor/mineral/plastitanium/red,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "tOS" = (
 /obj/structure/chair/office/tactical{
 	dir = 4
@@ -24270,7 +24267,7 @@
 "tYb" = (
 /obj/structure/flora/bush/sparsegrass/style_2,
 /turf/open/misc/grass,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "tYn" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/hatch{
@@ -24579,6 +24576,12 @@
 /obj/structure/flora/bush/pale/style_4,
 /turf/open/misc/dirt/jungle/dark,
 /area/centcom/central_command_areas/admin)
+"vul" = (
+/obj/machinery/hypnochair{
+	icon_state = "hypnochair_open"
+	},
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom)
 "vvk" = (
 /obj/machinery/door/airlock/centcom{
 	name = "IS Containment Cell";
@@ -25244,7 +25247,7 @@
 /obj/structure/flora/bush/lavendergrass/style_2,
 /obj/structure/flora/bush/lavendergrass/style_4,
 /turf/open/misc/grass,
-/area/centcom/central_command_areas/admin)
+/area/centcom)
 "yfp" = (
 /obj/structure/railing/wood{
 	dir = 1
@@ -54709,13 +54712,13 @@ kpH
 aMc
 aMc
 aMc
-aOn
-aOn
-aOn
-aOn
-aOn
-aOn
-aOn
+nBD
+nBD
+nBD
+nBD
+nBD
+nBD
+nBD
 kpH
 kpH
 kpH
@@ -54966,11 +54969,11 @@ kpH
 aMc
 aMc
 aMc
-aOn
+nBD
 eyO
 neL
 dCT
-hVA
+vul
 aXN
 aHp
 kpH
@@ -55223,7 +55226,7 @@ kpH
 aMc
 aMc
 aMc
-aOn
+nBD
 pYR
 dRH
 dCT
@@ -55483,7 +55486,7 @@ aMc
 aCS
 kKc
 kKc
-aOn
+nBD
 aNK
 aJC
 tOn
@@ -55737,11 +55740,11 @@ kpH
 aMc
 aMc
 aMc
-aOn
+nBD
 fAH
 grU
 eBX
-aOn
+nBD
 jsr
 tYb
 kpH
@@ -55994,11 +55997,11 @@ kpH
 qXd
 aMc
 aMc
-aOn
+nBD
 aEK
 bLX
 aSI
-aOn
+nBD
 ydI
 aLy
 kpH
