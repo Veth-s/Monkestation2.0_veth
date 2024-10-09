@@ -10732,7 +10732,7 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl\- Errr \'Office\'"
+	name = "Intern Fortune's Suppl- Errr \'Office\'"
 	},
 /turf/open/space/basic,
 /area/centcom)
