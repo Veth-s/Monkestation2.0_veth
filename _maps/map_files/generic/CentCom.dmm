@@ -3872,7 +3872,7 @@
 "aky" = (
 /obj/structure/chair/office,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- errr \'Office\'"
+	name = "Intern Fortune's Suppl- errr /'/Office/'/"
 	},
 /turf/open/floor/iron/white/side,
 /area/centcom/central_command_areas/adminroom)
@@ -10732,7 +10732,7 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- errr \'Office\'"
+	name = "Intern Fortune's Suppl- errr /'/Office/'/"
 	},
 /turf/open/space/basic,
 /area/centcom)
