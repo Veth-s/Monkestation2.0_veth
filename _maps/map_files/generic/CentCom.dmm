@@ -10729,7 +10729,7 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- errr /"Office/""
+	name = "Intern Fortune's Suppl- errr /'Office/'"
 	},
 /turf/open/space/basic,
 /area/centcom)
@@ -18488,6 +18488,9 @@
 /turf/open/floor/plating/elevatorshaft,
 /area/centcom/syndicate_mothership/control)
 "aXN" = (
+/obj/machinery/hypnochair{
+	icon_state = "hypnochair_open"
+	},
 /turf/open/floor/mineral/plastitanium/red,
 /area/centcom)
 "aXO" = (
@@ -19691,6 +19694,9 @@
 	},
 /turf/open/floor/iron/white/textured,
 /area/centcom/central_command_areas/admin)
+"ctA" = (
+/turf/closed/indestructible/riveted,
+/area/centcom)
 "cvB" = (
 /obj/machinery/armament_station/assault_operatives,
 /turf/open/floor/iron/smooth_large,
@@ -20939,6 +20945,9 @@
 /obj/item/clothing/under/costume/gondola,
 /turf/open/floor/eighties/red,
 /area/centcom/central_command_areas/admin)
+"gUA" = (
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom)
 "gXp" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
@@ -22552,9 +22561,6 @@
 	},
 /turf/closed/indestructible/fakeglass,
 /area/centcom/central_command_areas/adminroom)
-"nBD" = (
-/turf/closed/indestructible/riveted,
-/area/centcom)
 "nDJ" = (
 /obj/machinery/power/energy_accumulator/tesla_coil/anchored,
 /turf/open/floor/plating/reinforced,
@@ -24576,12 +24582,6 @@
 /obj/structure/flora/bush/pale/style_4,
 /turf/open/misc/dirt/jungle/dark,
 /area/centcom/central_command_areas/admin)
-"vul" = (
-/obj/machinery/hypnochair{
-	icon_state = "hypnochair_open"
-	},
-/turf/open/floor/mineral/plastitanium/red,
-/area/centcom)
 "vvk" = (
 /obj/machinery/door/airlock/centcom{
 	name = "IS Containment Cell";
@@ -54712,13 +54712,13 @@ kpH
 aMc
 aMc
 aMc
-nBD
-nBD
-nBD
-nBD
-nBD
-nBD
-nBD
+ctA
+ctA
+ctA
+ctA
+ctA
+ctA
+ctA
 kpH
 kpH
 kpH
@@ -54969,12 +54969,12 @@ kpH
 aMc
 aMc
 aMc
-nBD
+ctA
 eyO
 neL
 dCT
-vul
 aXN
+gUA
 aHp
 kpH
 aOb
@@ -55226,12 +55226,12 @@ kpH
 aMc
 aMc
 aMc
-nBD
+ctA
 pYR
 dRH
 dCT
 aeU
-aXN
+gUA
 aHp
 kpH
 apk
@@ -55486,7 +55486,7 @@ aMc
 aCS
 kKc
 kKc
-nBD
+ctA
 aNK
 aJC
 tOn
@@ -55740,11 +55740,11 @@ kpH
 aMc
 aMc
 aMc
-nBD
+ctA
 fAH
 grU
 eBX
-nBD
+ctA
 jsr
 tYb
 kpH
@@ -55997,11 +55997,11 @@ kpH
 qXd
 aMc
 aMc
-nBD
+ctA
 aEK
 bLX
 aSI
-nBD
+ctA
 ydI
 aLy
 kpH
