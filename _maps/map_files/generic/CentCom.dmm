@@ -3872,7 +3872,7 @@
 "aky" = (
 /obj/structure/chair/office,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- Errr \'Office\'"
+	name = "Intern Fortune's Suppl- errr /'Office/'"
 	},
 /turf/open/floor/iron/white/side,
 /area/centcom/central_command_areas/adminroom)
@@ -10732,9 +10732,9 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	name = "Intern Fortune's Suppl- Errr \'Office\'"
+	name = "Intern Fortune's Suppl- errr /'Office/'"
 	},
-/turf/open/space/basic,
+/turf/open/floor/iron/dark/small,
 /area/centcom)
 "aCT" = (
 /obj/structure/table/reinforced,
@@ -18491,9 +18491,6 @@
 /turf/open/floor/plating/elevatorshaft,
 /area/centcom/syndicate_mothership/control)
 "aXN" = (
-/obj/machinery/hypnochair{
-	icon_state = "hypnochair_open"
-	},
 /turf/open/floor/mineral/plastitanium/red,
 /area/centcom)
 "aXO" = (
@@ -20190,9 +20187,6 @@
 /obj/machinery/light/directional/north,
 /turf/open/floor/mineral/titanium/tiled/white,
 /area/centcom/central_command_areas/adminroom)
-"eoD" = (
-/turf/closed/indestructible/riveted,
-/area/centcom)
 "erK" = (
 /obj/structure/flora/bush/fullgrass/style_2,
 /turf/open/floor/grass,
@@ -21972,6 +21966,12 @@
 "kti" = (
 /turf/open/floor/sandy_dirt,
 /area/centcom/central_command_areas/adminroom)
+"kuO" = (
+/obj/machinery/hypnochair{
+	icon_state = "hypnochair_open"
+	},
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom)
 "kvw" = (
 /obj/machinery/modular_computer/preset/id/centcom{
 	dir = 8
@@ -22246,6 +22246,9 @@
 	},
 /turf/open/floor/grass,
 /area/centcom/central_command_areas/admin)
+"lSF" = (
+/turf/closed/indestructible/riveted,
+/area/centcom)
 "lWT" = (
 /turf/open/floor/iron/smooth_edge{
 	dir = 1
@@ -22618,9 +22621,6 @@
 /obj/machinery/chem_heater/withbuffer,
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
-"nNw" = (
-/turf/open/floor/mineral/plastitanium/red,
-/area/centcom)
 "nNA" = (
 /obj/machinery/door/airlock/centcom{
 	name = "Vault G-07"
@@ -23202,7 +23202,7 @@
 "pYR" = (
 /obj/structure/table/wood,
 /obj/machinery/computer/pod/old/syndicate{
-	desc = "Fortune's 'stateoftheart' work computer";
+	desc = "Fortune's /"stateoftheart"/ work computer";
 	name = "Fortune's Desktop Computer"
 	},
 /turf/open/floor/iron/dark/small,
@@ -54715,13 +54715,13 @@ kpH
 aMc
 aMc
 aMc
-eoD
-eoD
-eoD
-eoD
-eoD
-eoD
-eoD
+lSF
+lSF
+lSF
+lSF
+lSF
+lSF
+lSF
 kpH
 kpH
 kpH
@@ -54972,12 +54972,12 @@ kpH
 aMc
 aMc
 aMc
-eoD
+lSF
 eyO
 neL
 dCT
+kuO
 aXN
-nNw
 aHp
 kpH
 aOb
@@ -55229,12 +55229,12 @@ kpH
 aMc
 aMc
 aMc
-eoD
+lSF
 pYR
 dRH
 dCT
 aeU
-nNw
+aXN
 aHp
 kpH
 apk
@@ -55489,7 +55489,7 @@ aMc
 aCS
 kKc
 kKc
-eoD
+lSF
 aNK
 aJC
 tOn
@@ -55743,11 +55743,11 @@ kpH
 aMc
 aMc
 aMc
-eoD
+lSF
 fAH
 grU
 eBX
-eoD
+lSF
 jsr
 tYb
 kpH
@@ -56000,11 +56000,11 @@ kpH
 qXd
 aMc
 aMc
-eoD
+lSF
 aEK
 bLX
 aSI
-eoD
+lSF
 ydI
 aLy
 kpH
