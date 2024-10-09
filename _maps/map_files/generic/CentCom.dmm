@@ -1847,7 +1847,9 @@
 /turf/open/floor/grass,
 /area/centcom/central_command_areas/hall)
 "aeU" = (
-/obj/machinery/computer/cloning,
+/obj/machinery/computer/cloning{
+	req_access = list("genetics")
+	},
 /turf/open/floor/mineral/plastitanium/red,
 /area/centcom/central_command_areas/admin)
 "aeV" = (
@@ -10727,11 +10729,9 @@
 "aCS" = (
 /obj/effect/mapping_helpers/airlock/access/any/admin/captain,
 /obj/machinery/door/airlock/centcom{
-	dir = 4;
-	name = "Intern Fortune's Office";
-	desc = null
+	name = "Intern Fortune's Suppl- errr /"Office"/"
 	},
-/turf/open/floor/wood/large,
+/turf/open/space/basic,
 /area/centcom/central_command_areas/admin)
 "aCT" = (
 /obj/structure/table/reinforced,
@@ -12352,7 +12352,9 @@
 	},
 /area/centcom/central_command_areas/adminroom)
 "aHp" = (
-/obj/machinery/clonepod,
+/obj/machinery/clonepod{
+	req_access = list("genetics")
+	},
 /turf/open/floor/mineral/plastitanium/red,
 /area/centcom/central_command_areas/admin)
 "aHq" = (
@@ -14700,8 +14702,7 @@
 "aNK" = (
 /obj/machinery/button/flasher{
 	pixel_x = 9;
-	pixel_y = -9;
-	id = "fortuneflash"
+	pixel_y = -9
 	},
 /turf/closed/indestructible/riveted,
 /area/centcom/central_command_areas/admin)
@@ -19546,7 +19547,9 @@
 /obj/structure/rack,
 /obj/item/clothing/gloves/color/orange,
 /obj/item/reagent_containers/spray/cleaner,
-/obj/machinery/light/small/maintenance/directional/east,
+/obj/machinery/light/small/maintenance/directional/east{
+	color = "#ffcc66"
+	},
 /turf/open/floor/bitrunning_transport,
 /area/centcom/central_command_areas/admin)
 "bNV" = (
@@ -20023,7 +20026,11 @@
 /turf/open/floor/glass/plasma,
 /area/centcom/central_command_areas/evacuation)
 "dCT" = (
-/obj/effect/spawner/structure/window/reinforced/tinted,
+/obj/structure/grille/window_sill,
+/obj/structure/window/reinforced/tinted/fulltile{
+	color = "#164f41"
+	},
+/obj/structure/window_sill,
 /turf/open/floor/iron/dark/small,
 /area/centcom/central_command_areas/admin)
 "dEH" = (
@@ -20224,12 +20231,19 @@
 "eyO" = (
 /obj/structure/table,
 /obj/item/paper_bin{
+	dir = 4;
 	pixel_x = 6;
 	pixel_y = 3
 	},
+/obj/item/flashlight/lamp{
+	dir = 4;
+	icon_state = "lamp-on";
+	pixel_x = -9;
+	pixel_y = 7
+	},
 /obj/item/pen{
 	pixel_x = 6;
-	pixel_y = 3
+	pixel_y = 2
 	},
 /turf/open/floor/iron/dark/small,
 /area/centcom/central_command_areas/admin)
@@ -20239,7 +20253,10 @@
 	},
 /area/cruiser_dock)
 "eBX" = (
-/obj/item/toy/plush/carpplushie,
+/obj/item/toy/plush/carpplushie{
+	pixel_x = -2;
+	pixel_y = -5
+	},
 /obj/structure/bed/dogbed{
 	name = "Kbity's bed :3";
 	desc = "A comfy-looking pet bed. This is where Kbity sleeps :3"
@@ -20496,11 +20513,11 @@
 /turf/open/floor/iron/dark/textured_edge,
 /area/centcom/central_command_areas/evacuation)
 "fAH" = (
+/obj/structure/sink/directional/south,
 /obj/structure/mop_bucket/janitorialcart{
-	dir = 4;
-	contents = /obj/item/mop
+	dir = 1
 	},
-/obj/structure/sink/directional/east,
+/obj/item/mop,
 /turf/open/floor/iron/dark/small,
 /area/centcom/central_command_areas/admin)
 "fDz" = (
@@ -22140,6 +22157,12 @@
 	},
 /turf/open/floor/iron/smooth_large,
 /area/cruiser_dock)
+"lxi" = (
+/obj/machinery/hypnochair{
+	icon_state = "hypnochair_open"
+	},
+/turf/open/floor/mineral/plastitanium/red,
+/area/centcom/central_command_areas/admin)
 "lAc" = (
 /obj/effect/turf_decal/weather/dirt{
 	dir = 9
@@ -22422,13 +22445,16 @@
 /turf/open/floor/iron/smooth,
 /area/cruiser_dock)
 "neL" = (
-/obj/machinery/flasher/directional/west{
-	id = "fortuneflash"
+/obj/machinery/flasher/directional/west,
+/obj/structure/table,
+/obj/item/plate/small{
+	dir = 4;
+	pixel_x = -2;
+	pixel_y = 6
 	},
-/obj/item/plate/small,
 /obj/item/food/pizzaslice/pineapple{
-	pixel_x = 0;
-	pixel_y = 4
+	pixel_x = -1;
+	pixel_y = 10
 	},
 /turf/open/floor/iron/dark/small,
 /area/centcom/central_command_areas/admin)
@@ -23170,7 +23196,7 @@
 "pYR" = (
 /obj/structure/table/wood,
 /obj/machinery/computer/pod/old/syndicate{
-	desc = "Fortune's state-of-the-art work computer";
+	desc = "Fortune's /"stateoftheart"/ work computer";
 	name = "Fortune's Desktop Computer"
 	},
 /turf/open/floor/iron/dark/small,
@@ -54944,7 +54970,7 @@ aOn
 eyO
 neL
 dCT
-aXN
+lxi
 aXN
 aHp
 kpH
