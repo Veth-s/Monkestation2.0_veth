@@ -28,7 +28,7 @@
 		if(!GLOB.vox_sounds[word])
 			incorrect_words += word
 
-	if(incorrect_words.len)
+	if(LAZYLEN(incorrect_words))
 		to_chat(usr, span_notice("These words are not available on the announcement system: [english_list(incorrect_words)]."))
 		return
 
