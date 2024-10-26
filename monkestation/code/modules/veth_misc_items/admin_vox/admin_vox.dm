@@ -18,8 +18,7 @@
 	var/list/words = splittext(trim(message), " ")
 	var/list/incorrect_words = list()
 
-	if(words.len > 30)
-		words.len = 30
+	words.len = min(30, length(words))
 
 	for(var/word in words)
 		word = lowertext(trim(word))
