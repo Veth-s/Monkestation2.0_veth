@@ -3,7 +3,7 @@
 	set category = "Admin"
 	set desc = "Allows unrestricted use of the AI VOX announcement system."
 
-	if(!check_rights(0))
+	if(!check_rights(NONE))
 		message_admins("[key_name(usr)] attempted to use AdminVOX without sufficient rights.")
 		return
 
