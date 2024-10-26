@@ -16,7 +16,7 @@
 
 	// Process the message for VOX
 	var/list/words = splittext(trim(message), " ")
-	var/list/incorrect_words = list()
+	var/list/incorrect_words
 
 	words.len = min(30, length(words))
 
