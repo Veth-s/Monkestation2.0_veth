@@ -48,4 +48,5 @@
 
 	// Log the successful announcement
 	message_admins("[key_name(usr)] made a VOX announcement: \"[message]\".")
+	log_admin("[key_name(usr)] made a VOX announcement: \"[message]\".")
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Show VOX Announcement")
