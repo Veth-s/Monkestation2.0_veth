@@ -8,7 +8,7 @@
 		return
 
 	// Prompt message via TGUI
-	var/message = tgui_input_text(usr, "Enter your VOX announcement message:", "AdminVOX", "", MAX_MESSAGE_LEN, FALSE, FALSE, 0) as text
+	var/message = tgui_input_text(usr, "Enter your VOX announcement message:", "AdminVOX", "", MAX_MESSAGE_LEN, FALSE, FALSE, 0)
 
 	// Check for valid message input
 	if(!message || message == "")
