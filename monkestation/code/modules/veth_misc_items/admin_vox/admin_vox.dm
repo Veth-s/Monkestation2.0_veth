@@ -1,5 +1,5 @@
 /client/proc/AdminVOX()
-	set name = "AdminVOX"
+	set name = "VOX"
 	set category = "Admin"
 	set desc = "Allows unrestricted use of the AI VOX announcement system."
 
