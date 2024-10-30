@@ -19,7 +19,7 @@ Adds Adminverb - Check Players for a quick and easy method to check currently co
 #NEW tgui/packages/tgui/interfaces/PlayerStatisticsUI.tsx
 #CHANGE monkestation/code/modules/admin/antag_tokens.dm
 #CHANGE monkestation/code/modules/admin/event_tokens.dm
-#CHANGE monkestation\code\modules\store\admin\admin_coin_modification.dm
+#CHANGE monkestation/code/modules/store/admin/admin_coin_modification.dm
 ### Credits:
 
 <!-- Here go the credits to you, dear coder, and in case of collaborative work or ports, credits to the original source of the code -->
