@@ -2,26 +2,24 @@
 	set name = "Check Players"
 	set category = "Admin.Game"
 	if(!check_rights(NONE)) // Rights check for admin access
-		message_admins("[key_name(usr)] attempted to use CheckPlayers without sufficient rights.")
+		message_admins("[key_name(usr)] attempted to use CheckPlayers without sufficient rights.") //messages admins if rights check fails
 		return
 	var/datum/CheckPlayers/tgui = new(usr)
 	tgui.ui_interact(usr)
-		// Log the action
-	to_chat(src, span_interface("Player statistics alert displayed."), confidential = TRUE)
-	SSblackbox.record_feedback("tally", "admin_verb", 1, "Show Player Statistics")
-	message_admins("[key_name(usr)] checked players.")
+	to_chat(src, span_interface("Player statistics displayed."), confidential = TRUE)
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "Check Players") //Logging
+	message_admins("[key_name(usr)] checked players.") //Logging
 
-/datum/CheckPlayers/ui_data(mob/user)
+/datum/CheckPlayers/ui_data(mob/user) //Data required for the frontend
 	var/list/data = list()
 	data["total_clients"] = length(GLOB.player_list)
 	data["living_players"] = length(GLOB.alive_player_list)
 	data["dead_players"] = length(GLOB.dead_player_list)
 	data["observers"] = length(GLOB.current_observers_list)
 	data["living_antags"] = length(GLOB.current_living_antags)
-	// Create the TGUI window and send data to the TypeScript interface
 	return data
 
-/datum/CheckPlayers/
+/datum/CheckPlayers/ //datum required for the tgui window
 	var/mob/ui_user
 
 /datum/CheckPlayers/New(mob/user)
