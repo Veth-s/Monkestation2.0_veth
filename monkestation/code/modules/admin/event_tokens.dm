@@ -4,7 +4,7 @@
 	set name = "Adjust Event Tokens"
 	set desc = "Adjust how many event tokens someone has."
 
-	var/mob/chosen_player = tgui_input_list(src, "Choose a Player", "Player List", GLOB.player_list)
+	var/mob/chosen_player = tgui_input_list(src, "Choose a Player", "Player List", GLOB.clients)
 	if(!chosen_player)
 		return
 

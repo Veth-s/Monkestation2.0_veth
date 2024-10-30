@@ -4,7 +4,7 @@
 	set desc = "You can modifiy a targets metacoin balance by adding or subtracting."
 
 	var/mob/chosen_player
-	chosen_player = tgui_input_list(src, "Choose a Player", "Player List", GLOB.player_list)
+	chosen_player = tgui_input_list(src, "Choose a Player", "Player List", GLOB.clients)
 	if(!chosen_player)
 		return
 	var/client/chosen_client = chosen_player.client
