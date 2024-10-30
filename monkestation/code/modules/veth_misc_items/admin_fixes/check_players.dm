@@ -12,19 +12,14 @@
 	message_admins("[key_name(usr)] checked players.")
 
 /datum/CheckPlayers/ui_data(mob/user)
-	var/total_clients = GLOB.player_list.len ? GLOB.player_list.len : 0
-	var/living_players = GLOB.alive_player_list.len ? GLOB.alive_player_list.len : 0
-	var/dead_players = GLOB.dead_player_list.len ? GLOB.dead_player_list.len : 0
-	var/ghost_players = GLOB.current_observers_list.len ? GLOB.current_observers_list.len : 0
-	var/living_antags = GLOB.current_living_antags.len ? GLOB.current_living_antags.len : 0
-	var/list/message = list()
-	message["total_clients"] = total_clients
-	message["living_players"] = living_players
-	message["dead_players"] = dead_players
-	message["ghost_players"] = ghost_players
-	message["living_antags"] = living_antags
+	var/list/data = list()
+	data["total_clients"] = length(GLOB.player_list)
+	data["living_players"] = length(GLOB.alive_player_list)
+	data["dead_players"] = length(GLOB.dead_player_list)
+	data["observers"] = length(GLOB.current_observers_list)
+	data["living_antags"] = length(GLOB.current_living_antags)
 	// Create the TGUI window and send data to the TypeScript interface
-	return message
+	return data
 
 /datum/CheckPlayers/
 	var/mob/ui_user

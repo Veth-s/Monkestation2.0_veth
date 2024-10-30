@@ -1,5 +1,3 @@
-import { text } from '../styles/atomic';
-
 import { Section, LabeledList } from '../components';
 import { Window } from '../layouts';
 import { useBackend } from '../backend';
@@ -8,58 +6,49 @@ type Data = {
   total_clients: string;
   living_players: string;
   dead_players: string;
-  ghost_players: string;
+  observers: string;
   living_antags: string;
 };
 
 export const PlayerStatistics = () => {
   const { data } = useBackend<Data>();
+
   return (
     <Window title="Player Statistics" width={400} height={180} theme="admin">
       <Section title="Player Overview">
         <LabeledList>
           <LabeledList.Item
-            label={
-              <div className="text-bold" style={{ color: '#4287f5' }}>
-                Total Clients:
-              </div>
-            }
+            label="Total Clients"
+            labelColor="#4287f5"
+            color="#4287f5"
           >
             {data.total_clients}
           </LabeledList.Item>
           <LabeledList.Item
-            label={
-              <div className="text-bold" style={{ color: '#1d9123' }}>
-                Living Players:
-              </div>
-            }
+            label="Living Players"
+            labelColor="#1d9123"
+            color="#1d9123"
           >
             {data.living_players}
           </LabeledList.Item>
           <LabeledList.Item
-            label={
-              <div className="text-bold" style={{ color: '#666e66' }}>
-                Dead Players:
-              </div>
-            }
+            label="Dead Players"
+            labelColor="#666e66"
+            color="#666e66"
           >
             {data.dead_players}
           </LabeledList.Item>
           <LabeledList.Item
-            label={
-              <div className="text-bold" style={{ color: '#34949e' }}>
-                Ghost Players:
-              </div>
-            }
+            label="Observers"
+            labelColor="#34949e"
+            color="#34949e"
           >
-            {data.ghost_players}
+            {data.observers}
           </LabeledList.Item>
           <LabeledList.Item
-            label={
-              <div className="text-bold" style={{ color: '#bd2924' }}>
-                Living Antags:
-              </div>
-            }
+            label="Living Antags"
+            labelColor="#bd2924"
+            color="#bd2924"
           >
             {data.living_antags}
           </LabeledList.Item>
