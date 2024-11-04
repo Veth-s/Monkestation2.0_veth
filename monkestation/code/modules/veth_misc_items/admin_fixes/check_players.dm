@@ -1,49 +1,38 @@
-/client/proc/CheckPlayers()
+/client/proc/check_players()
 	set name = "Check Players"
 	set category = "Admin.Game"
 	if(!check_rights(NONE)) // Rights check for admin access
 		message_admins("[key_name(usr)] attempted to use CheckPlayers without sufficient rights.") //messages admins if rights check fails
 		return
-	var/datum/CheckPlayers/tgui = new(usr)
+	var/datum/check_players/tgui = new(usr)
 	tgui.ui_interact(usr)
 	to_chat(src, span_interface("Player statistics displayed."), confidential = TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Check Players") //Logging
 	message_admins("[key_name(usr)] checked players.") //Logging
 
-/datum/CheckPlayers/ui_data(mob/user) //Data required for the frontend
-	var/list/data = list()
-	data["total_clients"] = length(GLOB.player_list)
-	data["living_players"] = length(GLOB.alive_player_list)
-	data["dead_players"] = length(GLOB.dead_player_list)
-	data["observers"] = length(GLOB.current_observers_list)
-	data["living_antags"] = length(GLOB.current_living_antags)
-	return data
+/datum/check_players/ui_data(mob/user) //Data required for the frontend
+	return list(
+		"total_clients" = length(GLOB.player_list),
+		"living_players" = length(GLOB.alive_player_list),
+		"dead_players" = length(GLOB.dead_player_list),
+		"observers" = length(GLOB.current_observers_list),
+		"living_antags" = length(GLOB.current_living_antags),
+	)
 
-/datum/CheckPlayers/ //datum required for the tgui window
-	var/mob/ui_user
+/datum/check_players/ //datum required for the tgui window
 
-/datum/CheckPlayers/New(mob/user)
-	ui_user = user
+/datum/check_players/New(mob/user)
 
-/datum/CheckPlayers/ui_close()
+/datum/check_players/ui_close()
 	qdel(src)
 
-/datum/CheckPlayers/ui_interact(mob/user, datum/tgui/ui)
-	.=..()
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
-		ui = new(user, src, "PlayerStatistics")
-		ui.open()
-/datum/CheckPlayers/ui_state(mob/user)
+/datum/check_players/ui_interact(mob/user, datum/tgui/ui)
+	. = ..()
+	ui = new(user, src, "PlayerStatistics")
+	ui.set_autoupdate(FALSE)
+	ui.open()
+/datum/check_players/ui_state(mob/user)
 	return GLOB.admin_state
-
-/datum/CheckPlayers/ui_act(action, list/params, datum/tgui/ui)
-	.=..()
-	if(.)
-		return TRUE
-	else
-		return FALSE
-
 
 
 
