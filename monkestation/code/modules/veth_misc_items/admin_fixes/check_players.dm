@@ -19,9 +19,7 @@
 		"living_antags" = length(GLOB.current_living_antags),
 	)
 
-/datum/check_players/ //datum required for the tgui window
-
-/datum/check_players/New(mob/user)
+/datum/check_players //datum required for the tgui window
 
 /datum/check_players/ui_close()
 	qdel(src)
@@ -35,6 +33,3 @@
 
 /datum/check_players/ui_state(mob/user)
 	return GLOB.admin_state
-
-
-
