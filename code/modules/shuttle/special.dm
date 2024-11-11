@@ -162,6 +162,9 @@
 	unique_name = FALSE // disables the (123) number suffix
 	initial_language_holder = /datum/language_holder/universal
 	default_storage = null
+	var/static/list/actions_to_add = list(
+		/datum/action/drone/bar/information,
+	)
 
 /mob/living/basic/drone/snowflake/bardrone/Initialize(mapload)
 	. = ..()

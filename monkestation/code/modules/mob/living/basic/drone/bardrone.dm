@@ -45,3 +45,38 @@
 			to_chat(user, span_danger("You need to play [playtime_left] more as [required_role] to spawn as a Bardrone!"))
 		return FALSE
 	return ..()
+
+/datum/action/drone/bar/information
+	name = "Bar Drone Information"
+	desc = "Shows information and laws for the Bar Drone."
+	button_icon = 'icons/obj/art/musician.dmi'  // The icon file path
+	button_icon_state = "synth"  // Icon state to show on the button
+
+/datum/action/drone/bar/information/Trigger(trigger_flags)
+	var/datum/drone/bar/information/tgui = new(usr)
+	tgui.ui_interact(usr)
+
+/datum/drone/bar/information
+
+/datum/drone/bar/information/ui_close()
+	qdel(src)
+
+/datum/drone/bar/information/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "BarDrone")
+		ui.open()
+
+/datum/drone/bar/information/ui_state(mob/user)
+	return GLOB.always_state
+
+/mob/living/basic/drone/snowflake/bardrone/Initialize(mapload)
+	. = ..()
+	for (var/action_type in actions_to_add)
+		var/datum/action/new_action = new action_type(src)
+		new_action.Grant(src)
+
+/mob/living/basic/drone/snowflake/bardrone/Login()
+	..()
+	var/datum/drone/bar/information/tgui = new(usr)
+	tgui.ui_interact(usr)
