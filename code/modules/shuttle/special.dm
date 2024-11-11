@@ -162,6 +162,7 @@
 	unique_name = FALSE // disables the (123) number suffix
 	initial_language_holder = /datum/language_holder/universal
 	default_storage = null
+	//list used to add actions to the bardrone. Used a list incase we need to add more in future
 	var/static/list/actions_to_add = list(
 		/datum/action/drone/bar/information,
 	)
