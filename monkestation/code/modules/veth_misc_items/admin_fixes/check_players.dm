@@ -29,7 +29,6 @@
 	if(!ui)
 		ui = new(user, src, "PlayerStatistics")
 		ui.open()
-	ui.open()
 
 /datum/check_players/ui_state(mob/user)
 	return GLOB.admin_state
