@@ -2,13 +2,13 @@
 	set name = "Check Players"
 	set category = "Admin.Game"
 	if(!check_rights(NONE)) // Rights check for admin access
-		message_admins("[key_name(usr)] attempted to use CheckPlayers without sufficient rights.") //messages admins if rights check fails
+		message_admins("[key_name(src)] attempted to use CheckPlayers without sufficient rights.") //messages admins if rights check fails
 		return
-	var/datum/check_players/tgui = new(usr)
-	tgui.ui_interact(usr)
+	var/datum/check_players/tgui = new
+	tgui.ui_interact(mob)
 	to_chat(src, span_interface("Player statistics displayed."), confidential = TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Check Players") //Logging
-	message_admins("[key_name(usr)] checked players.") //Logging
+	message_admins("[key_name(src)] checked players.") //Logging
 
 /datum/check_players/ui_data(mob/user) //Data required for the frontend
 	return list(
