@@ -8378,6 +8378,8 @@
 #include "monkestation\code\modules\visual_changes\explosions.dm"
 #include "monkestation\code\modules\visual_changes\gun_smoke.dm"
 #include "monkestation\code\modules\visual_changes\splatter.dm"
+#include "monkestation\code\modules\wiki_templater\chemistry_templates.dm"
+#include "monkestation\code\modules\wiki_templater\construction_templates.dm"
 #include "monkestation\code\modules\wiki_templater\food_templates.dm"
 #include "monkestation\code\modules\wiki_templater\templates.dm"
 #include "monkestation\code\modules\wiki_templater\test_generate.dm"
