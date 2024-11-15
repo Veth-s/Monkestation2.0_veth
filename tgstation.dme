@@ -8381,6 +8381,7 @@
 #include "monkestation\code\modules\wiki_templater\chemistry_templates.dm"
 #include "monkestation\code\modules\wiki_templater\construction_templates.dm"
 #include "monkestation\code\modules\wiki_templater\food_templates.dm"
+#include "monkestation\code\modules\wiki_templater\surgery_templates.dm"
 #include "monkestation\code\modules\wiki_templater\templates.dm"
 #include "monkestation\code\modules\wiki_templater\test_generate.dm"
 #include "monkestation\code\modules\wiremod_chem\chemical_list.dm"

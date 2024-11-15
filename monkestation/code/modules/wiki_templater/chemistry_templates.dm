@@ -5,7 +5,7 @@
 	var/temp_string = ""  // Temperature details
 	// Reaction name from results or chemical reaction itself
 	for (var/atom/item_type as anything in recipe.results)
-		name_string = item_type.name  // Accessing the name of the instantiated item
+		name_string = item_type.name  // Access the name of the product
 
 	// Process the results (produced chemicals and quantities)
 	if (istype(recipe.results, /list))
@@ -17,7 +17,7 @@
 		results_string = "No results defined for this reaction.<br>"
 
 	// Process the required reagents (needed chemicals and quantities)
-	if (istype(recipe.required_reagents, /list))  // Ensure required_reagents is defined
+	if (istype(recipe.required_reagents, /list))
 		for (var/atom/item_type as anything in recipe.required_reagents)
 			var/quantity = recipe.required_reagents[item_type]  // Quantity required
 			var/item_name = item_type.name  // Access the 'name' of the reagent
@@ -57,16 +57,20 @@
 GLOBAL_VAR_INIT(chemical_reaction_wiki, "")
 GLOBAL_VAR_INIT(chemical_reaction_wiki_failed, "")
 
-/proc/generate_chemical_reaction_wiki_templates()
+/proc/generate_chemical_reaction_wiki_medical_templates()
 	var/mega_string = ""
 	var/failed_templates = ""
 	var/datum/wiki_template/chemical_reaction/wiki_template = new /datum/wiki_template/chemical_reaction
-
+	var/list/chemical_reactions = list()
+	var/list/sorted = list()
 	// Loop through all chemical reactions to generate templates
-	for (var/type in typesof(/datum/chemical_reaction))  // Search for medicine reactions only
-		var/datum/chemical_reaction/medicine/new_recipe = new type
-		var/output = wiki_template.generate_output(new_recipe)
-
+	for (var/type in typesof(/datum/chemical_reaction/medicine))  // Search for medicine reactions only
+		new type
+		chemical_reactions += type
+		sorted = sort_names(chemical_reactions, 1)
+	for (var/atom/item_type as anything in sorted)
+		var/init = new item_type
+		var/output = wiki_template.generate_output(init)
 		if (output == null)  // Check for failed templates
 			failed_templates += "Failed to generate.<br>"
 		else
@@ -77,3 +81,96 @@ GLOBAL_VAR_INIT(chemical_reaction_wiki_failed, "")
 	mega_string += "This many templates failed to build: [length(failed_templates)] \n"
 	// Display or log results
 	return mega_string
+
+/proc/generate_chemical_reaction_food_wiki_templates()
+	var/mega_string = ""
+	var/failed_templates = ""
+	var/datum/wiki_template/chemical_reaction/wiki_template = new /datum/wiki_template/chemical_reaction
+	var/list/chemical_reactions = list()
+	var/list/sorted = list()
+	// Loop through all chemical reactions to generate templates
+	for (var/type in typesof(/datum/chemical_reaction/food))  // Search for medicine reactions only
+		new type
+		chemical_reactions += type
+		sorted = sort_names(chemical_reactions, 1)
+	for (var/atom/item_type as anything in sorted)
+		var/init = new item_type
+		var/output = wiki_template.generate_output(init)
+		if (output == null)  // Check for failed templates
+			failed_templates += "Failed to generate.<br>"
+		else
+			mega_string += "[output] \n"
+
+	GLOB.chemical_reaction_wiki = mega_string
+	GLOB.chemical_reaction_wiki_failed = failed_templates
+	mega_string += "This many templates failed to build: [length(failed_templates)] \n"
+	// Display or log results
+	return mega_string
+
+/proc/generate_chemical_reaction_wiki_drink_templates()
+	var/mega_string = ""
+	var/failed_templates = ""
+	var/datum/wiki_template/chemical_reaction/wiki_template = new /datum/wiki_template/chemical_reaction
+	var/list/chemical_reactions = list()
+	var/list/sorted = list()
+	// Loop through all chemical reactions to generate templates
+	for (var/type in typesof(/datum/chemical_reaction/drink))  // Search for medicine reactions only
+		new type
+		chemical_reactions += type
+		sorted = sort_names(chemical_reactions, 1)
+	for (var/atom/item_type as anything in sorted)
+		var/init = new item_type
+		var/output = wiki_template.generate_output(init)
+		if (output == null)  // Check for failed templates
+			failed_templates += "Failed to generate.<br>"
+		else
+			mega_string += "[output] \n"
+
+	GLOB.chemical_reaction_wiki = mega_string
+	GLOB.chemical_reaction_wiki_failed = failed_templates
+	mega_string += "This many templates failed to build: [length(failed_templates)] \n"
+	// Display or log results
+	return mega_string
+
+/proc/generate_chemical_reaction_all_wiki_templates()
+	var/mega_string = ""
+	var/failed_templates = ""
+	var/datum/wiki_template/chemical_reaction/wiki_template = new /datum/wiki_template/chemical_reaction
+	var/list/chemical_reactions = list()
+	var/list/sorted = list()
+	var/blacklist = list()
+	blacklist += subtypesof(/datum/chemical_reaction/slime)
+	blacklist += subtypesof(/datum/chemical_reaction/food)
+	blacklist += subtypesof(/datum/chemical_reaction/food/soup)
+	blacklist += subtypesof(/datum/chemical_reaction/drink)
+
+	// Loop through all chemical reactions to generate templates
+	for (var/type in typesof(/datum/chemical_reaction) - blacklist)  // Search for medicine reactions only
+		new type
+		chemical_reactions += type
+		sorted = sort_names(chemical_reactions, 1)
+	for (var/atom/item_type as anything in sorted)
+		var/init = new item_type
+		var/output = wiki_template.generate_output(init)
+		if (output == null)  // Check for failed templates
+			failed_templates += "Failed to generate.<br>"
+		else
+			mega_string += "[output] \n"
+
+	GLOB.chemical_reaction_wiki = mega_string
+	GLOB.chemical_reaction_wiki_failed = failed_templates
+	mega_string += "This many templates failed to build: [length(failed_templates)] \n"
+	// Display or log results
+	return mega_string
+
+/proc/getchems()
+	var/blacklist = list()
+	blacklist += subtypesof(/datum/chemical_reaction/slime)
+	blacklist += subtypesof(/datum/chemical_reaction/food)
+	blacklist += subtypesof(/datum/chemical_reaction/food/soup)
+	blacklist += subtypesof(/datum/chemical_reaction/drink)
+
+	var/list/chemlist = list()
+	for (var/type in typesof(/datum/chemical_reaction) - blacklist)
+		chemlist += type
+	return chemlist
