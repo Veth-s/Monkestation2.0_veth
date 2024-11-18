@@ -38,8 +38,9 @@ GLOBAL_VAR_INIT(surgery_wiki_failed, "")
 	for (var/datum/surgery_step/step as anything in surgery_procedure.steps)
 		var/step_name = capitalize(step.name)
 		tool_string = ""
-		for (var/tool in step.implements)
-			var/tool_name = capitalize(initial(step.implements))
+		for (var/obj/item/tool as anything in step.implements)
+			new tool
+			var/tool_name = capitalize(initial(tool.name))
 			tool_string += "[tool_name]: [step.implements[tool]]% success<br>"
 		steps_tool_string += "| Step: [step_name] | Tools: [tool_string] |\n"
 
