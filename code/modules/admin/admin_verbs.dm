@@ -108,6 +108,7 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/client/proc/AdminVOX,
 	/client/proc/delete_all_glowshrooms,
 	/client/proc/toggle_glowshroom_spread,
+	/client/proc/player_panel_veth,
 	// monkestation verbs end
 	)
 GLOBAL_LIST_INIT(admin_verbs_ban, list(/client/proc/unban_panel, /client/proc/ban_panel, /client/proc/stickybanpanel, /client/proc/library_control))
