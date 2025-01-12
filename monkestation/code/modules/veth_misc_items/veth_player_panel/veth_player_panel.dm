@@ -36,6 +36,7 @@
 		return
 	if(!check_rights(NONE))
 		return
+	var/mob/M = get_mob_by_ckey(params["selectedPlayerCkey"])
 	switch(action)
 		if("sendPrivateMessage")
 			var/ckey = params["selectedPlayerCkey"]
@@ -43,18 +44,26 @@
 			usr.client.cmd_admin_pm(ckey, message)
 			return
 		if("follow")
-			var/ckey = params["selectedPlayerCkey"]
-			ADMIN_FLW(ckey)
-			to_chat(usr, "Now following [ckey].", confidential = TRUE)
+			usr.client.holder.Topic(null, list(
+				"adminplayerobservefollow" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			to_chat(usr, "Now following [M.ckey].", confidential = TRUE)
 			return
 		if("smite")
-			var/ckey = params["selectedPlayerCkey"]
-			usr.client.smite(ckey)
-			to_chat(usr, "Smiting [ckey].", confidential = TRUE)
+			usr.client.holder.Topic(null, list(
+				"adminsmite" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			to_chat(usr, "Smiting [M.ckey].", confidential = TRUE)
 		if("refresh")
 			ui.send_update()
 			return
 		if("oldPP")
+			usr.client.holder.Topic(null, list(
+				"adminplayeropts" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("checkPlayers")
 			usr.client.check_players()
@@ -101,12 +110,14 @@
 	var/selectedPlayerCkey = ""
 /datum/vuap_personal
 
-/*features that need to be add
+/*features that need to add
 frontend lol
 info for IP/CID on vuap
 related by ip/cid
 health status/damages for frontend
 chemscan button
+popup
+spawncookie
 
 
 
@@ -114,36 +125,56 @@ chemscan button
 
 */
 /datum/vuap_personal/ui_data(mob/user)
-    var/ckey = usr.client.selectedPlayerCkey
-    var/mob/player = GLOB.directory[ckey]
-    var/client/C = player.client
+	var/ckey = usr.client?.selectedPlayerCkey
+	if(!ckey)
+		return list("Data" = list())
 
-    world.log << "Debug: Processing ui_data for [ckey]"
+	var/mob/player = get_mob_by_ckey(ckey)
+	var/client/C = player?.client
 
-    var/list/PlayerData = list(
-        "characterName" = player.real_name,
-        "ckey" = ckey,
-        "ipAddress" = C.address,
-        "CID" = C.computer_id,
-        "gameState" = "Active",
-        "dbLink" = "",
-        "byondVersion" = "[C.byond_version].[C.byond_build]",
-        "mobType" = "[player.type]",
-        "relatedByCid" = C.related_accounts_cid,
-        "relatedByIp" = C.related_accounts_ip,
-        "firstSeen" = "Unknown",
-        "accountRegistered" = "Unknown",
-        "muteStates" = list(
-            "ic" = (C.prefs.muted & MUTE_IC),
-            "ooc" = (C.prefs.muted & MUTE_OOC),
-            "pray" = (C.prefs.muted & MUTE_PRAY),
-            "adminhelp" = (C.prefs.muted & MUTE_ADMINHELP),
-            "deadchat" = (C.prefs.muted & MUTE_DEADCHAT),
-            "webreq" = FALSE
-        )
-    )
-    return list("Data" = PlayerData)
+	// Fallback values for player data
+	var/list/PlayerData = list(
+		"characterName" = "No Character",
+		"ckey" = ckey || "Unknown",
+		"ipAddress" = "0.0.0.0",
+		"CID" = "NO_CID",
+		"gameState" = "Unknown",
+		"byondVersion" = "0.0.0",
+		"mobType" = "null",
+		"firstSeen" = "Never",
+		"accountRegistered" = "Unknown",
+		"muteStates" = list(
+			"ic" = FALSE,
+			"ooc" = FALSE,
+			"pray" = FALSE,
+			"adminhelp" = FALSE,
+			"deadchat" = FALSE,
+			"webreq" = FALSE
+		)
+	)
 
+	// Only update values if we have valid data
+	if(player && C)
+		PlayerData["characterName"] = player.real_name || "Unknown"
+		PlayerData["ipAddress"] = C.address || "0.0.0.0"
+		PlayerData["CID"] = C.computer_id || "NO_CID"
+		PlayerData["gameState"] = istype(player) ? "Active" : "Unknown"
+		PlayerData["byondVersion"] = "[C.byond_version || 0].[C.byond_build || 0]"
+		PlayerData["mobType"] = "[player.type]" || "null"
+		PlayerData["firstSeen"] = C.account_join_date || "Never"
+		PlayerData["accountRegistered"] = C.account_age || "Unknown"
+		// Safely check mute states
+		if(C.prefs)
+			PlayerData["muteStates"] = list(
+				"ic" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_IC),
+				"ooc" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_OOC),
+				"pray" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_PRAY),
+				"adminhelp" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_ADMINHELP),
+				"deadchat" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_DEADCHAT),
+				"webreq" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_INTERNET_REQUEST),
+			)
+
+	return list("Data" = PlayerData)
 /datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
@@ -161,22 +192,48 @@ chemscan button
 	if(!M)
 		to_chat(usr, "Selected player not found!", confidential = TRUE)
 		return
-
 	switch(action)
+		if("refresh")
+			ui.send_update()
+			return
+		if("relatedbycid")
+			usr.client.holder.Topic(null, list(
+			"showrelatedacc" = "cid",
+			"admin_token" = usr.client.holder.href_token
+			"client" = REF(M.client)
+			))
+			return
+		if("relatedbyip")
+			usr.client.holder.Topic(null, list(
+			"showrelatedacc" = "ip",
+			"admin_token" = usr.client.holder.href_token
+			"client" = REF(M.client)
+			))
+			return
 		// Punish Section
 		if("kick")
-			var/reason = params["reason"] || "No reason provided"
-			del(M.client)
-			message_admins("[key_name_admin(usr)] kicked [key_name_admin(M)] from the game. Reason: [reason]")
+			usr.client.holder.Topic(null, list(
+				"boot2" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("ban")
-			//usr.client.cmd_admin_ban(M)
+			usr.client.ban_panel()
 			return
 		if("prison")
-			//usr.client.cmd_admin_prison(M)
+			usr.client.holder.Topic(null, list(
+				"sendtoprison" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			return
+		if("unprison")
+			//unprison not done lol
 			return
 		if("smite")
-			usr.client.smite(M)
+			usr.client.holder.Topic(null, list(
+				"adminsmite" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 
 		// Message Section
@@ -187,7 +244,10 @@ chemscan button
 			usr.client.cmd_admin_subtle_message(M)
 			return
 		if("narrate")
-			//usr.client.cmd_admin_narrate(M)
+			usr.client.holder.Topic(null, list(
+				"narrateto" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("playsoundto")
 			var/sound = params["sound"]
@@ -195,172 +255,197 @@ chemscan button
 				SEND_SOUND(M, sound(sound))
 			return
 
-		// Movement Section
+		// Movement Section //lobby broken
 		if("jumpto")
-			usr.client.jumptomob(M)
+			usr.client.holder.Topic(null, list(
+				"jumpto" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("get")
-			usr.client.Getmob(M)
+			usr.client.holder.Topic(null, list(
+				"getmob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("send")
-			//usr.client.cmd_admin_send(M)
+			usr.client.holder.Topic(null, list(
+				"sendmob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("lobby")
-			if(!isobserver(M))
-				M.Move(get_turf(locate("landmark*Lobby")))
+			usr.client.holder.Topic(null, list(
+				"sendbacktolobby" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("flw")
-			//usr.client.cmd_admin_follow(M)
+			usr.client.holder.Topic(null, list(
+				"adminplayerobservefollow" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
-
 		// Info Section
 		if("vv")
 			usr.client.debug_variables(M)
 			return
 		if("tp")
-			//usr.client.show_traitor_panel(M)
+			usr.client.holder.Topic(null, list(
+				"traitor" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("skills")
-			//usr.client.cmd_view_skills(M)
+			usr.client.holder.Topic(null, list(
+				"skill" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("logs")
-			//usr.client.show_player_logs(M)
+			usr.client.holder.Topic(null, list(
+				"individuallog" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("notes")
-			//usr.client.browse_messages(target_ckey = M.ckey)
+			browse_messages(target_ckey = M.ckey)
 			return
 
 		// Transformation Section
 		if("makeghost")
-			M.ghostize(can_reenter_corpse = TRUE)
+			usr.client.holder.Topic(null, list(
+				"simplemake" = "observer",
+				"mob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("makehuman")
-			//usr.client.cmd_admin_humanize(M)
+			usr.client.holder.Topic(null, list(
+				"simplemake" = "human",
+				"mob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("makemonkey")
-			//usr.client.cmd_admin_monkeyize(M)
+			usr.client.holder.Topic(null, list(
+				"simplemake" = "monkey",
+				"mob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("makeborg")
-			usr.client.cmd_admin_robotize(M)
+			usr.client.holder.Topic(null, list(
+				"simplemake" = "robot",
+				"mob" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("makeai")
-			//usr.client.cmd_admin_aiize(M)
+			usr.client.holder.Topic(null, list(
+				"makeai" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 
 		// Misc Section
 		if("language")
-			// Implement language panel logic
+			usr.client.holder.Topic(null, list(
+				"languagemenu" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("forcesay")
-			var/message = params["message"]
-			if(message)
-				M.say(message, forced = TRUE)
-			return
+			usr.client.holder.Topic(null, list(
+				"forcespeech" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 		if("applyquirks")
-			if(ishuman(M))
-				var/mob/living/carbon/human/H = M
-				//H.client?.prefs?.apply_character_preferences_to(H)
-			return
+			usr.client.holder.Topic(null, list(
+				"applyquirks" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 		if("thunderdome1")
-			//usr.client.cmd_admin_thunderdome(M, 1)
+			usr.client.holder.Topic(null, list(
+				"tdome1" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("thunderdome2")
-			//usr.client.cmd_admin_thunderdome(M, 2)
+			usr.client.holder.Topic(null, list(
+				"tdome2" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("commend")
-			//usr.client.cmd_admin_commend(M)
+			usr.client.holder.Topic(null, list(
+				"admincommend" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("playtime")
-			//usr.client.cmd_view_playtime(M)
+			usr.client.holder.Topic(null, list(
+				"getplaytimewindow" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
 		if("thunderdomeadmin")
-			//usr.client.cmd_admin_thunderdome(M, "admin")
+			usr.client.holder.Topic(null, list(
+				"tdomeadmin" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
-		if("thunderdomeobserver")
-			//usr.client.cmd_admin_thunderdome(M, "observer")
+		if("thunderdomeobserve")
+			usr.client.holder.Topic(null, list(
+				"tdomeobserver" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 			return
-
+		if("dblink")
+			usr.client.holder.Topic(null, list(
+				"centcomlookup" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
 		// Mute Controls
 		if("toggleMute")
 			var/muteType = params["type"]
 			switch(muteType)
 				if("ic")
-					if(M.client.prefs.muted & MUTE_IC)
-						M.client.prefs.muted &= ~MUTE_IC
-					else
-						M.client.prefs.muted |= MUTE_IC
-				if("ooc")
-					if(M.client.prefs.muted & MUTE_OOC)
-						M.client.prefs.muted &= ~MUTE_OOC
-					else
-						M.client.prefs.muted |= MUTE_OOC
-				if("pray")
-					if(M.client.prefs.muted & MUTE_PRAY)
-						M.client.prefs.muted &= ~MUTE_PRAY
-					else
-						M.client.prefs.muted |= MUTE_PRAY
-				if("adminhelp")
-					if(M.client.prefs.muted & MUTE_ADMINHELP)
-						M.client.prefs.muted &= ~MUTE_ADMINHELP
-					else
-						M.client.prefs.muted |= MUTE_ADMINHELP
-				if("deadchat")
-					if(M.client.prefs.muted & MUTE_DEADCHAT)
-						M.client.prefs.muted &= ~MUTE_DEADCHAT
-					else
-						M.client.prefs.muted |= MUTE_DEADCHAT
-				if("webreq")
-					// Implement webreq mute logic if available
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_IC)
+					ui.send_update()
 					return
-			message_admins("[key_name_admin(usr)] has [(M.client.prefs.muted & text2num(muteType)) ? "muted" : "unmuted"] [key_name_admin(M)] from [muteType]")
+				if("ooc")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_OOC)
+					ui.send_update()
+					return
+				if("pray")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_PRAY)
+					ui.send_update()
+					return
+				if("adminhelp")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_ADMINHELP)
+					ui.send_update()
+					return
+				if("deadchat")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_DEADCHAT)
+					ui.send_update()
+					return
+				if("webreq")
+					cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_INTERNET_REQUEST)
+					ui.send_update()
+					return
 			return
 
 		if("toggleAllMutes")
-			if(M.client.prefs.muted)
-				M.client.prefs.muted = 0
-			else
-				M.client.prefs.muted = MUTE_IC|MUTE_OOC|MUTE_PRAY|MUTE_ADMINHELP|MUTE_DEADCHAT
-			message_admins("[key_name_admin(usr)] has [(M.client.prefs.muted) ? "muted" : "unmuted"] [key_name_admin(M)] from everything")
+			cmd_admin_mute(usr.client.selectedPlayerCkey, MUTE_ALL)
+			ui.send_update()
 			return
 
-
-		// Mute Controls
-		if("toggleMute")
-			var/type = params["type"]
-			// Add mute toggle logic here based on type
-			switch(type)
-				if("ic")
-
-					return
-
-				if("ooc")
-
-					return
-
-				if("pray")
-
-					return
-
-				if("adminhelp")
-
-					return
-
-				if("webreq")
-
-					return
-
-				if("deadchat")
-
-					return
-			return
-		if("toggleAllMutes")
-			// Add toggle all mutes logic here
-			return
 
 /datum/vuap_personal/ui_state(mob/user)
 	return GLOB.admin_state
 
-/client/proc/vuap_open(var/selectedCkey = null)
+/client/proc/vuap_open()
 	if (!check_rights(NONE))
 		message_admins("[key_name(src)] attempted to use VUAP without sufficient rights.")
 		return

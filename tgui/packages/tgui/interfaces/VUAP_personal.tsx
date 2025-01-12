@@ -1,9 +1,41 @@
 import { useBackend } from '../backend';
 import { Box, Button, Section, Table, Stack, Grid } from '../components';
 import { Window } from '../layouts';
-import { useLocalState } from '../backend';
 
-type PlayerData = {
+interface MuteStates {
+  ic: boolean;
+  ooc: boolean;
+  pray: boolean;
+  adminhelp: boolean;
+  deadchat: boolean;
+  webreq: boolean;
+}
+
+// Default values for PlayerData
+const DEFAULT_PLAYER_DATA: PlayerData = {
+  characterName: 'Unknown',
+  ckey: '',
+  ipAddress: '0.0.0.0',
+  CID: 'NO_CID',
+  gameState: 'Unknown',
+  dbLink: '',
+  byondVersion: '0.0.0',
+  mobType: 'null',
+  relatedByCid: '',
+  relatedByIp: '',
+  firstSeen: 'Never',
+  accountRegistered: 'Unknown',
+  muteStates: {
+    ic: false,
+    ooc: false,
+    pray: false,
+    adminhelp: false,
+    deadchat: false,
+    webreq: false,
+  },
+};
+
+interface PlayerData {
   characterName: string;
   ckey: string;
   ipAddress: string;
@@ -16,21 +48,15 @@ type PlayerData = {
   relatedByIp: string;
   firstSeen: string;
   accountRegistered: string;
-  muteStates: {
-    ic: boolean;
-    ooc: boolean;
-    pray: boolean;
-    adminhelp: boolean;
-    webreq: boolean;
-    deadchat: boolean;
-  };
-};
-
-interface BackendData {
-  Data: PlayerData;
+  muteStates: MuteStates;
 }
 
-// Helper function to check mob type
+interface BackendData {
+  data: {
+    Data: PlayerData;
+  };
+}
+
 const isMobType = (currentType: string, checkType: string): boolean => {
   const types = {
     ghost: ['ghost', 'dead', 'observer'],
@@ -46,94 +72,133 @@ const isMobType = (currentType: string, checkType: string): boolean => {
   );
 };
 
-export const VUAP_personal = () => {
-  const { data, act } = useBackend<BackendData>();
-  console.debug('VUAP Data:', data);
+export const VUAP_personal = (props, context) => {
+  const { data, act } = useBackend<BackendData>(context);
 
+  // Use default values if data is missing
   const playerData = {
-    characterName: data?.Data?.characterName || 'Unknown',
-    ckey: data?.Data?.ckey || 'Unknown',
-    ipAddress: data?.Data?.ipAddress || 'Unknown',
-    CID: data?.Data?.CID || 'Unknown',
-    gameState: data?.Data?.gameState || 'Unknown',
-    dbLink: data?.Data?.dbLink || '',
-    byondVersion: data?.Data?.byondVersion || 'Unknown',
-    mobType: data?.Data?.mobType || 'Unknown',
-    relatedByCid: data?.Data?.relatedByCid || '',
-    relatedByIp: data?.Data?.relatedByIp || '',
-    firstSeen: data?.Data?.firstSeen || 'Unknown',
-    accountRegistered: data?.Data?.accountRegistered || 'Unknown',
-    muteStates: data?.Data?.muteStates || {
-      ic: false,
-      ooc: false,
-      pray: false,
-      adminhelp: false,
-      webreq: false,
-      deadchat: false,
+    ...DEFAULT_PLAYER_DATA,
+    ...data?.Data,
+    muteStates: {
+      ...DEFAULT_PLAYER_DATA.muteStates,
+      ...data?.Data?.muteStates,
     },
   };
-  const handleAction = (action: string) => {
-    act(action, { selectedPlayerCkey });
+
+  const handleAction = (action: string, params = {}) => {
+    if (!playerData.ckey) {
+      return; // Don't send actions if we don't have a valid ckey
+    }
+    act(action, { selectedPlayerCkey: playerData.ckey, ...params });
   };
 
   const toggleMute = (type: string) => {
-    act('toggleMute', { type });
+    if (!playerData.ckey) {
+      return;
+    }
+    handleAction('toggleMute', { type });
   };
 
   const toggleAllMutes = () => {
-    act('toggleAllMutes');
+    if (!playerData.ckey) {
+      return;
+    }
+    handleAction('toggleAllMutes');
   };
-  const handleRefresh = () => {
-    act('refresh');
-  };
+
+  // Add error display if critical data is missing
+  if (!playerData.ckey) {
+    return (
+      <Window title="Options Panel - Error" width={800} height={700}>
+        <Window.Content>
+          <Section title="Error">
+            <Box color="red">
+              No valid player data found. Please refresh or select a valid
+              player.
+            </Box>
+            <Button
+              icon="sync"
+              content="Refresh"
+              onClick={() => act('refresh')}
+            />
+          </Section>
+        </Window.Content>
+      </Window>
+    );
+  }
 
   return (
     <Window
-      title={`Options Panel - ${playerData.characterName}`}
+      title={`Options Panel - ${playerData.ckey}`}
       width={800}
       height={700}
     >
       <Window.Content>
-        <Stack horizontal justify="flex-end">
-          <Button icon="sync" content="Refresh" onclick={handleRefresh} />
-        </Stack>
         <Stack vertical>
-          <Section title="Player Information">
-            <Table>
-              <Table.Row>
-                <Table.Cell bold>Character:</Table.Cell>
-                <Table.Cell>{playerData.characterName}</Table.Cell>
-                <Table.Cell bold>Ckey:</Table.Cell>
-                <Table.Cell>{playerData.ckey}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell bold>IP Address:</Table.Cell>
-                <Table.Cell>{playerData.ipAddress}</Table.Cell>
-                <Table.Cell bold>Game State:</Table.Cell>
-                <Table.Cell>{playerData.gameState}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell bold>DB Link:</Table.Cell>
-                <Table.Cell>{playerData.dbLink}</Table.Cell>
-                <Table.Cell bold>Byond Version:</Table.Cell>
-                <Table.Cell>{playerData.byondVersion}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell bold>Mob Type:</Table.Cell>
-                <Table.Cell>{playerData.mobType}</Table.Cell>
-                <Table.Cell bold>CID:</Table.Cell>
-                <Table.Cell>{playerData.CID}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Cell bold>First Seen:</Table.Cell>
-                <Table.Cell>{playerData.firstSeen}</Table.Cell>
-                <Table.Cell bold>Account Registered:</Table.Cell>
-                <Table.Cell>{playerData.accountRegistered}</Table.Cell>
-              </Table.Row>
-            </Table>
-          </Section>
+          <Stack.Item>
+            <Button
+              icon="sync"
+              content="Refresh"
+              onClick={() => handleAction('refresh')}
+            />
+          </Stack.Item>
 
-          <Box>
+          <Stack.Item>
+            <Section title="Player Information">
+              <Table>
+                <Table.Row>
+                  <Table.Cell bold>Character:</Table.Cell>
+                  <Table.Cell>{playerData.characterName}</Table.Cell>
+                  <Table.Cell bold>Ckey:</Table.Cell>
+                  <Table.Cell>{playerData.ckey}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>IP Address:</Table.Cell>
+                  <Table.Cell>{playerData.ipAddress}</Table.Cell>
+                  <Table.Cell bold>Game State:</Table.Cell>
+                  <Table.Cell>{playerData.gameState}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>DB Link:</Table.Cell>
+                  <Button
+                    content="DB Link"
+                    color="green"
+                    onClick={() => handleAction('dblink')}
+                  />
+                  <Table.Cell bold>Byond Version:</Table.Cell>
+                  <Table.Cell>{playerData.byondVersion}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>Mob Type:</Table.Cell>
+                  <Table.Cell>{playerData.mobType}</Table.Cell>
+                  <Table.Cell bold>CID:</Table.Cell>
+                  <Table.Cell>{playerData.CID}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>First Seen:</Table.Cell>
+                  <Table.Cell>{playerData.firstSeen}</Table.Cell>
+                  <Table.Cell bold>Account Registered:</Table.Cell>
+                  <Table.Cell>{playerData.accountRegistered}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>Related By CID:</Table.Cell>
+                  <Button
+                    content="Related by CID"
+                    color="blue"
+                    onClick={() => handleAction('relatedbycid')}
+                  />
+                  <Table.Cell bold>Related By IP:</Table.Cell>
+                  <Button
+                    content="Related by IP"
+                    color="blue"
+                    onClick={() => handleAction('relatedbyip')}
+                  />
+                </Table.Row>
+              </Table>
+            </Section>
+          </Stack.Item>
+
+          <Stack.Item>
             <Grid>
               <Grid.Column>
                 <Section title="Punish">
@@ -173,6 +238,7 @@ export const VUAP_personal = () => {
                   </Grid>
                 </Section>
               </Grid.Column>
+
               <Grid.Column>
                 <Section title="Message">
                   <Grid>
@@ -208,6 +274,7 @@ export const VUAP_personal = () => {
                 </Section>
               </Grid.Column>
             </Grid>
+
             <Grid>
               <Grid.Column>
                 <Section title="Movement">
@@ -249,6 +316,7 @@ export const VUAP_personal = () => {
                   </Grid>
                 </Section>
               </Grid.Column>
+
               <Grid.Column>
                 <Section title="Info">
                   <Grid>
@@ -290,6 +358,7 @@ export const VUAP_personal = () => {
                 </Section>
               </Grid.Column>
             </Grid>
+
             <Grid>
               <Grid.Column>
                 <Section title="Transformation">
@@ -346,6 +415,7 @@ export const VUAP_personal = () => {
                   </Grid>
                 </Section>
               </Grid.Column>
+
               <Grid.Column>
                 <Section title="Misc">
                   <Grid>
@@ -411,6 +481,7 @@ export const VUAP_personal = () => {
                 </Section>
               </Grid.Column>
             </Grid>
+
             <Grid>
               <Grid.Column>
                 <Section title="Mute Controls">
@@ -418,51 +489,51 @@ export const VUAP_personal = () => {
                     <Grid.Column size={6}>
                       <Button.Checkbox
                         fluid
-                        checked={!!playerData.muteStates?.ic}
+                        checked={playerData.muteStates.ic}
                         onClick={() => toggleMute('ic')}
                         content="IC"
-                        color={playerData.muteStates?.ic ? 'red' : 'green'}
+                        color={!playerData.muteStates.ic ? 'green' : 'red'}
                       />
                       <Button.Checkbox
                         fluid
-                        checked={!!playerData.muteStates?.ooc}
+                        checked={playerData.muteStates.ooc}
                         onClick={() => toggleMute('ooc')}
                         content="OOC"
-                        color={playerData.muteStates?.ooc ? 'red' : 'green'}
+                        color={!playerData.muteStates.ooc ? 'green' : 'red'}
                       />
                       <Button.Checkbox
                         fluid
-                        checked={!!playerData.muteStates?.pray}
+                        checked={playerData.muteStates.pray}
                         onClick={() => toggleMute('pray')}
                         content="PRAY"
-                        color={playerData.muteStates?.pray ? 'red' : 'green'}
+                        color={!playerData.muteStates.pray ? 'green' : 'red'}
                       />
                     </Grid.Column>
                     <Grid.Column size={6}>
                       <Button.Checkbox
                         fluid
-                        checked={!!playerData.muteStates?.adminhelp}
+                        checked={playerData.muteStates.adminhelp}
                         onClick={() => toggleMute('adminhelp')}
                         content="ADMINHELP"
                         color={
-                          playerData.muteStates?.adminhelp ? 'red' : 'green'
+                          !playerData.muteStates.adminhelp ? 'green' : 'red'
                         }
                       />
                       <Button.Checkbox
                         fluid
-                        checked={!!playerData.muteStates?.webreq}
-                        onClick={() => toggleMute('webreq')}
-                        content="WEBREQ"
-                        color={playerData.muteStates?.webreq ? 'red' : 'green'}
-                      />
-                      <Button.Checkbox
-                        fluid
-                        checked={!!playerData.muteStates?.deadchat}
+                        checked={playerData.muteStates.deadchat}
                         onClick={() => toggleMute('deadchat')}
                         content="DEADCHAT"
                         color={
-                          playerData.muteStates?.deadchat ? 'red' : 'green'
+                          !playerData.muteStates.deadchat ? 'green' : 'red'
                         }
+                      />
+                      <Button.Checkbox
+                        fluid
+                        checked={playerData.muteStates.webreq}
+                        onClick={() => toggleMute('webreq')}
+                        content="WEBREQ"
+                        color={!playerData.muteStates.webreq ? 'green' : 'red'}
                       />
                       <Button
                         fluid
@@ -474,7 +545,7 @@ export const VUAP_personal = () => {
                 </Section>
               </Grid.Column>
             </Grid>
-          </Box>
+          </Stack.Item>
         </Stack>
       </Window.Content>
     </Window>
