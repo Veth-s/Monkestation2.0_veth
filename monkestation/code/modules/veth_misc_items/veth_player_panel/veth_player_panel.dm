@@ -21,16 +21,17 @@
 	for (var/mob/M in mobs)
 		if (M.ckey)
 			PlayerData += list(list(  // Note: Nested list() here
-				"name" = M.name,
-				"job" = M.job,
-				"ckey" = M.ckey,
+				"name" = M.name || "No Character",
+				"job" = M.job || "No Job",
+				"ckey" = M.ckey || "No Ckey",
 				"is_antagonist" = is_special_character(M, allow_fake_antags = TRUE),
-				"last_ip" = M.lastKnownIP,
+				"last_ip" = M.lastKnownIP ||	 "No Last Known IP",
 				"ref" = REF(M)
 			))
 	return list(
 		"Data" = PlayerData  // Return as named parameter
 	)
+
 /datum/player_panel_veth/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	if(..())
 		return
@@ -39,9 +40,7 @@
 	var/mob/M = get_mob_by_ckey(params["selectedPlayerCkey"])
 	switch(action)
 		if("sendPrivateMessage")
-			var/ckey = params["selectedPlayerCkey"]
-			var/message = params["inputMessage"]
-			usr.client.cmd_admin_pm(ckey, message)
+			usr.client.cmd_admin_pm(M.ckey)
 			return
 		if("follow")
 			usr.client.holder.Topic(null, list(
@@ -114,13 +113,13 @@
 frontend lol
 info for IP/CID on vuap
 related by ip/cid
-health status/damages for frontend
+health status/damages for frontend (not enough space at it's current size)
 chemscan button
 popup
 spawncookie
 
 
-
+need logging for pretty much everything. all of topic() is logged already, but proabbly best to have the source logged too.
 
 
 */
@@ -155,7 +154,7 @@ spawncookie
 
 	// Only update values if we have valid data
 	if(player && C)
-		PlayerData["characterName"] = player.real_name || "Unknown"
+		PlayerData["characterName"] = player.real_name || "No Character"
 		PlayerData["ipAddress"] = C.address || "0.0.0.0"
 		PlayerData["CID"] = C.computer_id || "NO_CID"
 		PlayerData["gameState"] = istype(player) ? "Active" : "Unknown"
@@ -173,8 +172,8 @@ spawncookie
 				"deadchat" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_DEADCHAT),
 				"webreq" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_INTERNET_REQUEST),
 			)
-
 	return list("Data" = PlayerData)
+
 /datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
@@ -187,11 +186,13 @@ spawncookie
 		return
 	if(!check_rights(NONE))
 		return
-
 	var/mob/M = get_mob_by_ckey(usr.client.selectedPlayerCkey)
 	if(!M)
-		to_chat(usr, "Selected player not found!", confidential = TRUE)
+		tgui_alert(usr, "Selected player not found!")
 		return
+	//pretty much all of these actions use the Topic() admin call. This admin call is secure, checks rights, and does stuff the way the old player panel did.
+	//see code/modules/admin/topic.dm for more info on how it works.
+	//essentially you have to pass a list of parameters to Topic(). It needs to be provided with an admin token to do any of its functions.
 	switch(action)
 		if("refresh")
 			ui.send_update()
@@ -199,22 +200,22 @@ spawncookie
 		if("relatedbycid")
 			usr.client.holder.Topic(null, list(
 			"showrelatedacc" = "cid",
-			"admin_token" = usr.client.holder.href_token
-			"client" = REF(M.client)
+			"admin_token" = usr.client.holder.href_token,
+			"client" = REF(M.client),
 			))
 			return
 		if("relatedbyip")
 			usr.client.holder.Topic(null, list(
 			"showrelatedacc" = "ip",
-			"admin_token" = usr.client.holder.href_token
-			"client" = REF(M.client)
+			"admin_token" = usr.client.holder.href_token,
+			"client" = REF(M.client),
 			))
 			return
 		// Punish Section
 		if("kick")
 			usr.client.holder.Topic(null, list(
 				"boot2" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("ban")
@@ -223,67 +224,76 @@ spawncookie
 		if("prison")
 			usr.client.holder.Topic(null, list(
 				"sendtoprison" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("unprison")
-			//unprison not done lol
+			if (is_centcom_level(M.z))
+				SSjob.SendToLateJoin(M)
+				message_admins("[key_name_admin(usr)] has unprisoned [key_name_admin(M)]")
+				log_admin("[key_name(usr)] has unprisoned [key_name(M)]")
+			else
+				tgui_alert(usr,"[M.name] is not prisoned.")
+			SSblackbox.record_feedback("tally", "admin_verb", 1, "Unprison")
 			return
 		if("smite")
 			usr.client.holder.Topic(null, list(
 				"adminsmite" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
-
 		// Message Section
 		if("pm")
-			usr.client.cmd_admin_pm(M.ckey, params["message"])
+			usr.client.cmd_admin_pm(M.ckey)
 			return
 		if("sm")
-			usr.client.cmd_admin_subtle_message(M)
+			usr.client.holder.Topic(null, list(
+				"subtlemessage" = REF(M),
+				"admin_token" = usr.client.holder.href_token,
+			))
 			return
 		if("narrate")
 			usr.client.holder.Topic(null, list(
 				"narrateto" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("playsoundto")
-			var/sound = params["sound"]
-			if(sound)
-				SEND_SOUND(M, sound(sound))
+			usr.client.holder.Topic(null, list(
+				"playsoundto" = REF(M),
+				"admin_token" = usr.client.holder.href_token,
+			))
 			return
 
 		// Movement Section //lobby broken
 		if("jumpto")
 			usr.client.holder.Topic(null, list(
 				"jumpto" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("get")
 			usr.client.holder.Topic(null, list(
 				"getmob" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("send")
 			usr.client.holder.Topic(null, list(
 				"sendmob" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("lobby")
 			usr.client.holder.Topic(null, list(
 				"sendbacktolobby" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		if("flw")
 			usr.client.holder.Topic(null, list(
 				"adminplayerobservefollow" = REF(M),
-				"admin_token" = usr.client.holder.href_token
+				"admin_token" = usr.client.holder.href_token,
 			))
 			return
 		// Info Section
@@ -346,6 +356,33 @@ spawncookie
 				"makeai" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			return
+		//health section
+		if("healthscan")
+			healthscan(usr, M, advanced = TRUE, tochat = TRUE)
+		if("woundscan")
+			woundscan(usr, M)
+		if("chemscan")
+			chemscan(usr, M)
+		if("aheal")
+			usr.client.holder.Topic(null, list(
+				"revive" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			return
+		if("giveDisease")
+			usr.client.give_disease(M)
+			return
+		if("cureDisease")
+			//.usr.client.cure_disease(M)
+			//fix this
+			return
+		if("cureAllDiseases")
+			//usr.client.cure_all_diseases(M)
+			//fix this
+			return
+		if("diseasePanel")
+			usr.client.diseases_panel(M)
 			return
 
 		// Misc Section

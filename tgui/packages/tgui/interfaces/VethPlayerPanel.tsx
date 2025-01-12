@@ -227,7 +227,7 @@ export const VethPlayerPanel = (_props, context) => {
                     <Button
                       icon="message"
                       content="PM"
-                      onClick={() => openMessageModal(player.ckey)}
+                      onClick={() => handleSendPrivateMessage(player.ckey)}
                     />
                     <Button
                       icon="eye"

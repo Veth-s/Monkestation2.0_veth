@@ -109,7 +109,7 @@ export const VUAP_personal = (props, context) => {
   // Add error display if critical data is missing
   if (!playerData.ckey) {
     return (
-      <Window title="Options Panel - Error" width={800} height={700}>
+      <Window title="Options Panel - Error" width={800} height={1000}>
         <Window.Content>
           <Section title="Error">
             <Box color="red">
@@ -131,7 +131,7 @@ export const VUAP_personal = (props, context) => {
     <Window
       title={`Options Panel - ${playerData.ckey}`}
       width={800}
-      height={700}
+      height={800}
     >
       <Window.Content>
         <Stack vertical>
@@ -410,6 +410,58 @@ export const VUAP_personal = (props, context) => {
                           isMobType(playerData.mobType, 'ai') ? 'good' : ''
                         }
                         onClick={() => handleAction('makeai')}
+                      />
+                    </Grid.Column>
+                  </Grid>
+                </Section>
+                <Section title="Health">
+                  <Grid>
+                    <Grid.Column size={6}>
+                      <Button
+                        fluid
+                        icon="heart"
+                        content="HEALTHSCAN"
+                        onClick={() => handleAction('healthscan')}
+                      />
+                      <Button
+                        fluid
+                        icon="skull"
+                        content="WOUNDSCAN"
+                        onClick={() => handleAction('woundscan')}
+                      />
+                      <Button
+                        fluid
+                        icon="shield-alt"
+                        content="CHEMSCAN"
+                        onClick={() => handleAction('chemscan')}
+                      />
+                      <Button
+                        fluid
+                        content="Give Disease"
+                        onClick={() => handleAction('giveDisease')}
+                      />
+                    </Grid.Column>
+                    <Grid.Column size={6}>
+                      <Button
+                        fluid
+                        icon="plus"
+                        content="AHEAL"
+                        onClick={() => handleAction('aheal')}
+                      />
+                      <Button
+                        fluid
+                        content="Cure Disease"
+                        onClick={() => handleAction('cureDisease')}
+                      />
+                      <Button
+                        fluid
+                        content="Cure All Diseases"
+                        onClick={() => handleAction('cureAllDiseases')}
+                      />
+                      <Button
+                        fluid
+                        content="Disease Panel"
+                        onClick={() => handleAction('deseasePanel')}
                       />
                     </Grid.Column>
                   </Grid>
