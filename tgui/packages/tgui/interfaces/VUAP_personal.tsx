@@ -269,6 +269,12 @@ export const VUAP_personal = (props, context) => {
                         content="PLAY SOUND TO"
                         onClick={() => handleAction('playsoundto')}
                       />
+                      <Button
+                        fluid
+                        icon="external-link-alt"
+                        content="POPUP"
+                        onClick={() => handleAction('popup')}
+                      />
                     </Grid.Column>
                   </Grid>
                 </Section>
@@ -335,9 +341,9 @@ export const VUAP_personal = (props, context) => {
                       />
                       <Button
                         fluid
-                        icon="brain"
-                        content="SKILLS"
-                        onClick={() => handleAction('skills')}
+                        icon="eye"
+                        content="PLAYTIME"
+                        onClick={() => handleAction('playtime')}
                       />
                     </Grid.Column>
                     <Grid.Column size={6}>
@@ -352,6 +358,12 @@ export const VUAP_personal = (props, context) => {
                         icon="clipboard"
                         content="NOTES"
                         onClick={() => handleAction('notes')}
+                      />
+                      <Button
+                        fluid
+                        icon="language"
+                        content="LANGUAGE"
+                        onClick={() => handleAction('language')}
                       />
                     </Grid.Column>
                   </Grid>
@@ -474,12 +486,6 @@ export const VUAP_personal = (props, context) => {
                     <Grid.Column size={6}>
                       <Button
                         fluid
-                        icon="language"
-                        content="LANGUAGE"
-                        onClick={() => handleAction('language')}
-                      />
-                      <Button
-                        fluid
                         icon="comment"
                         content="FORCESAY"
                         onClick={() => handleAction('forcesay')}
@@ -512,9 +518,9 @@ export const VUAP_personal = (props, context) => {
                       />
                       <Button
                         fluid
-                        icon="eye"
-                        content="PLAYTIME"
-                        onClick={() => handleAction('playtime')}
+                        icon="brain"
+                        content="SKILLS"
+                        onClick={() => handleAction('skills')}
                       />
                       <Button
                         fluid
@@ -527,6 +533,12 @@ export const VUAP_personal = (props, context) => {
                         icon="eye"
                         content="THUNDERDOME OBSERVER"
                         onClick={() => handleAction('thunderdomeobserver')}
+                      />
+                      <Button
+                        fluid
+                        icon="heart"
+                        content="SPAWN COOKIE"
+                        onClick={() => handleAction('spawncookie')}
                       />
                     </Grid.Column>
                   </Grid>

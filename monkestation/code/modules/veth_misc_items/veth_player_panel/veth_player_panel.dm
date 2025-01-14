@@ -64,7 +64,7 @@
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("checkPlayers")
+		if("checkPlayers") //CHECK FOR LOGGING ON THESE
 			usr.client.check_players()
 			return
 		if("checkAntags")
@@ -91,6 +91,28 @@
 		if("openAdditionalPanel")
 			usr.client.selectedPlayerCkey = params["selectedPlayerCkey"]
 			usr.client.vuap_open()
+			return
+		if("createCommandReport")
+			usr.client.cmd_admin_create_centcom_report()
+			return
+		if("logs")
+			usr.client.holder.Topic(null, list(
+				"individuallog" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			return
+		if("notes")
+			browse_messages(target_ckey = M.ckey)
+			return
+		if("vv")
+			usr.client.debug_variables(M)
+			return
+		if("tp")
+			usr.client.holder.Topic(null, list(
+				"traitor" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			return
 
 /datum/player_panel_veth/ui_interact(mob/user, datum/tgui/ui)
 
@@ -110,16 +132,19 @@
 /datum/vuap_personal
 
 /*features that need to add
-frontend lol
-info for IP/CID on vuap
-related by ip/cid
-health status/damages for frontend (not enough space at it's current size)
-chemscan button
-popup
-spawncookie
-
+right click context menu click for pp/vuap
+add-remove traits
 
 need logging for pretty much everything. all of topic() is logged already, but proabbly best to have the source logged too.
+main panel
+Some (poor) explanation of what's going on -
+player_panel_veth is the new tgui version of the player panel, it also includes some most pressed keys
+I've tried to comment in as much stuff as possible so it can be changed in the future is necessary
+Vuap_personal is the new tgui version of the options panel. It basically does everything the same way the player panel does
+minus some features that the player panel didn't have I guess.
+the client/var/selectedPlayerCkey is used to hold the selected player ckey for moving to and from pp/vuap
+
+
 
 
 */
@@ -127,10 +152,8 @@ need logging for pretty much everything. all of topic() is logged already, but p
 	var/ckey = usr.client?.selectedPlayerCkey
 	if(!ckey)
 		return list("Data" = list())
-
 	var/mob/player = get_mob_by_ckey(ckey)
 	var/client/C = player?.client
-
 	// Fallback values for player data
 	var/list/PlayerData = list(
 		"characterName" = "No Character",
@@ -194,7 +217,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 	//see code/modules/admin/topic.dm for more info on how it works.
 	//essentially you have to pass a list of parameters to Topic(). It needs to be provided with an admin token to do any of its functions.
 	switch(action)
-		if("refresh")
+		if("refresh")//L
 			ui.send_update()
 			return
 		if("relatedbycid")
@@ -218,7 +241,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
-		if("ban")
+		if("ban") //L
 			usr.client.ban_panel()
 			return
 		if("prison")
@@ -243,7 +266,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 			))
 			return
 		// Message Section
-		if("pm")
+		if("pm") //L
 			usr.client.cmd_admin_pm(M.ckey)
 			return
 		if("sm")
@@ -258,6 +281,12 @@ need logging for pretty much everything. all of topic() is logged already, but p
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
+		if("popup")
+			usr.client.holder.Topic(null, list(
+				"adminpopup" = REF(M),
+				"admin_token" = usr.client.holder.href_token,
+			))
+			return
 		if("playsoundto")
 			usr.client.holder.Topic(null, list(
 				"playsoundto" = REF(M),
@@ -265,7 +294,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 			))
 			return
 
-		// Movement Section //lobby broken
+		// Movement Section
 		if("jumpto")
 			usr.client.holder.Topic(null, list(
 				"jumpto" = REF(M),
@@ -318,7 +347,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("notes")
+		if("notes") //L
 			browse_messages(target_ckey = M.ckey)
 			return
 
@@ -358,19 +387,19 @@ need logging for pretty much everything. all of topic() is logged already, but p
 			))
 			return
 		//health section
-		if("healthscan")
+		if("healthscan") //L
 			healthscan(usr, M, advanced = TRUE, tochat = TRUE)
-		if("woundscan")
+		if("woundscan") //L
 			woundscan(usr, M)
-		if("chemscan")
+		if("chemscan") //L
 			chemscan(usr, M)
-		if("aheal")
+		if("aheal") //L
 			usr.client.holder.Topic(null, list(
 				"revive" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("giveDisease")
+		if("giveDisease") //L
 			usr.client.give_disease(M)
 			return
 		if("cureDisease")
@@ -381,7 +410,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 			//usr.client.cure_all_diseases(M)
 			//fix this
 			return
-		if("diseasePanel")
+		if("diseasePanel") //L
 			usr.client.diseases_panel(M)
 			return
 
@@ -443,6 +472,12 @@ need logging for pretty much everything. all of topic() is logged already, but p
 				"centcomlookup" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+		if("spawncookie")
+			usr.client.holder.Topic(null, list(
+				"adminspawncookie" = REF(M),
+				"admin_token" = usr.client.holder.href_token
+			))
+			return
 		// Mute Controls
 		if("toggleMute")
 			var/muteType = params["type"]
@@ -482,7 +517,7 @@ need logging for pretty much everything. all of topic() is logged already, but p
 /datum/vuap_personal/ui_state(mob/user)
 	return GLOB.admin_state
 
-/client/proc/vuap_open()
+/client/proc/vuap_open() //L
 	if (!check_rights(NONE))
 		message_admins("[key_name(src)] attempted to use VUAP without sufficient rights.")
 		return

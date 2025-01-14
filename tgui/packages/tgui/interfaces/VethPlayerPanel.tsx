@@ -1,8 +1,6 @@
 import { useBackend, useLocalState } from '../backend';
 import { Box, Button, Section, Table, TextArea, Grid } from '../components';
 import { Window } from '../layouts';
-import { MessageModal } from './VethPlayerPanel/MessageModal';
-import { ModalBackdrop } from './VethPlayerPanel/ModalBackdrop';
 
 type PlayerData = {
   name: string;
@@ -18,7 +16,6 @@ export const VethPlayerPanel = (_props, context) => {
   const playerData = data?.Data || [];
 
   const [searchTerm, setSearchTerm] = useLocalState('searchTerm', '');
-  const [isModalOpen, setIsModalOpen] = useLocalState('isModalOpen', false);
   const [selectedPlayerCkey, setSelectedPlayerCkey] = useLocalState(
     'selectedPlayerCkey',
     '',
@@ -36,18 +33,6 @@ export const VethPlayerPanel = (_props, context) => {
       )
     : playerData;
 
-  // Function to open the message modal
-  const openMessageModal = (ckey: string) => {
-    setSelectedPlayerCkey(ckey);
-    setInputMessage('');
-    setIsModalOpen(true);
-  };
-
-  // Function to close the message modal
-  const closeMessageModal = () => {
-    setIsModalOpen(false);
-  };
-
   // Function to send private message
   const handleSendPrivateMessage = () => {
     if (inputMessage.trim()) {
@@ -57,7 +42,6 @@ export const VethPlayerPanel = (_props, context) => {
       });
       setInputMessage('');
     }
-    closeMessageModal();
   };
 
   const handleRefresh = () => {
@@ -183,6 +167,14 @@ export const VethPlayerPanel = (_props, context) => {
                         onClick={handleViewOpfors}
                       />
                     </Grid.Column>
+                    <Grid.Column size={3}>
+                      <Button
+                        fluid
+                        icon="spinner"
+                        content="Create Command Report"
+                        onClick={() => act('createCommandReport')}
+                      />
+                    </Grid.Column>
                   </Grid>
                 </Box>
               </Grid.Column>
@@ -244,6 +236,32 @@ export const VethPlayerPanel = (_props, context) => {
                       content="PP"
                       onClick={() => handleAdditionalPanel(player.ckey)}
                     />
+                    <Button
+                      icon="book"
+                      content="Logs"
+                      onClick={() =>
+                        act('logs', { selectedPlayerCkey: player.ckey })
+                      }
+                    />
+                    <Button
+                      icon="clipboard"
+                      content="Notes"
+                      onClick={() =>
+                        act('notes', { selectedPlayerCkey: player.ckey })
+                      }
+                    />
+                    <Button
+                      content="VV"
+                      onClick={() =>
+                        act('vv', { selectedPlayerCkey: player.ckey })
+                      }
+                    />
+                    <Button
+                      content="TP"
+                      onClick={() =>
+                        act('tp', { selectedPlayerCkey: player.ckey })
+                      }
+                    />
                   </Table.Cell>
                 </Table.Row>
               ))}
@@ -251,19 +269,6 @@ export const VethPlayerPanel = (_props, context) => {
           </Section>
         </Window.Content>
       </Window>
-
-      {isModalOpen && (
-        <>
-          <ModalBackdrop />
-          <MessageModal
-            selectedPlayerCkey={selectedPlayerCkey}
-            inputMessage={inputMessage}
-            onInputMessageChange={setInputMessage}
-            onSendPrivateMessage={handleSendPrivateMessage}
-            onClose={closeMessageModal}
-          />
-        </>
-      )}
     </Box>
   );
 };
