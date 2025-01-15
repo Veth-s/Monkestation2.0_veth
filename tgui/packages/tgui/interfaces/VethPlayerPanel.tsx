@@ -1,5 +1,5 @@
 import { useBackend, useLocalState } from '../backend';
-import { Box, Button, Section, Table, TextArea, Grid } from '../components';
+import { Box, Button, Section, Table, TextArea } from '../components';
 import { Window } from '../layouts';
 
 type PlayerData = {
