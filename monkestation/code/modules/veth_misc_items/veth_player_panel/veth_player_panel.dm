@@ -378,7 +378,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"mob" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
-			ui.send_update
+			ui.send_update()
 			return
 		if("makehuman")
 			usr.client.holder.Topic(null, list(
