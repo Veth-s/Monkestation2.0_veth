@@ -16,11 +16,11 @@
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "VUAP")
 
 /datum/player_panel_veth/ui_data(mob/user)
-	var/list/PlayerData = list()
+	var/list/players = list()
 	var/mobs = sort_mobs()
 	for (var/mob/M in mobs)
 		if (M.ckey)
-			PlayerData += list(list(
+			players += list(list(
 				"name" = M.name || "No Character",
 				"job" = M.job || "No Job",
 				"ckey" = M.ckey || "No Ckey",
@@ -29,7 +29,7 @@
 				"ref" = REF(M)
 			))
 	return list(
-		"Data" = PlayerData
+		"Data" = players
 	)
 
 /datum/player_panel_veth/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
@@ -60,10 +60,8 @@
 			ui.send_update()
 			return
 		if("oldPP")
-			usr.client.holder.Topic(null, list(
-				"adminplayeropts" = REF(M),
-				"admin_token" = usr.client.holder.href_token
-			))
+			usr.client.holder.player_panel_new()
+			SSblackbox.record_feedback("tally", "VUAP", 1, "OldPP")
 			return
 		if("checkPlayers")
 			usr.client.check_players() //logs/rightscheck inside the proc
@@ -146,8 +144,6 @@
 
 /*features that need to add
 
-logsweep
-rightscheck sweep
 
 Some (poor) explanation of what's going on -
 player_panel_veth is the new tgui version of the player panel, it also includes some most pressed verbs
@@ -163,13 +159,13 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 
 */
 /datum/vuap_personal/ui_data(mob/user)
-	var/ckey = usr.client?.selectedPlayerCkey
+	var/ckey = user.client?.selectedPlayerCkey
 	if(!ckey)
 		return list("Data" = list())
 	var/mob/player = get_mob_by_ckey(ckey)
-	var/client/C = player?.client
+	var/client/client_info = player?.client
 	// Fallback values for player data
-	var/list/PlayerData = list(
+	var/list/player_data = list(
 		"characterName" = "No Character",
 		"ckey" = ckey || "Unknown",
 		"ipAddress" = "0.0.0.0",
@@ -190,26 +186,26 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 	)
 
 	// Only update values if we have valid data
-	if(player && C)
-		PlayerData["characterName"] = player.real_name || "No Character"
-		PlayerData["ipAddress"] = C.address || "0.0.0.0"
-		PlayerData["CID"] = C.computer_id || "NO_CID"
-		PlayerData["gameState"] = istype(player) ? "Active" : "Unknown"
-		PlayerData["byondVersion"] = "[C.byond_version || 0].[C.byond_build || 0]"
-		PlayerData["mobType"] = "[initial(player.type)]" || "null"
-		PlayerData["firstSeen"] = C.account_join_date || "Never"
-		PlayerData["accountRegistered"] = C.account_age || "Unknown"
+	if(player && client_info)
+		player_data["characterName"] = player.real_name || "No Character"
+		player_data["ipAddress"] = client_info.address || "0.0.0.0"
+		player_data["CID"] = client_info.computer_id || "NO_CID"
+		player_data["gameState"] = istype(player) ? "Active" : "Unknown"
+		player_data["byondVersion"] = "[client_info.byond_version || 0].[client_info.byond_build || 0]"
+		player_data["mobType"] = "[initial(player.type)]" || "null"
+		player_data["firstSeen"] = client_info.account_join_date || "Never"
+		player_data["accountRegistered"] = client_info.account_age || "Unknown"
 		// Safely check mute states
-		if(C.prefs)
-			PlayerData["muteStates"] = list(
-				"ic" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_IC),
-				"ooc" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_OOC),
-				"pray" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_PRAY),
-				"adminhelp" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_ADMINHELP),
-				"deadchat" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_DEADCHAT),
-				"webreq" = !isnull(C.prefs.muted) && (C.prefs.muted & MUTE_INTERNET_REQUEST),
+		if(client_info.prefs)
+			player_data["muteStates"] = list(
+				"ic" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_IC),
+				"ooc" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_OOC),
+				"pray" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_PRAY),
+				"adminhelp" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_ADMINHELP),
+				"deadchat" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_DEADCHAT),
+				"webreq" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_INTERNET_REQUEST),
 			)
-	return list("Data" = PlayerData)
+	return list("Data" = player_data)
 
 /datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -223,7 +219,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 		return
 	if(!check_rights(NONE))
 		return
-	var/mob/M = get_mob_by_ckey(usr.client.selectedPlayerCkey)
+	var/mob/M = get_mob_by_ckey(ui.user.client.selectedPlayerCkey)
 	if(!M)
 		tgui_alert(usr, "Selected player not found!")
 		return
