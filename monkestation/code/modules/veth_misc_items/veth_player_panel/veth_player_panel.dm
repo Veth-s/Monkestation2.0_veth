@@ -1,10 +1,10 @@
 /datum/player_panel_veth/ //required for tgui component
 	var/title = "Veth's Ultimate Player Panel"
 
-/client/proc/player_panel_veth()
+/client/proc/player_panel_veth() //proc for verb in game tab
 
 	set name = "Player Panel Veth"
-	set category = "Admin"
+	set category = "Admin.Game"
 	set desc = "Updated Player Panel with TGUI. Currently in testing."
 
 	if (!check_rights(NONE))
@@ -20,7 +20,7 @@
 	var/mobs = sort_mobs()
 	for (var/mob/M in mobs)
 		if (M.ckey)
-			PlayerData += list(list(  // Note: Nested list() here
+			PlayerData += list(list(
 				"name" = M.name || "No Character",
 				"job" = M.job || "No Job",
 				"ckey" = M.ckey || "No Ckey",
@@ -29,7 +29,7 @@
 				"ref" = REF(M)
 			))
 	return list(
-		"Data" = PlayerData  // Return as named parameter
+		"Data" = PlayerData
 	)
 
 /datum/player_panel_veth/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
@@ -37,10 +37,11 @@
 		return
 	if(!check_rights(NONE))
 		return
-	var/mob/M = get_mob_by_ckey(params["selectedPlayerCkey"])
-	switch(action)
+	var/mob/M = get_mob_by_ckey(params["selectedPlayerCkey"]) //gets the mob datum from the ckey in client datum which we've saved. if there's a better way to do this please let me know
+	switch(action) //switch for all the actions from the frontend - all of the Topic() calls check rights & log inside themselves.
 		if("sendPrivateMessage")
 			usr.client.cmd_admin_pm(M.ckey)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "PM")
 			return
 		if("follow")
 			usr.client.holder.Topic(null, list(
@@ -64,36 +65,36 @@
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("checkPlayers") //CHECK FOR LOGGING ON THESE
-			usr.client.check_players()
+		if("checkPlayers")
+			usr.client.check_players() //logs/rightscheck inside the proc
 			return
 		if("checkAntags")
-			usr.client.check_antagonists()
+			usr.client.check_antagonists() //logs/rightscheck inside the proc
 			return
 		if("faxPanel")
-			usr.client.fax_panel()
+			usr.client.fax_panel() //logs/rightscheck inside the proc
 			return
 		if("gamePanel")
-			usr.client.game_panel()
+			usr.client.game_panel() //logs/rightscheck inside the proc
 			return
 		if("comboHUD")
-			usr.client.toggle_combo_hud()
+			usr.client.toggle_combo_hud() //logs/rightscheck inside the proc
 			return
 		if("adminVOX")
-			usr.client.AdminVOX()
+			usr.client.AdminVOX() //logs/rightscheck inside the proc
 			return
 		if("generateCode")
-			usr.client.generate_code()
+			usr.client.generate_code() //logs/rightscheck inside the proc
 			return
 		if("viewOpfors")
-			usr.client.view_opfors()
+			usr.client.view_opfors() //logs/rightscheck inside the proc
 			return
-		if("openAdditionalPanel")
+		if("openAdditionalPanel") //logs/rightscheck inside the proc
 			usr.client.selectedPlayerCkey = params["selectedPlayerCkey"]
 			usr.client.vuap_open()
 			return
 		if("createCommandReport")
-			usr.client.cmd_admin_create_centcom_report()
+			usr.client.cmd_admin_create_centcom_report() //logs/rightscheck inside the proc
 			return
 		if("logs")
 			usr.client.holder.Topic(null, list(
@@ -101,10 +102,12 @@
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("notes")
+		if("notes") //i'm pretty sure this checks rights inside the proc but to be safe
+			if(!check_rights(NONE))
+				return
 			browse_messages(target_ckey = M.ckey)
 			return
-		if("vv")
+		if("vv") //logs/rightscheck inside the proc
 			usr.client.debug_variables(M)
 			return
 		if("tp")
@@ -129,20 +132,31 @@
 
 /client //this is needed to hold the selected player ckey for moving to and from pp/vuap
 	var/selectedPlayerCkey = ""
+
+/client/proc/vuap_open_context(mob/M in GLOB.mob_list) //this is the proc for the right click menu
+	set category = null
+	set name = "Open New Player Panel"
+	if(!check_rights(NONE))
+		return
+	usr.client.selectedPlayerCkey = M.ckey
+	usr.client.vuap_open()
+	SSblackbox.record_feedback("tally", "admin_verb", 1, "VUAP")
+
 /datum/vuap_personal
 
 /*features that need to add
-right click context menu click for pp/vuap
-add-remove traits
 
-need logging for pretty much everything. all of topic() is logged already, but proabbly best to have the source logged too.
-main panel
+logsweep
+rightscheck sweep
+
 Some (poor) explanation of what's going on -
-player_panel_veth is the new tgui version of the player panel, it also includes some most pressed keys
+player_panel_veth is the new tgui version of the player panel, it also includes some most pressed verbs
 I've tried to comment in as much stuff as possible so it can be changed in the future is necessary
 Vuap_personal is the new tgui version of the options panel. It basically does everything the same way the player panel does
 minus some features that the player panel didn't have I guess.
 the client/var/selectedPlayerCkey is used to hold the selected player ckey for moving to and from pp/vuap
+
+
 
 
 
@@ -182,7 +196,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 		PlayerData["CID"] = C.computer_id || "NO_CID"
 		PlayerData["gameState"] = istype(player) ? "Active" : "Unknown"
 		PlayerData["byondVersion"] = "[C.byond_version || 0].[C.byond_build || 0]"
-		PlayerData["mobType"] = "[player.type]" || "null"
+		PlayerData["mobType"] = "[initial(player.type)]" || "null"
 		PlayerData["firstSeen"] = C.account_join_date || "Never"
 		PlayerData["accountRegistered"] = C.account_age || "Unknown"
 		// Safely check mute states
@@ -217,7 +231,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 	//see code/modules/admin/topic.dm for more info on how it works.
 	//essentially you have to pass a list of parameters to Topic(). It needs to be provided with an admin token to do any of its functions.
 	switch(action)
-		if("refresh")//L
+		if("refresh")
 			ui.send_update()
 			return
 		if("relatedbycid")
@@ -241,8 +255,11 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
-		if("ban") //L
+		if("ban")
+			if(!check_rights(R_BAN))
+				return
 			usr.client.ban_panel()
+			SSblackbox.record_feedback("tally", "VUAP", 1, "Ban")
 			return
 		if("prison")
 			usr.client.holder.Topic(null, list(
@@ -253,6 +270,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 		if("unprison")
 			if (is_centcom_level(M.z))
 				SSjob.SendToLateJoin(M)
+				to_chat(usr, "Unprisoned [M.ckey].", confidential = TRUE)
 				message_admins("[key_name_admin(usr)] has unprisoned [key_name_admin(M)]")
 				log_admin("[key_name(usr)] has unprisoned [key_name(M)]")
 			else
@@ -266,8 +284,11 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 			))
 			return
 		// Message Section
-		if("pm") //L
+		if("pm")
+			if (!check_rights(NONE))
+				return
 			usr.client.cmd_admin_pm(M.ckey)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "PM")
 			return
 		if("sm")
 			usr.client.holder.Topic(null, list(
@@ -278,12 +299,6 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 		if("narrate")
 			usr.client.holder.Topic(null, list(
 				"narrateto" = REF(M),
-				"admin_token" = usr.client.holder.href_token,
-			))
-			return
-		if("popup")
-			usr.client.holder.Topic(null, list(
-				"adminpopup" = REF(M),
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
@@ -325,9 +340,13 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"admin_token" = usr.client.holder.href_token,
 			))
 			return
+		if("cryo")
+			M.vv_send_cryo()
+			return
 		// Info Section
-		if("vv")
+		if("vv") //checks rights inside the proc
 			usr.client.debug_variables(M)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "VV")
 			return
 		if("tp")
 			usr.client.holder.Topic(null, list(
@@ -347,10 +366,11 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("notes") //L
+		if("notes")
+			if(!check_rights(NONE))
+				return
 			browse_messages(target_ckey = M.ckey)
 			return
-
 		// Transformation Section
 		if("makeghost")
 			usr.client.holder.Topic(null, list(
@@ -387,33 +407,43 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 			))
 			return
 		//health section
-		if("healthscan") //L
+		if("healthscan")
+			if(!check_rights(NONE))
+				return
 			healthscan(usr, M, advanced = TRUE, tochat = TRUE)
-		if("woundscan") //L
-			woundscan(usr, M)
-		if("chemscan") //L
+			SSblackbox.record_feedback("tally", "VUAP", 1, "HealthScan")
+		if("chemscan")
+			if(!check_rights(NONE))
+				return
 			chemscan(usr, M)
-		if("aheal") //L
+			SSblackbox.record_feedback("tally", "VUAP", 1, "ChemScan")
+		if("aheal")
 			usr.client.holder.Topic(null, list(
 				"revive" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
-		if("giveDisease") //L
+		if("giveDisease")
+			if(!check_rights(NONE))
+				return
 			usr.client.give_disease(M)
-			return
-		if("cureDisease")
-			//.usr.client.cure_disease(M)
-			//fix this
+			SSblackbox.record_feedback("tally", "VUAP", 1, "GiveDisease")
 			return
 		if("cureAllDiseases")
-			//usr.client.cure_all_diseases(M)
-			//fix this
+			if (istype(M, /mob/living))
+				var/mob/living/L = M
+				L.fully_heal(HEAL_NEGATIVE_DISEASES)
+			to_chat(usr, "Cured all negative diseases on [M.ckey].", confidential = TRUE)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "CureAllDiseases")
 			return
-		if("diseasePanel") //L
+		if("diseasePanel") //rights check inside the proc
 			usr.client.diseases_panel(M)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "DiseasePanel")
 			return
-
+		if("modifytraits")
+			usr.client.holder.modify_traits(M)
+			SSblackbox.record_feedback("tally", "VUAP", 1, "ModifyTraits")
+			return
 		// Misc Section
 		if("language")
 			usr.client.holder.Topic(null, list(
@@ -517,11 +547,12 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 /datum/vuap_personal/ui_state(mob/user)
 	return GLOB.admin_state
 
-/client/proc/vuap_open() //L
+/client/proc/vuap_open()
 	if (!check_rights(NONE))
 		message_admins("[key_name(src)] attempted to use VUAP without sufficient rights.")
 		return
 	var/datum/vuap_personal/tgui = new(usr)
 	tgui.ui_interact(usr)
+	SSblackbox.record_feedback("tally", "VUAP", 1, "VUAP_open")
 
 

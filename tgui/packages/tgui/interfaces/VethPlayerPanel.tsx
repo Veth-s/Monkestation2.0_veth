@@ -11,8 +11,8 @@ type PlayerData = {
   ref: string;
 };
 
-export const VethPlayerPanel = (_props, context) => {
-  const { data, act } = useBackend<{ Data: PlayerData[] }>(context);
+export const VethPlayerPanel = (_props) => {
+  const { data, act } = useBackend<{ Data: PlayerData[] }>();
   const playerData = data?.Data || [];
 
   const [searchTerm, setSearchTerm] = useLocalState('searchTerm', '');
@@ -20,8 +20,6 @@ export const VethPlayerPanel = (_props, context) => {
     'selectedPlayerCkey',
     '',
   );
-  const [inputMessage, setInputMessage] = useLocalState('inputMessage', '');
-
   // Filter player data based on the search term
   const filteredData = searchTerm
     ? playerData.filter((player) =>
@@ -33,152 +31,61 @@ export const VethPlayerPanel = (_props, context) => {
       )
     : playerData;
 
-  // Function to send private message
-  const handleSendPrivateMessage = () => {
-    if (inputMessage.trim()) {
-      act('sendPrivateMessage', {
-        selectedPlayerCkey: selectedPlayerCkey,
-        inputMessage: inputMessage,
-      });
-      setInputMessage('');
+  const handleAction = (action: string, params?: Record<string, any>) => {
+    // If params has a ckey, set it as the selected ckey
+    if (params?.ckey) {
+      setSelectedPlayerCkey(params.ckey); // Fixed: Use params.ckey instead of PlayerData.ckey
     }
+
+    // Send the action to the backend with the selected ckey
+    act(action, {
+      ...params,
+      selectedPlayerCkey: params?.ckey || selectedPlayerCkey,
+    });
   };
-
-  const handleRefresh = () => {
-    act('refresh');
-  };
-
-  const handleFollow = (ckey: string) => {
-    setSelectedPlayerCkey(ckey);
-    act('follow', { selectedPlayerCkey: ckey });
-  };
-
-  const handleSmite = (ckey: string) => {
-    setSelectedPlayerCkey(ckey);
-    act('smite', { selectedPlayerCkey: ckey });
-  };
-
-  const handleOldPP = () => act('oldPP');
-  const handleCheckPlayers = () => act('checkPlayers');
-  const handleCheckAntags = () => act('checkAntags');
-  const handleFax = () => act('faxPanel');
-  const handleGamePanel = () => act('gamePanel');
-  const handleComboHUD = () => act('comboHUD');
-  const handleAdminVOX = () => act('adminVOX');
-  const handleGenerateCode = () => act('generateCode');
-  const handleViewOpfors = () => act('viewOpfors');
-
-  // Fixed additional panel function
-  const handleAdditionalPanel = (ckey: string) => {
-    setSelectedPlayerCkey(ckey);
-    act('openAdditionalPanel', { selectedPlayerCkey: ckey });
-  };
-
   return (
     <Box>
       <Window title="Player Panel Veth" width={1000} height={640}>
         <Window.Content>
           <Section>
-            <Button icon="refresh" content="Refresh" onClick={handleRefresh} />
-          </Section>
-
-          <Section>
-            <Grid>
-              <Grid.Column>
-                <Box>
-                  <Grid>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="users"
-                        content="Check Players"
-                        onClick={handleCheckPlayers}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="user"
-                        content="PP(old)"
-                        onClick={handleOldPP}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="exclamation"
-                        content="Check Antags"
-                        onClick={handleCheckAntags}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="file"
-                        content="Fax"
-                        onClick={handleFax}
-                      />
-                    </Grid.Column>
-                  </Grid>
-                </Box>
-                <Box mt={1}>
-                  <Grid>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="cog"
-                        content="Game Panel"
-                        onClick={handleGamePanel}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="info-circle"
-                        content="ComboHUD"
-                        onClick={handleComboHUD}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="heart"
-                        content="VOX"
-                        onClick={handleAdminVOX}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="reply"
-                        content="Codegen"
-                        onClick={handleGenerateCode}
-                      />
-                    </Grid.Column>
-                  </Grid>
-                </Box>
-                <Box mt={1}>
-                  <Grid>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="camera"
-                        content="View Opfors"
-                        onClick={handleViewOpfors}
-                      />
-                    </Grid.Column>
-                    <Grid.Column size={3}>
-                      <Button
-                        fluid
-                        icon="spinner"
-                        content="Create Command Report"
-                        onClick={() => act('createCommandReport')}
-                      />
-                    </Grid.Column>
-                  </Grid>
-                </Box>
-              </Grid.Column>
-            </Grid>
+            <Button
+              icon="refresh"
+              content="Refresh"
+              onClick={() => handleAction('refresh')}
+            />
+            <Button content="Old PP" onClick={() => handleAction('oldPP')} />
+            <Button
+              content="Check Players"
+              onClick={() => handleAction('checkPlayers')}
+            />
+            <Button
+              content="Check Antags"
+              onClick={() => handleAction('checkAntags')}
+            />
+            <Button
+              content="Fax Panel"
+              onClick={() => handleAction('faxPanel')}
+            />
+            <Button
+              content="Game Panel"
+              onClick={() => handleAction('gamePanel')}
+            />
+            <Button
+              content="Combo HUD"
+              onClick={() => handleAction('comboHUD')}
+            />
+            <Button
+              content="Admin VOX"
+              onClick={() => handleAction('adminVOX')}
+            />
+            <Button
+              content="Generate Code"
+              onClick={() => handleAction('generateCode')}
+            />
+            <Button
+              content="View Opfors"
+              onClick={() => handleAction('viewOpfors')}
+            />
           </Section>
 
           <Section title="Search Players">
@@ -217,24 +124,37 @@ export const VethPlayerPanel = (_props, context) => {
                   <Table.Cell>{player.last_ip}</Table.Cell>
                   <Table.Cell>
                     <Button
-                      icon="message"
+                      onClick={() =>
+                        handleAction('sendPrivateMessage', {
+                          ckey: player.ckey, // Use player.ckey instead of selectedPlayerCkey
+                        })
+                      }
                       content="PM"
-                      onClick={() => handleSendPrivateMessage(player.ckey)}
                     />
                     <Button
-                      icon="eye"
+                      onClick={() =>
+                        handleAction('follow', {
+                          ckey: player.ckey,
+                        })
+                      }
                       content="Follow"
-                      onClick={() => handleFollow(player.ckey)}
                     />
                     <Button
-                      icon="trash"
+                      onClick={() =>
+                        handleAction('smite', {
+                          ckey: player.ckey,
+                        })
+                      }
                       content="Smite"
-                      onClick={() => handleSmite(player.ckey)}
                     />
                     <Button
-                      icon="external-link-alt"
+                      onClick={() =>
+                        handleAction('openAdditionalPanel', {
+                          ckey: player.ckey,
+                        })
+                      }
                       content="PP"
-                      onClick={() => handleAdditionalPanel(player.ckey)}
+                      icon="external-link"
                     />
                     <Button
                       icon="book"

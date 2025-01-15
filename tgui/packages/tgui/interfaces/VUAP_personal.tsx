@@ -52,9 +52,7 @@ interface PlayerData {
 }
 
 interface BackendData {
-  data: {
-    Data: PlayerData;
-  };
+  Data: PlayerData;
 }
 
 const isMobType = (currentType: string, checkType: string): boolean => {
@@ -72,8 +70,8 @@ const isMobType = (currentType: string, checkType: string): boolean => {
   );
 };
 
-export const VUAP_personal = (props, context) => {
-  const { data, act } = useBackend<BackendData>(context);
+export const VUAP_personal = (props) => {
+  const { data, act } = useBackend<BackendData>();
 
   // Use default values if data is missing
   const playerData = {
@@ -131,7 +129,7 @@ export const VUAP_personal = (props, context) => {
     <Window
       title={`Options Panel - ${playerData.ckey}`}
       width={800}
-      height={800}
+      height={850}
     >
       <Window.Content>
         <Stack vertical>
@@ -161,7 +159,7 @@ export const VUAP_personal = (props, context) => {
                 <Table.Row>
                   <Table.Cell bold>DB Link:</Table.Cell>
                   <Button
-                    content="DB Link"
+                    content="Centcom DB Link"
                     color="green"
                     onClick={() => handleAction('dblink')}
                   />
@@ -218,21 +216,26 @@ export const VUAP_personal = (props, context) => {
                         color="red"
                         onClick={() => handleAction('ban')}
                       />
-                    </Grid.Column>
-                    <Grid.Column size={6}>
-                      <Button
-                        fluid
-                        icon="jail"
-                        content="PRISON"
-                        color="red"
-                        onClick={() => handleAction('prison')}
-                      />
                       <Button
                         fluid
                         icon="bolt"
                         content="SMITE"
                         color="red"
                         onClick={() => handleAction('smite')}
+                      />
+                    </Grid.Column>
+                    <Grid.Column size={6}>
+                      <Button
+                        fluid
+                        content="PRISON"
+                        color="red"
+                        onClick={() => handleAction('prison')}
+                      />
+                      <Button
+                        fluid
+                        content="UNPRISON"
+                        color="red"
+                        onClick={() => handleAction('unprison')}
                       />
                     </Grid.Column>
                   </Grid>
@@ -268,12 +271,6 @@ export const VUAP_personal = (props, context) => {
                         icon="music"
                         content="PLAY SOUND TO"
                         onClick={() => handleAction('playsoundto')}
-                      />
-                      <Button
-                        fluid
-                        icon="external-link-alt"
-                        content="POPUP"
-                        onClick={() => handleAction('popup')}
                       />
                     </Grid.Column>
                   </Grid>
@@ -318,6 +315,12 @@ export const VUAP_personal = (props, context) => {
                         content="FLW"
                         onClick={() => handleAction('flw')}
                       />
+                      <Button
+                        fluid
+                        icon="columns"
+                        content="SEND TO CRYO"
+                        onClick={() => handleAction('cryo')}
+                      />
                     </Grid.Column>
                   </Grid>
                 </Section>
@@ -336,7 +339,7 @@ export const VUAP_personal = (props, context) => {
                       <Button
                         fluid
                         icon="user-secret"
-                        content="Traitor Panel"
+                        content="TRAITOR PANEL"
                         onClick={() => handleAction('tp')}
                       />
                       <Button
@@ -437,20 +440,18 @@ export const VUAP_personal = (props, context) => {
                       />
                       <Button
                         fluid
-                        icon="skull"
-                        content="WOUNDSCAN"
-                        onClick={() => handleAction('woundscan')}
+                        content="CURE ALL BAD DISEASES"
+                        onClick={() => handleAction('cureAllDiseases')}
                       />
                       <Button
                         fluid
-                        icon="shield-alt"
-                        content="CHEMSCAN"
-                        onClick={() => handleAction('chemscan')}
-                      />
-                      <Button
-                        fluid
-                        content="Give Disease"
+                        content="GIVE DISEASE"
                         onClick={() => handleAction('giveDisease')}
+                      />
+                      <Button
+                        fluid
+                        content="MODIFY TRAITS"
+                        onClick={() => handleAction('modifytraits')}
                       />
                     </Grid.Column>
                     <Grid.Column size={6}>
@@ -462,24 +463,19 @@ export const VUAP_personal = (props, context) => {
                       />
                       <Button
                         fluid
-                        content="Cure Disease"
-                        onClick={() => handleAction('cureDisease')}
+                        icon="shield-alt"
+                        content="CHEMSCAN"
+                        onClick={() => handleAction('chemscan')}
                       />
                       <Button
                         fluid
-                        content="Cure All Diseases"
-                        onClick={() => handleAction('cureAllDiseases')}
-                      />
-                      <Button
-                        fluid
-                        content="Disease Panel"
-                        onClick={() => handleAction('deseasePanel')}
+                        content="DISEASE PANEL"
+                        onClick={() => handleAction('diseasePanel')}
                       />
                     </Grid.Column>
                   </Grid>
                 </Section>
               </Grid.Column>
-
               <Grid.Column>
                 <Section title="Misc">
                   <Grid>
@@ -508,6 +504,12 @@ export const VUAP_personal = (props, context) => {
                         content="THUNDERDOME 2"
                         onClick={() => handleAction('thunderdome2')}
                       />
+                      <Button
+                        fluid
+                        icon="heart"
+                        content="SPAWN COOKIE"
+                        onClick={() => handleAction('spawncookie')}
+                      />
                     </Grid.Column>
                     <Grid.Column size={6}>
                       <Button
@@ -533,12 +535,6 @@ export const VUAP_personal = (props, context) => {
                         icon="eye"
                         content="THUNDERDOME OBSERVER"
                         onClick={() => handleAction('thunderdomeobserver')}
-                      />
-                      <Button
-                        fluid
-                        icon="heart"
-                        content="SPAWN COOKIE"
-                        onClick={() => handleAction('spawncookie')}
                       />
                     </Grid.Column>
                   </Grid>

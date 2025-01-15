@@ -22,6 +22,7 @@ GLOBAL_PROTECT(admin_verbs_default)
 	/client/proc/review_cassettes, /*monkestation addition Opens the Cassette Review menu*/
 	/client/proc/stop_sounds,
 	/client/proc/tag_datum_mapview,
+	/client/proc/vuap_open_context,
 	)
 GLOBAL_LIST_INIT(admin_verbs_admin, world.AVerbsAdmin())
 GLOBAL_PROTECT(admin_verbs_admin)
