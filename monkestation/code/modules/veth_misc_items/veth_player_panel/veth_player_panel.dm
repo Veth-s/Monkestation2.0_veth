@@ -378,6 +378,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"mob" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			ui.send_update
 			return
 		if("makehuman")
 			usr.client.holder.Topic(null, list(
@@ -385,6 +386,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"mob" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			ui.send_update()
 			return
 		if("makemonkey")
 			usr.client.holder.Topic(null, list(
@@ -392,6 +394,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"mob" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			ui.send_update()
 			return
 		if("makeborg")
 			usr.client.holder.Topic(null, list(
@@ -399,12 +402,14 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"mob" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			ui.send_update()
 			return
 		if("makeai")
 			usr.client.holder.Topic(null, list(
 				"makeai" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			ui.send_update()
 			return
 		//health section
 		if("healthscan")
@@ -422,6 +427,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 				"revive" = REF(M),
 				"admin_token" = usr.client.holder.href_token
 			))
+			to_chat(usr, "Adminhealed  [M.ckey].", confidential = TRUE)
 			return
 		if("giveDisease")
 			if(!check_rights(NONE))

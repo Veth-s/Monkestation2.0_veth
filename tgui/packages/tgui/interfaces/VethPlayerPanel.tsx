@@ -1,5 +1,5 @@
 import { useBackend, useLocalState } from '../backend';
-import { Box, Button, Section, Table, TextArea } from '../components';
+import { Box, Button, Section, Table, TextArea, Grid } from '../components';
 import { Window } from '../layouts';
 
 type PlayerData = {
@@ -49,43 +49,73 @@ export const VethPlayerPanel = (_props) => {
         <Window.Content>
           <Section>
             <Button
+              fluid
               icon="refresh"
               content="Refresh"
               onClick={() => handleAction('refresh')}
             />
-            <Button content="Old PP" onClick={() => handleAction('oldPP')} />
-            <Button
-              content="Check Players"
-              onClick={() => handleAction('checkPlayers')}
-            />
-            <Button
-              content="Check Antags"
-              onClick={() => handleAction('checkAntags')}
-            />
-            <Button
-              content="Fax Panel"
-              onClick={() => handleAction('faxPanel')}
-            />
-            <Button
-              content="Game Panel"
-              onClick={() => handleAction('gamePanel')}
-            />
-            <Button
-              content="Combo HUD"
-              onClick={() => handleAction('comboHUD')}
-            />
-            <Button
-              content="Admin VOX"
-              onClick={() => handleAction('adminVOX')}
-            />
-            <Button
-              content="Generate Code"
-              onClick={() => handleAction('generateCode')}
-            />
-            <Button
-              content="View Opfors"
-              onClick={() => handleAction('viewOpfors')}
-            />
+          </Section>
+          <Section>
+            <Grid>
+              <Grid.Column>
+                <Button
+                  fluid
+                  content="Check Players"
+                  onClick={() => handleAction('checkPlayers')}
+                />
+                <Button
+                  fluid
+                  content="Game Panel"
+                  onClick={() => handleAction('gamePanel')}
+                />
+              </Grid.Column>
+              <Grid.Column>
+                <Button
+                  fluid
+                  content="Old PP"
+                  onClick={() => handleAction('oldPP')}
+                />
+                <Button
+                  fluid
+                  content="Check Antags"
+                  onClick={() => handleAction('checkAntags')}
+                />
+                <Button
+                  fluid
+                  content="Combo HUD"
+                  onClick={() => handleAction('comboHUD')}
+                />
+              </Grid.Column>
+              <Grid.Column>
+                <Button
+                  fluid
+                  content="Fax Panel"
+                  onClick={() => handleAction('faxPanel')}
+                />
+                <Button
+                  fluid
+                  content="Admin VOX"
+                  onClick={() => handleAction('adminVOX')}
+                />
+                <Button
+                  fluid
+                  content="Generate Code"
+                  onClick={() => handleAction('generateCode')}
+                />
+              </Grid.Column>
+              <Grid.Column>
+                <Button
+                  fluid
+                  content="View Opfors"
+                  onClick={() => handleAction('viewOpfors')}
+                />
+                <Button
+                  fluid
+                  content="Create Command Report"
+                  onClick={() => handleAction('createCommandReport')}
+                />
+              </Grid.Column>
+            </Grid>
           </Section>
 
           <Section title="Search Players">

@@ -440,8 +440,8 @@ export const VUAP_personal = (props) => {
                       />
                       <Button
                         fluid
-                        content="CURE ALL BAD DISEASES"
-                        onClick={() => handleAction('cureAllDiseases')}
+                        content="CHEMSCAN"
+                        onClick={() => handleAction('chemscan')}
                       />
                       <Button
                         fluid
@@ -450,8 +450,8 @@ export const VUAP_personal = (props) => {
                       />
                       <Button
                         fluid
-                        content="MODIFY TRAITS"
-                        onClick={() => handleAction('modifytraits')}
+                        content="CURE ALL BAD DISEASES"
+                        onClick={() => handleAction('cureAllDiseases')}
                       />
                     </Grid.Column>
                     <Grid.Column size={6}>
@@ -463,9 +463,8 @@ export const VUAP_personal = (props) => {
                       />
                       <Button
                         fluid
-                        icon="shield-alt"
-                        content="CHEMSCAN"
-                        onClick={() => handleAction('chemscan')}
+                        content="MODIFY TRAITS"
+                        onClick={() => handleAction('modifytraits')}
                       />
                       <Button
                         fluid
