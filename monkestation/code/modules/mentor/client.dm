@@ -54,4 +54,5 @@
 	if(owner.is_mentor())
 		owner.mentor_datum.not_active = FALSE
 
-
+/proc/message_mentors(msg)
+	msg = "<span class=\"mentor\"><span class=\"prefix\">MENTOR LOG:</span> <span class=\"message\">[msg]</span></span>"
