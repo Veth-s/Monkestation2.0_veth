@@ -1,7 +1,7 @@
 /datum/player_panel_veth/ //required for tgui component
 	var/title = "Veth's Ultimate Player Panel"
 
-/client/proc/player_panel_veth() //proc for verb in game tab
+/datum/admins/proc/player_panel_veth() //proc for verb in game tab
 
 	set name = "Player Panel Veth"
 	set category = "Admin.Game"
@@ -89,7 +89,7 @@
 			return
 		if("openAdditionalPanel") //logs/rightscheck inside the proc
 			usr.client.selectedPlayerCkey = params["selectedPlayerCkey"]
-			usr.client.vuap_open()
+			usr.client.holder.vuap_open()
 			return
 		if("createCommandReport")
 			usr.client.cmd_admin_create_centcom_report() //logs/rightscheck inside the proc
@@ -131,18 +131,23 @@
 /client //this is needed to hold the selected player ckey for moving to and from pp/vuap
 	var/selectedPlayerCkey = ""
 
-/client/proc/vuap_open_context(mob/M in GLOB.mob_list) //this is the proc for the right click menu
+/datum/admins/proc/vuap_open_context(mob/M in GLOB.mob_list) //this is the proc for the right click menu
 	set category = null
 	set name = "Open New Player Panel"
 	if(!check_rights(NONE))
 		return
 	usr.client.selectedPlayerCkey = M.ckey
-	usr.client.vuap_open()
+	usr.client.holder.vuap_open()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "VUAP")
 
 /datum/vuap_personal
 
 /*features that need to add
+stuff that i'm trialing fixes for or need fixes for
+can't pull up pp on soulless things
+centcomdb lookup
+account registered
+
 
 
 Some (poor) explanation of what's going on -
@@ -193,8 +198,8 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 		player_data["gameState"] = istype(player) ? "Active" : "Unknown"
 		player_data["byondVersion"] = "[client_info.byond_version || 0].[client_info.byond_build || 0]"
 		player_data["mobType"] = "[initial(player.type)]" || "null"
-		player_data["firstSeen"] = client_info.account_join_date || "Never"
-		player_data["accountRegistered"] = client_info.account_age || "Unknown"
+		player_data["firstSeen"] = client_info.player_join_date || "Never"
+		player_data["accountRegistered"] = client_info.account_join_date || "Unknown"
 		// Safely check mute states
 		if(client_info.prefs)
 			player_data["muteStates"] = list(
@@ -501,7 +506,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 			return
 		if("dblink")
 			usr.client.holder.Topic(null, list(
-				"centcomlookup" = REF(M),
+				"centcomlookup" = M.ckey,
 				"admin_token" = usr.client.holder.href_token
 			))
 		if("spawncookie")
@@ -549,7 +554,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 /datum/vuap_personal/ui_state(mob/user)
 	return GLOB.admin_state
 
-/client/proc/vuap_open()
+/datum/admins/proc/vuap_open()
 	if (!check_rights(NONE))
 		message_admins("[key_name(src)] attempted to use VUAP without sufficient rights.")
 		return
