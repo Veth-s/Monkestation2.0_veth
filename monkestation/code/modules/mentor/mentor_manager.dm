@@ -7,154 +7,141 @@
 	set desc = "Open the mentor manager panel to view all requests during this round"
 	set category = "Mentor"
 
-	SSblackbox.record_feedback("tally", "mentor_verb", 1, "Mentor Manager") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+	SSblackbox.record_feedback("tally", "mentor_verb", 1, "Mentor Manager")
 	GLOB.mentor_requests.ui_interact(usr)
-
 
 GLOBAL_DATUM_INIT(mentor_requests, /datum/request_manager/mentor, new)
 
-/datum/request_manager/mentor/ui_state(mob/user)
-	return GLOB.always_state
+/datum/request
+	var/identifier
+	var/request_type
+	var/client/request_owner
+	var/creation_time
+	var/claimed_by_ckey
+	var/list/conversation_history = list()
 
-/datum/request_manager/mentor/pray(client/C, message, is_chaplain)
-	return
+/datum/request/proc/add_message_to_history(sender_ckey, message_text)
+	conversation_history += list(list(
+		"sender" = sender_ckey,
+		"message" = message_text,
+		"timestamp_str" = gameTimestamp(wtime = world.time)
+	))
 
-/datum/request_manager/mentor/message_centcom(client/C, message)
-	return
+/datum/request_manager/mentor
+	var/list/mentor_requests = list()
+	var/datum/request/current_request = null
+	var/list/answered_requests = list()
 
-/datum/request_manager/mentor/message_syndicate(client/C, message)
-	return
+/datum/request_manager/mentor/proc/create_request(client/requesting_client, request_type, message_text, additional_info)
+	if(!requesting_client || !message_text)
+		return
 
-/datum/request_manager/mentor/nuke_request(client/C, message)
-	return
+	var/datum/request/new_request = new()
+	new_request.identifier = "[world.time]-[requesting_client.ckey]"
+	new_request.request_type = request_type
+	new_request.request_owner = requesting_client
+	new_request.owner_ckey = requesting_client.ckey
+	new_request.owner_name = requesting_client.mob?.name || requesting_client.ckey
+	new_request.message = message_text  // Now matches the var name in /datum/request
+	new_request.additional_information = additional_info
+	new_request.creation_time = world.time
 
-/datum/request_manager/mentor/fax_request(client/requester, message, additional_info)
-	return
+	if(!mentor_requests[requesting_client.ckey])
+		mentor_requests[requesting_client.ckey] = list()
+	mentor_requests[requesting_client.ckey] += new_request
 
-/datum/request_manager/mentor/music_request(client/requester, message)
-	return
+	return new_request
 
 /datum/request_manager/mentor/proc/mentorhelp(client/requester, message)
-	var/sanitizied_message = copytext_char(sanitize(message), 1, MAX_MESSAGE_LEN)
-	request_for_client(requester, REQUEST_MENTORHELP, sanitizied_message)
+	var/sanitized_message = copytext_char(sanitize(message), 1, MAX_MESSAGE_LEN)
+	create_request(requester, REQUEST_MENTORHELP, sanitized_message)
 
 /datum/request_manager/mentor/ui_interact(mob/user, datum/tgui/ui = null)
 	ui = SStgui.try_update_ui(user, src, ui)
-	if (!ui)
+	if(!ui)
 		ui = new(user, src, "RequestManagerMonke2")
 		ui.open()
 
-/datum/request_manager/mentor/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
-	var/client/mentor_client = usr.client
-	if(!mentor_client || !mentor_client.is_mentor())
-		to_chat(mentor_client, "You are not allowed to be using this mentor-only proc. Please report it.", confidential = TRUE)
+/datum/request_manager/mentor/ui_state(mob/user)
+	return GLOB.admin_state
+
+/datum/request_manager/mentor/ui_static_data(mob/user)
+	var/list/data = list()
+	data["current_user"] = user.ckey
+	return data
+
+/datum/request_manager/mentor/ui_data(mob/user)
+	var/list/data = list(
+		"requests" = list(),
+		"current_user" = user.ckey
+	)
+
+	for(var/ckey in mentor_requests)
+		for(var/datum/request/current_request as anything in mentor_requests[ckey])
+			if(current_request.request_type != REQUEST_MENTORHELP)
+				continue
+
+			var/list/request_data = list(
+				"id" = current_request.identifier,
+				"req_type" = current_request.request_type,
+				"owner" = current_request.request_owner ? "[REF(current_request.request_owner)]" : null,
+				"owner_ckey" = current_request.owner_ckey,
+				"owner_name" = current_request.owner_name,
+				"message" = current_request.message,
+				"additional_info" = current_request.additional_information,
+				"timestamp" = current_request.creation_time,
+				"timestamp_str" = gameTimestamp(wtime = current_request.creation_time),
+				"claimed_by" = current_request.claimed_by_ckey,
+				"answer_status" = (current_request.identifier in answered_requests) ? "ANSWERED" : "NOT ANSWERED"
+			)
+			data["requests"] += list(request_data)
+
+	return data
+
+/datum/request_manager/mentor/ui_act(action, params, datum/tgui/ui)
+	. = ..()
+	if(.)
 		return
 
-	var/id = params["id"] != null ? num2text(params["id"]) : null
-	if (!id)
-		to_chat(mentor_client, "Failed to find a request ID in your action, please report this.", confidential = TRUE)
-		CRASH("Received an action without a request ID, this shouldn't happen!")
+	var/client/mentor_client = usr.client
+	var/datum/request/target_request = locate(params["id"])
 
-	var/datum/request/request = !id ? null : requests_by_id[id]
-	if(isnull(request))
+	if(!target_request)
 		return
 
 	switch(action)
-		if ("reply")
-			// Check if ticket is claimed by someone else
-			if(request.claimed_by && request.claimed_by != mentor_client.ckey)
-				to_chat(mentor_client, "This ticket is claimed by another mentor.", confidential = TRUE)
-				return
-			var/datum/request/request = locate(params["id"])
-			if(!request)
+		if("reply")
+			if(!mentor_client)
 				return
 			if(params["mark_answered"])
-				var/list/data = list()
-				for (var/ckey in requests)
-					for (var/datum/request/R as anything in requests[ckey])
-						if(R.id == params["id"])
-							data["answer_status"] = "ANSWERED"
-							break
+				answered_requests |= target_request.identifier
+			mentor_client.cmd_mentor_pm(target_request.owner_ckey, params["message"])
+			target_request.add_message_to_history(mentor_client.ckey, params["message"])
+			return TRUE
 
-				// Update the UI to reflect the change
-				ui.update_static_data(usr)
-			var/mob/M = request.owner?.mob
-			mentor_client.cmd_mentor_pm(M)
-			return TRUE
-		if ("follow")
-			var/mob/M = request.owner?.mob
-			mentor_client.mentor_follow(M)
-			return TRUE
-		if ("claim")
-			if(!request.claimed_by)
-				request.claimed_by = mentor_client.ckey
-				message_mentors("[key_name_admin(mentor_client)] has claimed [key_name_admin(request.owner)]'s mentorhelp.")
-			return TRUE
-		if ("unclaim")
-			if(request.claimed_by == mentor_client.ckey)
-				request.claimed_by = null
-				message_mentors("[key_name_admin(mentor_client)] has unclaimed [key_name_admin(request.owner)]'s mentorhelp.")
-			return TRUE
-		if("view_conversation")
-			var/datum/request/request = locate(params["id"])
-			if(!request)
+		if("follow")
+			if(!target_request.request_owner || !target_request.request_owner.mob)
 				return
-			ui.close()  // Close the main window
-			var/datum/tgui/conversation_window = new(usr, src, "RequestConversation")
-			conversation_window.set_autoupdate(TRUE)
-			conversation_window.open()
-			active_request = request  // Store the active request for the conversation window
+			mentor_client.mentor_follow(target_request.request_owner.mob)
 			return TRUE
 
-	return ..()
-/datum/request_manager/mentor/ui_data_conversation(mob/user)
-	if(!active_request)
-		return list()
+		if("claim")
+			if(!target_request.claimed_by_ckey)
+				target_request.claimed_by_ckey = mentor_client.ckey
+				to_chat(mentor_client, span_notice("You have claimed the request from [target_request.owner_ckey]."))
+				return TRUE
 
-	return list(
-		"messages" = active_request.conversation_history,
-		"request_id" = active_request.id,
-		"owner_ckey" = active_request.owner_ckey
-	)
+		if("unclaim")
+			if(target_request.claimed_by_ckey == mentor_client.ckey)
+				target_request.claimed_by_ckey = null
+				to_chat(mentor_client, span_notice("You have unclaimed the request from [target_request.owner_ckey]."))
+				return TRUE
 
-/datum/request_manager/mentor/tgui_interact_conversation(mob/user, datum/tgui/ui)
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
-		ui = new(user, src, "RequestConversation")
-		ui.open()
-/* Broken shit:
-reply button doesn't work when claimed
-view conversation aint work
-answered/notanswered dont work just yet - but this will be fix..
-*/
-/datum/request_manager/mentor/ui_data(mob/user)
-	. = list(
-		"requests" = list(),
-	)
-	for (var/ckey in requests)
-		for (var/datum/request/request as anything in requests[ckey])
-			if(request.req_type != REQUEST_MENTORHELP)
-				continue
-			var/list/data = list(
-				"id" = request.id,
-				"req_type" = request.req_type,
-				"owner" = request.owner ? "[REF(request.owner)]" : null,
-				"owner_ckey" = request.owner_ckey,
-				"owner_name" = request.owner_name,
-				"message" = request.message,
-				"additional_info" = request.additional_information,
-				"timestamp" = request.timestamp,
-				"timestamp_str" = gameTimestamp(wtime = request.timestamp),
-				"claimed_by" = request.claimed_by,
-				"answer_status" = "NOT ANSWERED"
-			)
-			if(request.id in answered_requests)  // You'll need to maintain this list
-				data["answer_status"] = "ANSWERED"
-			.["requests"] += list(data)
-
-/datum/request
-	var/claimed_by = null
-/datum/request_manager/mentor
-	var/list/answered_requests = list()
+		if("view_conversation")
+			current_request = target_request
+			var/datum/tgui/window = new(usr, src, "RequestConversation")
+			window.set_autoupdate(TRUE)
+			window.open()
+			return TRUE
 
 #undef REQUEST_MENTORHELP
