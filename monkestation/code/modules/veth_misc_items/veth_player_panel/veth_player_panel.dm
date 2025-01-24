@@ -130,23 +130,31 @@
 
 /client //this is needed to hold the selected player ckey for moving to and from pp/vuap
 	var/selectedPlayerCkey = ""
+	var/VUAP_selected_mob = null
 
 /datum/admins/proc/vuap_open_context(mob/M in GLOB.mob_list) //this is the proc for the right click menu
 	set category = null
 	set name = "Open New Player Panel"
 	if(!check_rights(NONE))
 		return
-	usr.client.selectedPlayerCkey = M.ckey
-	usr.client.holder.vuap_open()
+	if(findtext(M.ckey, "@" ) || M.ckey == "" || M.ckey == null)
+		var/mob/player = M
+		var/datum/mind/player_mind = get_mind(player, include_last = TRUE)
+		var/player_mind_ckey = player_mind.key
+		usr.client.VUAP_selected_mob = M
+		usr.client.holder.vuap_open()
+		tgui_alert(usr, "WARNING! This mob has no associated Mind! Most actions will not work. Last ckey to control this mob is [player_mind_ckey].", "No Mind!")
+
+	else
+		usr.client.selectedPlayerCkey = M.ckey
+		usr.client.holder.vuap_open()
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "VUAP")
 
 /datum/vuap_personal
 
 /*features that need to add
-stuff that i'm trialing fixes for or need fixes for
-can't pull up pp on soulless things
-centcomdb lookup
-account registered
+Soulless things should now be PP'able with warning.
+
 
 
 
@@ -165,11 +173,6 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 */
 /datum/vuap_personal/ui_data(mob/user)
 	var/ckey = user.client?.selectedPlayerCkey
-	if(!ckey)
-		return list("Data" = list())
-	var/mob/player = get_mob_by_ckey(ckey)
-	var/client/client_info = player?.client
-	// Fallback values for player data
 	var/list/player_data = list(
 		"characterName" = "No Character",
 		"ckey" = ckey || "Unknown",
@@ -189,28 +192,35 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 			"webreq" = FALSE
 		)
 	)
-
-	// Only update values if we have valid data
-	if(player && client_info)
-		player_data["characterName"] = player.real_name || "No Character"
-		player_data["ipAddress"] = client_info.address || "0.0.0.0"
-		player_data["CID"] = client_info.computer_id || "NO_CID"
+	if(findtext(ckey, "@") || ckey == "" || ckey == null)
+		var/mob/player = usr.client.VUAP_selected_mob
+		player_data["characterName"] = player.name || "No Character"
 		player_data["gameState"] = istype(player) ? "Active" : "Unknown"
-		player_data["byondVersion"] = "[client_info.byond_version || 0].[client_info.byond_build || 0]"
 		player_data["mobType"] = "[initial(player.type)]" || "null"
-		player_data["firstSeen"] = client_info.player_join_date || "Never"
-		player_data["accountRegistered"] = client_info.account_join_date || "Unknown"
-		// Safely check mute states
-		if(client_info.prefs)
-			player_data["muteStates"] = list(
-				"ic" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_IC),
-				"ooc" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_OOC),
-				"pray" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_PRAY),
-				"adminhelp" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_ADMINHELP),
-				"deadchat" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_DEADCHAT),
-				"webreq" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_INTERNET_REQUEST),
-			)
-	return list("Data" = player_data)
+		return list("Data" = player_data)
+	else
+		var/mob/player = get_mob_by_ckey(ckey)
+		var/client/client_info = player?.client
+		if(player && client_info)
+			player_data["characterName"] = player.real_name || "No Character"
+			player_data["ipAddress"] = client_info.address || "0.0.0.0"
+			player_data["CID"] = client_info.computer_id || "NO_CID"
+			player_data["gameState"] = istype(player) ? "Active" : "Unknown"
+			player_data["byondVersion"] = "[client_info.byond_version || 0].[client_info.byond_build || 0]"
+			player_data["mobType"] = "[initial(player.type)]" || "null"
+			player_data["firstSeen"] = client_info.player_join_date || "Never"
+			player_data["accountRegistered"] = client_info.account_join_date || "Unknown"
+			// Safely check mute states
+			if(client_info.prefs)
+				player_data["muteStates"] = list(
+					"ic" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_IC),
+					"ooc" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_OOC),
+					"pray" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_PRAY),
+					"adminhelp" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_ADMINHELP),
+					"deadchat" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_DEADCHAT),
+					"webreq" = !isnull(client_info.prefs.muted) && (client_info.prefs.muted & MUTE_INTERNET_REQUEST),
+				)
+		return list("Data" = player_data)
 
 /datum/vuap_personal/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)

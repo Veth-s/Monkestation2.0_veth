@@ -85,7 +85,7 @@ export const VUAP_personal = (props) => {
 
   const handleAction = (action: string, params = {}) => {
     if (!playerData.ckey) {
-      return; // Don't send actions if we don't have a valid ckey
+      act(action, { selectedPlayerCkey: playerData.ckey, ...params });
     }
     act(action, { selectedPlayerCkey: playerData.ckey, ...params });
   };
@@ -107,7 +107,7 @@ export const VUAP_personal = (props) => {
   // Add error display if critical data is missing
   if (!playerData.ckey) {
     return (
-      <Window title="Options Panel - Error" width={800} height={1000}>
+      <Window title="Options Panel - Error" width={800} height={1050}>
         <Window.Content>
           <Section title="Error">
             <Box color="red">
