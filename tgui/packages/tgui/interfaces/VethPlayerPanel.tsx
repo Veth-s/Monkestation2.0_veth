@@ -114,6 +114,11 @@ export const VethPlayerPanel = (_props) => {
                   content="Create Command Report"
                   onClick={() => handleAction('createCommandReport')}
                 />
+                <Button
+                  fluid
+                  content="Toggle Admin AI Interact"
+                  onClick={() => handleAction('adminaiinteract')}
+                />
               </Grid.Column>
             </Grid>
           </Section>

@@ -114,6 +114,8 @@
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
+		if("adminaiinteract") //loggin inside the proc
+			usr.client.toggle_AI_interact()
 
 /datum/player_panel_veth/ui_interact(mob/user, datum/tgui/ui)
 
