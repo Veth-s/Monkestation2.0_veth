@@ -4,6 +4,7 @@ import { Window } from '../layouts';
 
 type PlayerData = {
   name: string;
+  old_name: string;
   job: string;
   ckey: string;
   is_antagonist: boolean;
@@ -27,6 +28,7 @@ export const VethPlayerPanel = (_props) => {
           player.name?.toLowerCase() || '',
           player.job?.toLowerCase() || '',
           player.ckey?.toLowerCase() || '',
+          player.old_name?.toLowerCase() || '',
         ].some((field) => field.includes(searchTerm.toLowerCase())),
       )
     : playerData;
@@ -126,7 +128,7 @@ export const VethPlayerPanel = (_props) => {
           <Section title="Search Players">
             <TextArea
               autoFocus
-              placeholder="Search by name, job, or ckey"
+              placeholder="Search by name, old name, job, or ckey"
               value={searchTerm}
               onInput={(_, value) => setSearchTerm(value)}
               rows={1}
@@ -139,6 +141,7 @@ export const VethPlayerPanel = (_props) => {
               <Table.Row header>
                 <Table.Cell>Ckey</Table.Cell>
                 <Table.Cell>Char Name</Table.Cell>
+                <Table.Cell>Also Known As</Table.Cell>
                 <Table.Cell>Job</Table.Cell>
                 <Table.Cell>Antagonist</Table.Cell>
                 <Table.Cell>Last IP</Table.Cell>
@@ -148,6 +151,7 @@ export const VethPlayerPanel = (_props) => {
                 <Table.Row key={player.ckey} className="candystripe">
                   <Table.Cell>{player.ckey}</Table.Cell>
                   <Table.Cell>{player.name}</Table.Cell>
+                  <Table.Cell>{player.old_name}</Table.Cell>
                   <Table.Cell>{player.job}</Table.Cell>
                   <Table.Cell>
                     {player.is_antagonist ? (

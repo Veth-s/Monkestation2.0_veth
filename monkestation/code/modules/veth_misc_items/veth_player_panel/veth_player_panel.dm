@@ -18,10 +18,15 @@
 /datum/player_panel_veth/ui_data(mob/user)
 	var/list/players = list()
 	var/mobs = sort_mobs()
+	var/player_previous_names
 	for (var/mob/M in mobs)
 		if (M.ckey)
+			var/datum/player_details/players_other_chars = GLOB.player_details[ckey(M.ckey)]
+			if(players_other_chars)
+				player_previous_names = players_other_chars.played_names.Join(",")
 			players += list(list(
 				"name" = M.name || "No Character",
+				"old_name" = player_previous_names || "No Previous Characters",
 				"job" = M.job || "No Job",
 				"ckey" = M.ckey || "No Ckey",
 				"is_antagonist" = is_special_character(M, allow_fake_antags = TRUE),
