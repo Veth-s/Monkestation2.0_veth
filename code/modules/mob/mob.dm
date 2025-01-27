@@ -1331,6 +1331,7 @@
 		if(!check_rights(NONE))
 			return
 		usr.client.VUAP_selected_mob = src
+		usr.client.selectedPlayerCkey = src.ckey
 		usr.client.holder.vuap_open()
 	if(href_list[VV_HK_GODMODE])
 		if(!check_rights(R_ADMIN))

@@ -171,6 +171,7 @@ GLOBAL_DATUM_INIT(requests, /datum/request_manager, new)
 	switch(action)
 		if ("pp")
 			usr.client.VUAP_selected_mob = request.owner?.mob
+			usr.client.selectedPlayerCkey = request.owner?.mob.ckey
 			usr.client.holder.vuap_open()
 			return TRUE
 		if ("vv")
