@@ -725,7 +725,8 @@
 
 	else if(href_list["adminplayeropts"])
 		var/mob/M = locate(href_list["adminplayeropts"])
-		show_player_panel(M)
+		usr.client.VUAP_selected_mob = M
+		usr.client.holder.vuap_open()
 
 	else if(href_list["ppbyckey"])
 		var/target_ckey = href_list["ppbyckey"]
@@ -740,7 +741,8 @@
 			return
 
 		to_chat(usr, span_notice("Jumping to [target_ckey]'s new mob: [target_mob]!"))
-		show_player_panel(target_mob)
+		usr.client.VUAP_selected_mob = target_mob
+		usr.client.holder.vuap_open()
 
 	else if(href_list["adminopendemo"])
 		usr.client << link("http://viewer.monkestation.com/?roundid=[GLOB.round_id]&password=[CONFIG_GET(string/replay_password)]#[world.time]") //opens current round at current time

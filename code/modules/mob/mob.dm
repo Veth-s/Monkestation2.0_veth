@@ -1330,7 +1330,8 @@
 	if(href_list[VV_HK_PLAYER_PANEL])
 		if(!check_rights(NONE))
 			return
-		usr.client.holder.show_player_panel(src)
+		usr.client.VUAP_selected_mob = src
+		usr.client.holder.vuap_open()
 	if(href_list[VV_HK_GODMODE])
 		if(!check_rights(R_ADMIN))
 			return
