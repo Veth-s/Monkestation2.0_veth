@@ -101,7 +101,7 @@
 	if(params["deselect"])
 		deselect_item(interacted_item, user)
 		return
-
+	var/num_plushies = 0
 	var/num_misc_items = 0
 	var/datum/loadout_item/first_misc_found
 	for(var/datum/loadout_item/item as anything in loadout_list_to_datums(preferences.loadout_list))
