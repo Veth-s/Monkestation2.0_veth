@@ -52,6 +52,8 @@
 	var/list/tracked = list()
 	///this is our list of seers
 	var/list/seers = list()
+	///this is the time counter for stalking
+	var/time_counter = 0
 
 /datum/antagonist/slasher/apply_innate_effects(mob/living/mob_override)
 	. = ..()
