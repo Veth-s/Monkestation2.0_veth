@@ -132,8 +132,8 @@
 		mobs_with_fullscreens -= held_ref
 
 	if(stalked_human)
-		for(var/mob/living/carbon/human in view(7, source))
-			if(stalked_human != human)
+		for(var/mob/living/mob in view(7, source))
+			if(stalked_human != mob)
 				continue
 			if(stalked_human.stat == DEAD)
 				failed_stalking()
@@ -146,6 +146,19 @@
 	if(linked_machette)
 		linked_machette.force += 2.5
 		linked_machette.throwforce += 2.5
+	stalked_human.soul_sucked = TRUE
+	if(HAS_TRAIT(stalked_human, TRAIT_USES_SKINTONES))
+		stalked_human.skin_tone = "albino"
+		stalked_human.dna.update_ui_block(DNA_SKIN_TONE_BLOCK)
+	else
+		var/datum/color_palette/generic_colors/located = stalked_human.dna.color_palettes[/datum/color_palette/generic_colors]
+		located.mutant_color = "#FFFFFF"
+	to_chat(stalked_human, span_warning("YOU FEEL COLD, AS IF YOUR SOUL HAS BEEN RIPPED FROM YOUR BODY."))
+	stalked_human.apply_damage(100, damagetype = BRUTE, spread_damage = TRUE)
+	stalked_human.set_jitter_if_lower(10 SECONDS)
+	stalked_human.emote("scream")
+	stalked_human.say("AAAAAAHHHH!!!", forced = "soulsucked")
+	souls_sucked++
 	stalked_human = null
 
 /datum/antagonist/slasher/proc/failed_stalking()

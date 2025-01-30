@@ -24,6 +24,12 @@
 		var/fear_amount = (15 - get_dist(owner, human))
 		slasherdatum.increase_fear(human, fear_amount)
 		addtimer(CALLBACK(src, PROC_REF(remove_overlay), human), 5 SECONDS)
+	var/list/apc_list = list()
+	for(var/obj/machinery/power/apc/apc in view(7, owner))
+		if(is_station_level(apc.z))
+			apc_list += apc
+	var/obj/machinery/power/apc/chosen_apc = pick(apc_list)
+	chosen_apc.overload_lighting()
 
 /datum/action/cooldown/slasher/terror/proc/remove_overlay(mob/living/carbon/human/remover)
 	remover.clear_fullscreen("terror", 10)
