@@ -18,12 +18,9 @@
 /datum/player_panel_veth/ui_data(mob/user)
 	var/list/players = list()
 	var/mobs = sort_mobs()
-	var/player_previous_names
 	for (var/mob/mob_data in mobs)
 		if (mob_data.ckey)
-			var/datum/player_details/players_other_chars = GLOB.player_details[ckey(mob_data.ckey)]
-			if(players_other_chars)
-				player_previous_names = players_other_chars.played_names.Join(",")
+			var/player_previous_names = get_player_details(mob_data)?.played_names?.Join(", ")
 			players += list(list(
 				"name" = mob_data.name || "No Character",
 				"old_name" = player_previous_names || "No Previous Characters",
@@ -144,10 +141,10 @@
 	set name = "Open New Player Panel"
 	if(!check_rights(NONE))
 		return
-	if(findtext(r_clicked_mob.ckey, "@" ) || r_clicked_mob.ckey == "" || r_clicked_mob.ckey == null)
+	if(!length(r_clicked_mob.ckey) || r_clicked_mob.ckey[1] == "@")
 		var/mob/player = r_clicked_mob
 		var/datum/mind/player_mind = get_mind(player, include_last = TRUE)
-		var/player_mind_ckey = player_mind.key
+		var/player_mind_ckey = ckey(player_mind.key)
 		usr.client.VUAP_selected_mob = r_clicked_mob
 		usr.client.holder.vuap_open()
 		tgui_alert(usr, "WARNING! This mob has no associated Mind! Most actions will not work. Last ckey to control this mob is [player_mind_ckey].", "No Mind!")
@@ -199,7 +196,7 @@ the client/var/selectedPlayerCkey is used to hold the selected player ckey for m
 			"webreq" = FALSE
 		)
 	)
-	if(findtext(ckey, "@") || ckey == "" || ckey == null)
+	if(!length(ckey) || ckey[1] == "@")
 		var/mob/player = usr.client.VUAP_selected_mob
 		player_data["characterName"] = player.name || "No Character"
 		player_data["gameState"] = istype(player) ? "Active" : "Unknown"
