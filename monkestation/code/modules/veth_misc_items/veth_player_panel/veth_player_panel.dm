@@ -133,7 +133,9 @@
 
 
 /client //this is needed to hold the selected player ckey for moving to and from pp/vuap
+	///This is used to hold the ckey of the selected player for moving to and from the player panel and vuap
 	var/selectedPlayerCkey = ""
+	///this is used to hold the mob of the selected player in case the ckey can't be found (this enables pp'ing soulless mobs)
 	var/VUAP_selected_mob = null
 
 /datum/admins/proc/vuap_open_context(mob/r_clicked_mob in GLOB.mob_list) //this is the proc for the right click menu
@@ -156,9 +158,11 @@
 
 /datum/vuap_personal
 
-/*features that need to add
-Soulless things should now be PP'able with warning.
-
+/*possible bugs that might occur:
+- Atm, if you receive an admin ticket off of something that has changed mob before you hit the PP button, you'll get the old soulless mob. There is a
+warning dialogue box with the ckey of the previous holder of this mob, however.
+if you know how to fix the above and are smarter than me please let me know and I'll give you a kiss
+I've tried to make it as a simple as possible to add new buttons, most of it should be a copy and paste job.area
 
 
 
@@ -168,11 +172,51 @@ I've tried to comment in as much stuff as possible so it can be changed in the f
 Vuap_personal is the new tgui version of the options panel. It basically does everything the same way the player panel does
 minus some features that the player panel didn't have I guess.
 the client/var/selectedPlayerCkey is used to hold the selected player ckey for moving to and from pp/vuap
+If you want to add info the player panel:
+- add the appropriate info into the backend in ui_data. This gotta be formatted correctly or tgui will scream
+- add the data to the frontend in VethPlayerPanel.tsx, adding a row onto the following table:
+<Table.Row header>
+	<Table.Cell>Ckey</Table.Cell>
+	<Table.Cell>Char Name</Table.Cell>
+	<Table.Cell>Also Known As</Table.Cell>
+	<Table.Cell>Job</Table.Cell>
+	<Table.Cell>Antagonist</Table.Cell>
+	<Table.Cell>Last IP</Table.Cell>
+	<Table.Cell>Actions</Table.Cell>
+	</Table.Row>
+	{filteredData.map((player) => (
+	<Table.Row key={player.ckey} className="candystripe">
+		<Table.Cell>{player.ckey}</Table.Cell>
+		<Table.Cell>{player.name}</Table.Cell>
+		<Table.Cell>{player.old_name}</Table.Cell>
+		<Table.Cell>{player.job}</Table.Cell>
+		<Table.Cell>
+		{player.is_antagonist ? (
+			<Box color="red">Yes</Box>
+		) : (
+			<Box color="green">No</Box>
+		)}
+		</Table.Cell>
+		<Table.Cell>{player.last_ip}</Table.Cell>
+Same goes for VUAP_personal.tsx, but you gotta add it to the table in there instead :)
+If you want to add a button to the player panel:
+- add the backend instructions for it in /datum/veth_player_panel/ui_act into the action switch (the frontend and backend action names must match, case sensitive)
+- add the button to the frontend. You can basically copy and paste one of the buttons that's in VethPlayerPanel.tsx and add it to a column.
 
+If you want to add a button to the vuap panel:
+- add the backend instructions for it in /datum/vuap_personal/ui_act into the action switch (the frontend and backend action names must match, case sensitive)
+- add the button to the frontend. You can basically copy and paste one of the buttons that's in VUAP_personal.tsx and add it to a section.
 
+Some explanation of the frontend because it's not known by many people:
+<Button
+	fluid  - this allows the interface to place the button where it makes sense and allows it to move
+	icon="refresh" - this is the icon that is shown next to the text on the button
+	content="Refresh" - this is the text on the button
+	onClick={() => handleAction('refresh')} - this is the action handler for tgui. it sends an associated list to the backend of action = "whatevertheactionis"
+	the ui_act handler on the backend then reads the action for the switch, and chooses the appropriate action.
+/>
 
-
-
+love, veth
 
 */
 /datum/vuap_personal/ui_data(mob/user)
