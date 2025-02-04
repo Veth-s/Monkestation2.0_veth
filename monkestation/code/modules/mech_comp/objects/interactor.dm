@@ -18,6 +18,15 @@
 	var/stored_dir = NORTH
 	///the interaction range defaults to ontop of itself
 	var/range = FALSE
+	///blacklisted types
+	var/list/blacklist = list(
+		/obj/item/stack/spacecash,
+		/obj/item/stack/monkecoin,
+	)
+
+
+
+
 
 /obj/item/mcobject/interactor/Initialize(mapload)
 	. = ..()
@@ -166,6 +175,9 @@
 		else
 			held_item.forceMove(drop_location())
 		held_item = null
+	if(is_type_in_list(weapon, blacklist))
+		say("[weapon] is incompatible with the interaction component!")
+		return
 	held_item = weapon
 	dummy_human.put_in_l_hand(weapon)
 	update_appearance()
