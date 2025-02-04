@@ -171,7 +171,7 @@
 		else
 			held_item.forceMove(drop_location())
 		held_item = null
-	if(is_type_in_list(weapon, blacklist))
+	if(is_type_in_typecache(weapon, item_blacklist))
 		say("[weapon] is incompatible with the interaction component!")
 		return
 	held_item = weapon
