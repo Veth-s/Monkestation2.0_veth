@@ -161,6 +161,9 @@
 /obj/item/mcobject/interactor/attackby_secondary(obj/item/weapon, mob/user, params)
 	. = ..()
 	if(held_item)
+		if(held_item == subtypesof(/obj/item/stack/spacecash) || typesof(/obj/item/stack/monkecoin))
+			say("[held_item] is incompatible with this component!")
+			return
 		if(connected_storage)
 			connected_storage.attempt_insert(held_item)
 		else
