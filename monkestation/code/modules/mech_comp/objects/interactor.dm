@@ -18,15 +18,11 @@
 	var/stored_dir = NORTH
 	///the interaction range defaults to ontop of itself
 	var/range = FALSE
-	///blacklisted types
-	var/list/blacklist = list(
+	/// Typecache of items forbidden from being held and used by the component.
+	var/static/list/item_blacklist = typecacheof(list(
 		/obj/item/stack/spacecash,
 		/obj/item/stack/monkecoin,
-	)
-
-
-
-
+	))
 
 /obj/item/mcobject/interactor/Initialize(mapload)
 	. = ..()
