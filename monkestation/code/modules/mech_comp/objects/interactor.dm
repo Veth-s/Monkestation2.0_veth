@@ -22,6 +22,7 @@
 	var/static/list/item_blacklist = typecacheof(list(
 		/obj/item/stack/spacecash,
 		/obj/item/stack/monkecoin,
+		/obj/item/holochip,
 	))
 
 /obj/item/mcobject/interactor/Initialize(mapload)
