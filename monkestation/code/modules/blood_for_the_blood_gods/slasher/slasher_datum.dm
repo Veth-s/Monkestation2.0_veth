@@ -194,10 +194,12 @@
 /obj/item/var/last_multi = 1
 
 /datum/antagonist/slasher/proc/damage_multiplier(obj/item/source, mob/living/attacked, def_zone)
-	var/health_left = max(0, attacked.health) * 0.01
-
+	//var/health_left = max(0, attacked.health) * 0.01
+	var/turf/below_turf = get_turf(attacked)
+	var/turf_light_level = below_turf.get_lumcount()
+	// Convert light level to alpha inversely (darker = more visible)
+	var/health_left = clamp((1 - turf_light_level), 0, 1)
 	attacked.cause_pain(def_zone, source.force)
-
 	source.last_multi = health_left
 
 	return TRUE

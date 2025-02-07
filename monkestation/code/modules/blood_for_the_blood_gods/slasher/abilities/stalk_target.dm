@@ -8,8 +8,11 @@
 
 /datum/action/cooldown/slasher/stalk_target/Activate(atom/target)
 	. = ..()
+	//var/list/crew_minds = get_crewmember_minds()
 	var/list/possible_targets = list()
-	for(var/mob/possible_target as anything in get_crewmember_minds()) //this needs to be in get_crewmembers_minds() but thats impossible to test
+	for(var/mob/possible_target as anything in GLOB.mob_living_list) //this needs to be in get_crewmembers_minds() but thats impossible to test
+		if(!possible_target.mind)
+			continue
 		if(possible_target == owner.mind)
 			continue
 		if(!ishuman(possible_target))
