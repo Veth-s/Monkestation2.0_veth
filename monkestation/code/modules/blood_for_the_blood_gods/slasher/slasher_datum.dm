@@ -159,13 +159,18 @@
 	stalked_human.emote("scream")
 	stalked_human.say("AAAAAAHHHH!!!", forced = "soulsucked")
 	souls_sucked++
+	if(stalked_human && stalked_human.tracking_beacon)
+		qdel(stalked_human.tracking_beacon)
 	stalked_human = null
+
 
 /datum/antagonist/slasher/proc/failed_stalking()
 	to_chat(owner, span_boldwarning("You let your victim be taken before it was time!"))
 	if(linked_machette)
 		linked_machette.force -= 5
 		linked_machette.throwforce -= 5
+	if(stalked_human && stalked_human.tracking_beacon)
+		qdel(stalked_human.tracking_beacon)
 	stalked_human = null
 
 /datum/antagonist/slasher/proc/check_attack(mob/living/attacking_person, mob/living/attacked_mob)
