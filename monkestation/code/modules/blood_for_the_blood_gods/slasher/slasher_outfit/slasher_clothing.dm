@@ -44,3 +44,20 @@
 	clothing_traits = list(TRAIT_NODROP)
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
+/obj/item/storage/belt/slasher
+	name = "slasher's trap fanny pack"
+	desc = "A place to put all your traps."
+
+/obj/item/storage/belt/slasher/Initialize(mapload)
+	. = ..()
+	atom_storage.max_total_storage = 5
+	atom_storage.max_slots = 5
+	atom_storage.set_holdable(/obj/item/restraints/legcuffs/beartrap)
+
+/obj/item/storage/belt/slasher/PopulateContents()
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+

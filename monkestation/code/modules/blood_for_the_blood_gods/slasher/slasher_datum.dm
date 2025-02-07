@@ -4,6 +4,7 @@
 	uniform = /obj/item/clothing/under/color/random/slasher
 	shoes = /obj/item/clothing/shoes/slasher_shoes
 	mask = /obj/item/clothing/mask/gas/slasher
+	belt = /obj/item/storage/belt/slasher
 
 /datum/antagonist/slasher
 	name = "\improper Slasher"
