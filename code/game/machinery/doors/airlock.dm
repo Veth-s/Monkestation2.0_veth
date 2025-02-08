@@ -999,7 +999,8 @@
 		if(isElectrified() && (C.flags_1 & CONDUCT_1) && shock(user, 75))
 			return
 	add_fingerprint(user)
-
+	if(istype(C, /obj/item/slasher_machette))
+		attack_slasher_machete(src, user)
 	if(is_wire_tool(C))
 		if(panel_open)
 			attempt_wire_interaction(user)

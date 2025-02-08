@@ -16,12 +16,24 @@
 
 	var/quick_eater = FALSE // used in an activate() check to see if they recently ate a soul
 
+/datum/action/cooldown/slasher/soul_steal/proc/on_select()
+	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
+	if(slasherdatum)
+		slasherdatum.active_action = src
+
+/datum/action/cooldown/slasher/soul_steal/proc/on_deselect()
+	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
+	if(slasherdatum && slasherdatum.active_action == src)
+		slasherdatum.active_action = null
+
+
 /datum/action/cooldown/slasher/soul_steal/Activate(atom/target)
 
 	var/mob/living/carbon/human/human_target = target
 	var/mob/living/carbon/human/human_owner = owner
 	var/datum/antagonist/slasher/slasherdatum = human_owner.mind.has_antag_datum(/datum/antagonist/slasher)
-
+	if(owner.stat == DEAD)
+		return
 	/**
 	 * Here we start our checks
 	 * We cant do it in PreActivate() since that for some reason does not work
@@ -68,10 +80,10 @@
 	. = ..()
 
 	to_chat(owner, span_boldwarning("You remember that you need to stand perfectly still to consume their soul..."))
-
 	if(!do_after(owner, sucking_time, target)) // you gotta stand perfectly still to consume da soul
 		to_chat(owner, span_boldwarning("You got distracted and was unable to consume your victims soul!"))
 		return FALSE
+
 
 	if(quick_eater)
 		to_chat(owner, span_boldwarning("You can feel your mind slipping, you feel as though bad things will happen if you absorb more souls so quickly!"))
@@ -92,5 +104,7 @@
 	slasherdatum.souls_sucked++
 
 	// lets make their machette stronger
-	slasherdatum.linked_machette.force += 2.5
-	slasherdatum.linked_machette.throwforce += 2.5
+	slasherdatum.linked_machette.force += 5
+	slasherdatum.linked_machette.throwforce += 5
+	if(do_after(owner, sucking_time, target))
+		return TRUE

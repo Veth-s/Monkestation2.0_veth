@@ -15,6 +15,8 @@
 
 /datum/action/cooldown/slasher/summon_machette/Activate(atom/target)
 	. = ..()
+	if(owner.stat == DEAD)
+		return
 	if(!stored_machette || QDELETED(stored_machette))
 		stored_machette = new /obj/item/slasher_machette
 		var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
@@ -43,7 +45,7 @@
 	throwforce = 15 //damage goes up by 2.5 for every soul they take
 	demolition_mod = 1.25
 	armour_penetration = 10
-	tool_behaviour = TOOL_CROWBAR // lets you pry open doors forcibly
+	//tool_behaviour = TOOL_CROWBAR // lets you pry open doors forcibly
 
 	sharpness = SHARP_EDGED
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
@@ -68,7 +70,10 @@
 			living_user.adjustBruteLoss(force)
 			to_chat(user, span_warning("You scream out in pain as you hold the [src]!"))
 			return FALSE
-	. = ..()
+	var/datum/antagonist/slasher/slasherdatum = user.mind?.has_antag_datum(/datum/antagonist/slasher)
+	if(slasherdatum?.active_action && istype(slasherdatum.active_action, /datum/action/cooldown/slasher/soul_steal))
+		return FALSE // Blocks the attack
+	return ..() // Proceeds with normal attack if no soul steal is active
 
 /obj/item/slasher_machette/attack(mob/living/target_mob, mob/living/user, params)
 	if(isliving(user))
@@ -79,4 +84,35 @@
 			living_user.adjustBruteLoss(force)
 			to_chat(user, span_warning("You scream out in pain as you hold the [src]!"))
 			return FALSE
-	. = ..()
+	var/datum/antagonist/slasher/slasherdatum = user.mind?.has_antag_datum(/datum/antagonist/slasher)
+	if(slasherdatum?.active_action && istype(slasherdatum.active_action, /datum/action/cooldown/slasher/soul_steal))
+		return FALSE // Blocks the attack
+	return ..()
+
+/obj/machinery/door/airlock/proc/attack_slasher_machete(atom/target, mob/living/user)
+	if(!user.mind.has_antag_datum(/datum/antagonist/slasher))
+		return
+	if(isElectrified() && shock(user, 100)) //Mmm, fried slasher!
+		add_fingerprint(user)
+		return
+	if(!density) //Already open
+		return
+	if(locked || welded || seal) //Extremely generic, as slasher is stupid.
+		if((user.istate & ISTATE_HARM))
+			return
+		to_chat(user, span_warning("[src] refuses to budge!"))
+		return
+	add_fingerprint(user)
+	user.visible_message(span_warning("[user] begins prying open [src]."),\
+						span_noticealien("You begin digging your machete into [src] with all your might!"),\
+						span_warning("You hear groaning metal..."))
+	var/time_to_open = 5 //half a second
+	if(hasPower())
+		time_to_open = 5 SECONDS //Powered airlocks take longer to open, and are loud.
+		playsound(src, 'sound/machines/airlock_alien_prying.ogg', 100, TRUE, mixer_channel = CHANNEL_SOUND_EFFECTS)
+
+
+	if(do_after(user, time_to_open, src))
+		if(density && !open(BYPASS_DOOR_CHECKS)) //The airlock is still closed, but something prevented it opening. (Another player noticed and bolted/welded the airlock in time!)
+			to_chat(user, span_warning("Despite your efforts, [src] managed to resist your attempts to open it!"))
+		return TRUE

@@ -17,7 +17,7 @@
 	hud_icon = 'monkestation/icons/mob/slasher.dmi'
 	preview_outfit = /datum/outfit/slasher
 	show_to_ghosts = TRUE
-
+	var/datum/action/cooldown/slasher/active_action = null
 	///the linked machette that the slasher can summon even if destroyed and is unique to them
 	var/obj/item/slasher_machette/linked_machette
 	///rallys the amount of souls effects are based on this
@@ -72,6 +72,7 @@
 	ADD_TRAIT(current_mob, TRAIT_NODEATH, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_LIMBATTACHMENT, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_SLASHER, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_NO_PAIN_EFFECTS, "slasher")
 
 	var/mob/living/carbon/carbon = current_mob
 	var/obj/item/organ/internal/eyes/shadow/shadow = new
