@@ -8,20 +8,19 @@
 
 /datum/action/cooldown/slasher/stalk_target/Activate(atom/target)
 	. = ..()
-	var/list/crew_minds = get_crewmember_minds()
 	var/list/possible_targets = list()
-	for(var/datum/mind/possible_target as anything in crew_minds) //this needs to be in get_crewmembers_minds() but thats impossible to test
-		if(!possible_target.current.mind)
+	for(var/mob/possible_target as anything in GLOB.mob_living_list)
+		if(!possible_target.mind)
 			continue
 		if(possible_target == owner.mind)
 			continue
 		if(!ishuman(possible_target))
 			continue
-		if(possible_target.current.stat == DEAD)
+		if(possible_target.stat == DEAD)
 			continue
-		if(!is_station_level(possible_target.current.z))
+		if(!is_station_level(possible_target.z))
 			continue
-		possible_targets += possible_target.current
+		possible_targets += possible_target
 
 	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
 	if(slasherdatum && slasherdatum.stalked_human)
@@ -38,7 +37,22 @@
 		slasherdatum.stalked_human = living_target
 	owner_human.team_monitor.add_to_tracking_network(living_target.tracking_beacon)
 	owner_human.team_monitor.show_hud(owner_human)
-	to_chat(owner, span_notice("Your new target is [living_target]."))
+	var/tracking_beacon_question = null
+	var/list/debug_info = list()
+	if(living_target.tracking_beacon)
+		tracking_beacon_question = "TRUE"
+	else
+		tracking_beacon_question = "FALSE"
+	debug_info += "LIVING TARGET:[living_target]"
+	debug_info += "owner_human:[owner_human]"
+	debug_info += "stalked_human:[slasherdatum.stalked_human]"
+	debug_info += "tracking beacon on? [tracking_beacon_question]"
+	debug_info += "possible targets [possible_targets]"
+
+	if(living_target)
+		to_chat(owner, span_notice("Your new target is [living_target]."))
+	else
+		to_chat(owner, span_notice("No target found. DEBUG INFO: [debug_info]"))
 
 
 

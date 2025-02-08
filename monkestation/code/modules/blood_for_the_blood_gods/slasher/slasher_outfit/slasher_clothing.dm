@@ -17,6 +17,8 @@
 	worn_icon = 'icons/mob/clothing/head/utility.dmi'
 	icon_state = "welding"
 	inhand_icon_state = "welding"
+	flash_protect = FLASH_PROTECTION_WELDER
+	flags_cover = PEPPERPROOF
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	slowdown = 1
 
@@ -55,9 +57,14 @@
 	atom_storage.set_holdable(/obj/item/restraints/legcuffs/beartrap)
 
 /obj/item/storage/belt/slasher/PopulateContents()
-	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
-	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
-	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
-	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
-	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
+	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
 
+
+
+/obj/item/restraints/legcuffs/beartrap/slasher
+	name = "barbed bear trap"
+	breakouttime = 2 SECONDS

@@ -42,7 +42,7 @@
 	force = 15 //damage increases by 2.5 for every soul they take
 	throwforce = 15 //damage goes up by 2.5 for every soul they take
 	demolition_mod = 1.25
-
+	armour_penetration = 10
 	tool_behaviour = TOOL_CROWBAR // lets you pry open doors forcibly
 
 	sharpness = SHARP_EDGED
