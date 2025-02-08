@@ -104,7 +104,7 @@
 	slasherdatum.souls_sucked++
 
 	// lets make their machette stronger
-	slasherdatum.linked_machette.force += 5
-	slasherdatum.linked_machette.throwforce += 5
+	slasherdatum.linked_machette.force += 2
+	slasherdatum.linked_machette.throwforce += 2
 	if(do_after(owner, sucking_time, target))
 		return TRUE
