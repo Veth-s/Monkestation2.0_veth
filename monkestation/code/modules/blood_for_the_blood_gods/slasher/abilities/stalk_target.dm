@@ -8,18 +8,20 @@
 
 /datum/action/cooldown/slasher/stalk_target/Activate(atom/target)
 	. = ..()
-	//var/list/crew_minds = get_crewmember_minds()
+	var/list/crew_minds = get_crewmember_minds()
 	var/list/possible_targets = list()
-	for(var/mob/possible_target as anything in GLOB.mob_living_list) //this needs to be in get_crewmembers_minds() but thats impossible to test
-		if(!possible_target.mind)
+	for(var/datum/mind/possible_target as anything in crew_minds) //this needs to be in get_crewmembers_minds() but thats impossible to test
+		if(!possible_target.current.mind)
 			continue
 		if(possible_target == owner.mind)
 			continue
 		if(!ishuman(possible_target))
 			continue
-		if(possible_target.stat == DEAD)
+		if(possible_target.current.stat == DEAD)
 			continue
-		possible_targets += possible_target//.current
+		if(!is_station_level(possible_target.current.z))
+			continue
+		possible_targets += possible_target.current
 
 	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
 	if(slasherdatum && slasherdatum.stalked_human)
