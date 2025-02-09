@@ -97,22 +97,19 @@
 
 /datum/antagonist/slasher/proc/death_removal()
 	SIGNAL_HANDLER
-	var/list/currently_beating = list()
-	var/list/current_statics = list()
-	for(var/datum/weakref/held as anything in fear_stages)
-		var/stage = fear_stages[held]
-		var/mob/living/carbon/human/human = held.resolve()
-		for(var/datum/weakref/held_ref as anything in heartbeats)
-			var/mob/living/carbon/human/human = held_ref.resolve()
-			human.stop_sound_channel(CHANNEL_HEARTBEAT)
-			heartbeats -= held_ref
-			human.regenerate_icons()
 
-		for(var/datum/weakref/held_ref as anything in mobs_with_fullscreens)
-			var/mob/living/carbon/human/human = held_ref.resolve()
-			human.clear_fullscreen("slasher_prox", 15)
-			mobs_with_fullscreens -= held_ref
-			human.regenerate_icons()
+	for(var/datum/weakref/held_ref as anything in heartbeats)
+		var/mob/living/carbon/human/human = held_ref.resolve()
+		human.stop_sound_channel(CHANNEL_HEARTBEAT)
+		heartbeats -= held_ref
+		human.regenerate_icons()
+		reset_fear(human)
+
+	for(var/datum/weakref/held_ref as anything in mobs_with_fullscreens)
+		var/mob/living/carbon/human/human = held_ref.resolve()
+		human.clear_fullscreen("slasher_prox", 15)
+		mobs_with_fullscreens -= held_ref
+		human.regenerate_icons()
 		reset_fear(human)
 	on_removal()
 
@@ -148,13 +145,13 @@
 		var/mob/living/carbon/human/human = held_ref.resolve()
 		human.stop_sound_channel(CHANNEL_HEARTBEAT)
 		heartbeats -= held_ref
-		helf_ref.regenerate_icons()
+		human.regenerate_icons()
 
 	for(var/datum/weakref/held_ref as anything in (mobs_with_fullscreens - current_statics))
 		var/mob/living/carbon/human/human = held_ref.resolve()
 		human.clear_fullscreen("slasher_prox", 15)
 		mobs_with_fullscreens -= held_ref
-		held_ref.regenerate_icons()
+		human.regenerate_icons()
 
 /datum/status_effect/slasher/stalking
 	id = "slasher_stalkee"
