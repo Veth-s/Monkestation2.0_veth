@@ -139,6 +139,7 @@
 				continue
 			if(stalked_human.stat == DEAD)
 				failed_stalking()
+			increase_fear(stalked_human, (1 / 1.5))
 			stalk_precent += (1 / 1.8)
 		if(stalk_precent >= 100)
 			finish_stalking()
@@ -146,8 +147,8 @@
 /datum/antagonist/slasher/proc/finish_stalking()
 	to_chat(owner, span_boldwarning("You have finished spooking your victim, and have harvested part of their soul!"))
 	if(linked_machette)
-		linked_machette.force += 2.5
-		linked_machette.throwforce += 2.5
+		linked_machette.force += 4
+		linked_machette.throwforce += 4
 	stalked_human.soul_sucked = TRUE
 	if(HAS_TRAIT(stalked_human, TRAIT_USES_SKINTONES))
 		stalked_human.skin_tone = "albino"

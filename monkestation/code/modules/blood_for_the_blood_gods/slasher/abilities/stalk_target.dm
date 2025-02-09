@@ -42,16 +42,15 @@
 	owner_human.team_monitor.add_to_tracking_network(living_target.tracking_beacon)
 	owner_human.team_monitor.show_hud(owner_human)
 	var/tracking_beacon_question = null
-	var/list/debug_info = list()
+	var/debug_info = ""
 	if(living_target.tracking_beacon)
 		tracking_beacon_question = "TRUE"
 	else
 		tracking_beacon_question = "FALSE"
-	debug_info += "LIVING TARGET:[living_target]"
-	debug_info += "owner_human:[owner_human]"
-	debug_info += "stalked_human:[slasherdatum.stalked_human]"
-	debug_info += "tracking beacon on? [tracking_beacon_question]"
-	debug_info += "possible targets [possible_targets]"
+	debug_info += "LIVING TARGET:[living_target], "
+	debug_info += "owner_human:[owner_human], "
+	debug_info += "stalked_human:[slasherdatum.stalked_human], "
+	debug_info += "tracking beacon on? [tracking_beacon_question], "
 	if(living_target)
 		to_chat(owner, span_notice("Your new target is [living_target]. DEBUG INFO: [debug_info]"))
 		slasherdatum.stalk_precent = 0
