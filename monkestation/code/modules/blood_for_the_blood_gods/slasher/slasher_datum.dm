@@ -82,6 +82,7 @@
 	RegisterSignal(current_mob, COMSIG_LIVING_PICKED_UP_ITEM, PROC_REF(item_pickup))
 	RegisterSignal(current_mob, COMSIG_MOB_DROPPING_ITEM, PROC_REF(item_drop))
 	RegisterSignal(current_mob, COMSIG_MOB_ITEM_ATTACK, PROC_REF(check_attack))
+	RegisterSignal(current_mob, COMSIG_LIVING_DEATH, PROC_REF(death_removal))
 
 	///abilities galore
 	for(var/datum/action/cooldown/slasher/listed_slasher as anything in subtypesof(/datum/action/cooldown/slasher))
@@ -94,6 +95,26 @@
 		human.equipOutfit(/datum/outfit/slasher)
 	cached_brute_mod = human.dna.species.brutemod
 
+/datum/antagonist/slasher/proc/death_removal()
+	SIGNAL_HANDLER
+	var/list/currently_beating = list()
+	var/list/current_statics = list()
+	for(var/datum/weakref/held as anything in fear_stages)
+		var/stage = fear_stages[held]
+		var/mob/living/carbon/human/human = held.resolve()
+		for(var/datum/weakref/held_ref as anything in heartbeats)
+			var/mob/living/carbon/human/human = held_ref.resolve()
+			human.stop_sound_channel(CHANNEL_HEARTBEAT)
+			heartbeats -= held_ref
+			human.regenerate_icons()
+
+		for(var/datum/weakref/held_ref as anything in mobs_with_fullscreens)
+			var/mob/living/carbon/human/human = held_ref.resolve()
+			human.clear_fullscreen("slasher_prox", 15)
+			mobs_with_fullscreens -= held_ref
+			human.regenerate_icons()
+		reset_fear(human)
+	on_removal()
 
 /datum/antagonist/slasher/on_removal()
 	. = ..()
@@ -127,11 +148,13 @@
 		var/mob/living/carbon/human/human = held_ref.resolve()
 		human.stop_sound_channel(CHANNEL_HEARTBEAT)
 		heartbeats -= held_ref
+		helf_ref.regenerate_icons()
 
 	for(var/datum/weakref/held_ref as anything in (mobs_with_fullscreens - current_statics))
 		var/mob/living/carbon/human/human = held_ref.resolve()
 		human.clear_fullscreen("slasher_prox", 15)
 		mobs_with_fullscreens -= held_ref
+		held_ref.regenerate_icons()
 
 /datum/status_effect/slasher/stalking
 	id = "slasher_stalkee"
@@ -265,14 +288,12 @@
 /obj/item/var/last_multi = 1
 
 /datum/antagonist/slasher/proc/damage_multiplier(obj/item/source, mob/living/attacked, def_zone)
-	//var/health_left = max(0, attacked.health) * 0.01
 	var/turf/below_turf = get_turf(attacked)
 	var/turf_light_level = below_turf.get_lumcount()
 	var/area/ismaints = get_area(below_turf)
 	var/health_left = 1
 	if(istype(ismaints, /area/station/maintenance))
 		health_left = 1.1
-	// Convert light level to alpha inversely (darker = more visible)
 	else
 		health_left = max(clamp((1 - turf_light_level), 0, 1))
 	attacked.cause_pain(def_zone, source.force)
@@ -312,6 +333,13 @@
 		return
 	fears[weak] -= amount
 	fears[weak] = max(fears[weak], 0)
+	fear_stage_check(weak)
+
+/datum/antagonist/slasher/proc/reset_fear(atom/target)
+	var/datum/weakref/weak = WEAKREF(target)
+	if(!(weak in fears))
+		return
+	fears[weak] = 0
 	fear_stage_check(weak)
 
 /datum/antagonist/slasher/proc/fear_stage_check(datum/weakref/weak)

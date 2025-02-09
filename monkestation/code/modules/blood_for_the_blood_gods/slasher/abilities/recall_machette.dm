@@ -42,7 +42,7 @@
 	righthand_file = 'monkestation/icons/mob/inhands/weapons/melee_righthand.dmi'
 
 	force = 20 //damage increases by 2.5 for every soul they take
-	throwforce = 20 //damage goes up by 2.5 for every soul they take
+	throwforce = 15 //damage goes up by 2.5 for every soul they take
 	demolition_mod = 1.25
 	armour_penetration = 10
 	//tool_behaviour = TOOL_CROWBAR // lets you pry open doors forcibly
@@ -54,12 +54,10 @@
 /obj/item/slasher_machette/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	. = ..()
 	if(iscarbon(hit_atom))
-		var/mob/living/carbon/hit_carbon = hit_atom
-		hit_carbon.blood_volume -= throwforce
 		playsound(src, 'goon/sounds/impact_sounds/Flesh_Stab_3.ogg', 25, 1)
 	if(isliving(hit_atom))
 		var/mob/living/hit_living = hit_atom
-		hit_living.Knockdown(3 SECONDS)
+		hit_living.Knockdown(2 SECONDS)
 
 /obj/item/slasher_machette/attack_hand(mob/user, list/modifiers)
 	if(isliving(user))
