@@ -162,7 +162,9 @@
 	stalked_human.say("AAAAAAHHHH!!!", forced = "soulsucked")
 	souls_sucked++
 	if(stalked_human && stalked_human.tracking_beacon)
-		qdel(stalked_human.tracking_beacon)
+		stalked_human.tracking_beacon.Destroy()
+		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
+		owner_monitor?.hide_hud(owner)
 	stalked_human = null
 
 
@@ -172,7 +174,9 @@
 		linked_machette.force -= 5
 		linked_machette.throwforce -= 5
 	if(stalked_human && stalked_human.tracking_beacon)
-		qdel(stalked_human.tracking_beacon)
+		stalked_human.tracking_beacon.Destroy()
+		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
+		owner_monitor.hide_hud(owner)
 	stalked_human = null
 
 /datum/antagonist/slasher/proc/check_attack(mob/living/attacking_person, mob/living/attacked_mob)

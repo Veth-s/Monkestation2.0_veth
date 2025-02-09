@@ -15,6 +15,7 @@
 	var/turf_light_level = below_turf.get_lumcount()
 	// Convert light level to alpha inversely (darker = more visible)
 	owner.alpha = clamp(200 * (1 - turf_light_level), 0, 200)
+	build_all_button_icons()
 
 
 

@@ -9,7 +9,7 @@
 /datum/action/cooldown/slasher/stalk_target/Activate(atom/target)
 	. = ..()
 	var/list/possible_targets = list()
-	for(var/mob/possible_target as anything in GLOB.mob_living_list)
+	for(var/mob/living/carbon/human/possible_target as anything in GLOB.mob_living_list)
 		if(!possible_target.mind)
 			continue
 		if(possible_target == owner.mind)
@@ -20,11 +20,15 @@
 			continue
 		if(!is_station_level(possible_target.z))
 			continue
+		if(possible_target.soul_sucked == TRUE)
+			continue
 		possible_targets += possible_target
 
 	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
 	if(slasherdatum && slasherdatum.stalked_human)
-		qdel(slasherdatum.stalked_human.tracking_beacon)
+		slasherdatum.stalked_human.tracking_beacon.Destroy()
+		var/datum/component/team_monitor/owner_monitor = owner.mind.current.team_monitor
+		owner_monitor.hide_hud()
 
 	var/mob/living/living_target = pick(possible_targets)
 	var/mob/living/carbon/human/owner_human = owner
@@ -48,7 +52,7 @@
 	debug_info += "stalked_human:[slasherdatum.stalked_human]"
 	debug_info += "tracking beacon on? [tracking_beacon_question]"
 	debug_info += "possible targets [possible_targets]"
-
+	slasherdatum.stalk_precent = 0
 	if(living_target)
 		to_chat(owner, span_notice("Your new target is [living_target]."))
 	else
