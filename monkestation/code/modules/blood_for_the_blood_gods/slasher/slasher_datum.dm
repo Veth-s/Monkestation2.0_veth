@@ -139,6 +139,8 @@
 	show_duration = FALSE
 	tick_interval = 1 SECONDS
 	status_type = STATUS_EFFECT_UNIQUE
+	alert_type = null
+
 	var/datum/antagonist/slasher/slasherdatum
 
 /datum/status_effect/slasher/stalking/on_creation(mob/living/new_owner, datum/antagonist/slasher/set_slasherdatum)
@@ -164,6 +166,10 @@
 				slasherdatum.increase_fear(owner, 1)
 			if(slasherdatum.stalk_precent >= 100)
 				slasherdatum.finish_stalking()
+
+/datum/status_effect/slasher
+	id = "slasher"
+	alert_type = null
 
 /datum/status_effect/slasher/stalker
 	id = "slashing_stalking"
