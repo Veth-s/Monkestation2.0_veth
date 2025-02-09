@@ -3,12 +3,19 @@
 	desc = "Become masked in the light and visible in the dark."
 	button_icon_state = "incorporealize"
 	cooldown_time = 20 SECONDS
+	var/processing = FALSE
 
 
 /datum/action/cooldown/slasher/envelope_darkness/Activate(atom/target)
+	if(processing == TRUE)
+		break_envelope()
+		processing = FALSE
+		build_all_button_icons()
 	RegisterSignal(owner, COMSIG_MOB_AFTER_APPLY_DAMAGE, PROC_REF(break_envelope))
 	RegisterSignal(owner, COMSIG_ATOM_PRE_BULLET_ACT,  PROC_REF(break_envelope))
 	START_PROCESSING(SSfastprocess, src)
+	processing = TRUE
+	build_all_button_icons()
 
 /datum/action/cooldown/slasher/envelope_darkness/process()
 	var/turf/below_turf = get_turf(owner)

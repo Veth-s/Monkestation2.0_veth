@@ -52,10 +52,10 @@
 	debug_info += "stalked_human:[slasherdatum.stalked_human]"
 	debug_info += "tracking beacon on? [tracking_beacon_question]"
 	debug_info += "possible targets [possible_targets]"
-	slasherdatum.stalk_precent = 0
 	if(living_target)
-		to_chat(owner, span_notice("Your new target is [living_target]."))
-	else
+		to_chat(owner, span_notice("Your new target is [living_target]. DEBUG INFO: [debug_info]"))
+		slasherdatum.stalk_precent = 0
+	if(living_target == null)
 		to_chat(owner, span_notice("No target found. DEBUG INFO: [debug_info]"))
 
 
