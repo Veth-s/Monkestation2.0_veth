@@ -231,6 +231,7 @@ love, veth
 		"mobType" = "null",
 		"firstSeen" = "Never",
 		"accountRegistered" = "Unknown",
+		"playtime" = "Unknown",
 		"muteStates" = list(
 			"ic" = FALSE,
 			"ooc" = FALSE,
@@ -258,6 +259,7 @@ love, veth
 			player_data["mobType"] = "[initial(player.type)]" || "null"
 			player_data["firstSeen"] = client_info.player_join_date || "Never"
 			player_data["accountRegistered"] = client_info.account_join_date || "Unknown"
+			player_data["playtime"] = "[client_info.get_exp_living(TRUE) / 60 ] hours" || "Unknown"
 			// Safely check mute states
 			if(client_info.prefs)
 				player_data["muteStates"] = list(
@@ -573,6 +575,11 @@ love, veth
 				"admin_token" = usr.client.holder.href_token
 			))
 			return
+		if("popup")
+			usr.client.holder.Topic(null, list(
+				"adminpopup" = REF(selected_mob),
+				"admin_token" = usr.client.holder.href_token
+			))
 		// Mute Controls
 		if("toggleMute")
 			var/muteType = params["type"]

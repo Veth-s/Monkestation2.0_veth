@@ -25,6 +25,7 @@ const DEFAULT_PLAYER_DATA: PlayerData = {
   relatedByIp: '',
   firstSeen: 'Never',
   accountRegistered: 'Unknown',
+  playtime: 'Unknown',
   muteStates: {
     ic: false,
     ooc: false,
@@ -49,6 +50,7 @@ interface PlayerData {
   firstSeen: string;
   accountRegistered: string;
   muteStates: MuteStates;
+  playtime: string;
 }
 
 interface BackendData {
@@ -192,6 +194,10 @@ export const VUAP_personal = (props) => {
                     onClick={() => handleAction('relatedbyip')}
                   />
                 </Table.Row>
+                <Table.Row>
+                  <Table.Cell bold>Playtime</Table.Cell>
+                  <Table.Cell>{playerData.playtime}</Table.Cell>
+                </Table.Row>
               </Table>
             </Section>
           </Stack.Item>
@@ -257,6 +263,12 @@ export const VUAP_personal = (props) => {
                         icon="user-secret"
                         content="SM"
                         onClick={() => handleAction('sm')}
+                      />
+                      <Button
+                        fluid
+                        icon="comment"
+                        content="POPUP"
+                        onClick={() => handleAction('popup')}
                       />
                     </Grid.Column>
                     <Grid.Column size={6}>
