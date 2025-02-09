@@ -10,8 +10,8 @@
 	. = ..()
 	var/list/possible_targets = list()
 	for(var/mob/living/carbon/human/possible_target as anything in GLOB.mob_living_list)
-		if(!possible_target.mind)
-			continue
+		//if(!possible_target.mind)
+		//	continue
 		if(possible_target == owner.mind)
 			continue
 		if(!ishuman(possible_target))
@@ -54,6 +54,9 @@
 	if(living_target)
 		to_chat(owner, span_notice("Your new target is [living_target]. DEBUG INFO: [debug_info]"))
 		slasherdatum.stalk_precent = 0
+		var/datum/antagonist/slasher/set_slasherdatum = slasherdatum
+		living_target.apply_status_effect(/datum/status_effect/slasher/stalking, set_slasherdatum)
+		owner_human.apply_status_effect(/datum/status_effect/slasher/stalker)
 	if(living_target == null)
 		to_chat(owner, span_notice("No target found. DEBUG INFO: [debug_info]"))
 

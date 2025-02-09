@@ -133,16 +133,73 @@
 		human.clear_fullscreen("slasher_prox", 15)
 		mobs_with_fullscreens -= held_ref
 
-	if(stalked_human)
-		for(var/mob/living/mob in view(7, source))
-			if(stalked_human != mob)
+/datum/status_effect/slasher/stalking
+	id = "slasher_stalkee"
+	duration = STATUS_EFFECT_PERMANENT
+	show_duration = FALSE
+	tick_interval = 1 SECONDS
+	status_type = STATUS_EFFECT_UNIQUE
+	var/datum/antagonist/slasher/slasherdatum
+
+/datum/status_effect/slasher/stalking/on_creation(mob/living/new_owner, datum/antagonist/slasher/set_slasherdatum)
+	. = ..()
+	if(!.)
+		return FALSE
+	slasherdatum = set_slasherdatum
+
+/datum/status_effect/slasher/stalking/on_apply()
+	. = ..()
+
+/datum/status_effect/slasher/stalking/on_remove()
+	. = ..()
+	slasherdatum.finish_stalking()
+
+/datum/status_effect/slasher/stalking/tick(seconds_per_tick, times_fired)
+	if(slasherdatum.stalked_human)
+		for(var/mob/living/mob in view(7, owner))
+			if(mob == owner)
 				continue
-			if(stalked_human.stat == DEAD)
-				failed_stalking()
-			increase_fear(stalked_human, (1 / 0.7))
-			stalk_precent += (1 / 0.9)
-		if(stalk_precent >= 100)
-			finish_stalking()
+			if(mob.mind.has_antag_datum(/datum/antagonist/slasher) && slasherdatum.stalked_human == owner)
+				slasherdatum.stalk_precent += (1 / 1.8) //3 minutes, hopefully.
+				slasherdatum.increase_fear(owner, 1)
+			if(slasherdatum.stalk_precent >= 100)
+				slasherdatum.finish_stalking()
+
+/datum/status_effect/slasher/stalker
+	id = "slashing_stalking"
+	duration = STATUS_EFFECT_PERMANENT
+	show_duration = FALSE
+	tick_interval = 1 SECONDS
+	alert_type = /atom/movable/screen/alert/status_effect/slasher/stalker
+	status_type = STATUS_EFFECT_UNIQUE
+	var/datum/antagonist/slasher/slasherdatum
+
+/datum/status_effect/slasher/stalking/on_creation(mob/living/new_owner, datum/antagonist/slasher/set_slasherdatum)
+	. = ..()
+	if(!.)
+		return FALSE
+	slasherdatum = set_slasherdatum
+
+/datum/status_effect/slasher/stalker/on_apply()
+	. = ..()
+	to_chat(owner, span_notice("You begin stalking your target, [slasherdatum.stalked_human]"))
+
+/atom/movable/screen/alert/status_effect/slasher/stalker
+	name = "Stalking"
+	desc = "You are stalking your target..."
+	icon = 'goon/icons/mob/slasher.dmi'
+	icon_state = "slasher_possession"
+	clickable_glow = TRUE
+
+/atom/movable/screen/alert/status_effect/slasher/stalker/Click()
+	. = ..()
+	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
+	if(!slasherdatum.stalked_human)
+		return
+	var/stalk_progress = round(slasherdatum.stalk_precent)
+	to_chat(owner, span_notice("Your victim is [stalk_progress]% stalked. More is needed..."))
+
+
 
 /datum/antagonist/slasher/proc/finish_stalking()
 	to_chat(owner, span_boldwarning("You have finished spooking your victim, and have harvested part of their soul!"))
@@ -166,6 +223,7 @@
 		stalked_human.tracking_beacon.Destroy()
 		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
 		owner_monitor?.hide_hud(owner)
+	stalked_human.remove_status_effect(/datum/status_effect/slasher/stalking)
 	stalked_human = null
 
 
