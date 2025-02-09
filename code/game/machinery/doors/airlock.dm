@@ -1001,6 +1001,7 @@
 	add_fingerprint(user)
 	if(istype(C, /obj/item/slasher_machette))
 		attack_slasher_machete(src, user)
+		return COMPONENT_NO_AFTERATTACK
 	if(is_wire_tool(C))
 		if(panel_open)
 			attempt_wire_interaction(user)

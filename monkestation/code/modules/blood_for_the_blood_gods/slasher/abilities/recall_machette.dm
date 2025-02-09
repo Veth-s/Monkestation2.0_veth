@@ -83,10 +83,10 @@
 			user.emote("scream")
 			living_user.adjustBruteLoss(force)
 			to_chat(user, span_warning("You scream out in pain as you hold the [src]!"))
-			return FALSE
+			return
 	var/datum/antagonist/slasher/slasherdatum = user.mind?.has_antag_datum(/datum/antagonist/slasher)
-	if(slasherdatum?.active_action && istype(slasherdatum.active_action, /datum/action/cooldown/slasher/soul_steal))
-		return FALSE // Blocks the attack
+	if(slasherdatum?.active_action)
+		return TRUE // Blocks the attack
 	return ..()
 
 /obj/machinery/door/airlock/proc/attack_slasher_machete(atom/target, mob/living/user)
@@ -115,4 +115,4 @@
 	if(do_after(user, time_to_open, src))
 		if(density && !open(BYPASS_DOOR_CHECKS)) //The airlock is still closed, but something prevented it opening. (Another player noticed and bolted/welded the airlock in time!)
 			to_chat(user, span_warning("Despite your efforts, [src] managed to resist your attempts to open it!"))
-	return COMPONENT_HOSTILE_NO_ATTACK
+		return
