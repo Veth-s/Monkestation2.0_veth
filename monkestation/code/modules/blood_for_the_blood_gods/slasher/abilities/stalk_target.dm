@@ -10,8 +10,8 @@
 	. = ..()
 	var/list/possible_targets = list()
 	for(var/mob/living/carbon/human/possible_target as anything in GLOB.mob_living_list)
-		//if(!possible_target.mind)
-		//	continue
+		if(!possible_target.mind)
+			continue
 		if(possible_target == owner.mind)
 			continue
 		if(!ishuman(possible_target))

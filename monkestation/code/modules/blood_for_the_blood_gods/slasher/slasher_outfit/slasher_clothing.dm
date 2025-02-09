@@ -68,3 +68,4 @@
 /obj/item/restraints/legcuffs/beartrap/slasher
 	name = "barbed bear trap"
 	breakouttime = 2 SECONDS
+	w_class = WEIGHT_CLASS_SMALL
