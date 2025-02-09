@@ -139,8 +139,8 @@
 				continue
 			if(stalked_human.stat == DEAD)
 				failed_stalking()
-			increase_fear(stalked_human, (1 / 1.5))
-			stalk_precent += (1 / 1.8)
+			increase_fear(stalked_human, (1 / 0.7))
+			stalk_precent += (1 / 0.9)
 		if(stalk_precent >= 100)
 			finish_stalking()
 
