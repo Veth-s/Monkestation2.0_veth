@@ -52,9 +52,10 @@
 
 /obj/item/storage/belt/slasher/Initialize(mapload)
 	. = ..()
-	atom_storage.max_total_storage = 5
+	atom_storage.max_total_storage = 15
 	atom_storage.max_slots = 5
 	atom_storage.set_holdable(/obj/item/restraints/legcuffs/beartrap/slasher)
+	atom_storage.max_specific_storage = WEIGHT_CLASS_NORMAL
 
 /obj/item/storage/belt/slasher/PopulateContents()
 	SSwardrobe.provide_type(/obj/item/restraints/legcuffs/beartrap/slasher, src)
@@ -68,4 +69,3 @@
 /obj/item/restraints/legcuffs/beartrap/slasher
 	name = "barbed bear trap"
 	breakouttime = 2 SECONDS
-	w_class = WEIGHT_CLASS_SMALL

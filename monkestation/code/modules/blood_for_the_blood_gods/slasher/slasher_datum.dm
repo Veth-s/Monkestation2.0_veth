@@ -97,7 +97,14 @@
 
 /datum/antagonist/slasher/proc/death_removal()
 	SIGNAL_HANDLER
+	owner.remove_antag_datum(/datum/antagonist/slasher)
 
+/datum/antagonist/slasher/on_removal()
+	. = ..()
+	owner.current.clear_fullscreen("slasher_prox", 15)
+	owner.current.remove_traits(list(TRAIT_BATON_RESISTANCE, TRAIT_CLUMSY, TRAIT_NODEATH, TRAIT_DUMB, TRAIT_LIMBATTACHMENT), "slasher")
+	for(var/datum/action/cooldown/slasher/listed_slasher as anything in powers)
+		listed_slasher.Remove(owner.current)
 	for(var/datum/weakref/held_ref as anything in heartbeats)
 		var/mob/living/carbon/human/human = held_ref.resolve()
 		human.stop_sound_channel(CHANNEL_HEARTBEAT)
@@ -111,14 +118,7 @@
 		mobs_with_fullscreens -= held_ref
 		human.regenerate_icons()
 		reset_fear(human)
-	on_removal()
 
-/datum/antagonist/slasher/on_removal()
-	. = ..()
-	owner.current.clear_fullscreen("slasher_prox", 15)
-	owner.current.remove_traits(list(TRAIT_BATON_RESISTANCE, TRAIT_CLUMSY, TRAIT_NODEATH, TRAIT_DUMB, TRAIT_LIMBATTACHMENT), "slasher")
-	for(var/datum/action/cooldown/slasher/listed_slasher as anything in powers)
-		listed_slasher.Remove(owner.current)
 
 /datum/antagonist/slasher/proc/LifeTick(mob/living/source, seconds_per_tick, times_fired)
 
@@ -174,13 +174,17 @@
 
 /datum/status_effect/slasher/stalking/on_remove()
 	. = ..()
-	slasherdatum.finish_stalking()
+
 
 /datum/status_effect/slasher/stalking/tick(seconds_per_tick, times_fired)
 	if(slasherdatum.stalked_human)
 		for(var/mob/living/mob in view(7, owner))
 			if(mob == owner)
 				continue
+			if(mob.stat == DEAD)
+				slasherdatum.failed_stalking()
+			if(!istype(mob, /mob/living/carbon/human))
+				slasherdatum.reset_stalking()
 			if(mob.mind.has_antag_datum(/datum/antagonist/slasher) && slasherdatum.stalked_human == owner)
 				slasherdatum.stalk_precent += (1 / 1.8) //3 minutes, hopefully.
 				slasherdatum.increase_fear(owner, 1)
@@ -208,7 +212,7 @@
 
 /datum/status_effect/slasher/stalker/on_apply()
 	. = ..()
-	to_chat(owner, span_notice("You begin stalking your target, [slasherdatum.stalked_human]"))
+	to_chat(owner, span_notice("You begin stalking your target, [slasherdatum.stalked_human], who is a [slasherdatum.stalked_human.job]"))
 
 /atom/movable/screen/alert/status_effect/slasher/stalker
 	name = "Stalking"
@@ -226,6 +230,15 @@
 	to_chat(owner, span_notice("Your victim is [stalk_progress]% stalked. More is needed..."))
 
 
+/datum/antagonist/slasher/proc/reset_stalking()
+	stalked_human.remove_status_effect(/datum/status_effect/slasher/stalking)
+	stalked_human.clear_alert("slashing_stalkee")
+	owner.current.clear_alert("slashing_stalker")
+	reset_fear(stalked_human)
+	stalked_human = null
+	var/datum/action/cooldown/slasher/stalk_target/power = owner?.has_antag_datum(/datum/antagonist/slasher)
+	power.StartCooldown(1)
+	to_chat(owner, span_notice("Your target is no longer spookable..."))
 
 /datum/antagonist/slasher/proc/finish_stalking()
 	to_chat(owner, span_boldwarning("You have finished spooking your victim, and have harvested part of their soul!"))
@@ -250,6 +263,8 @@
 		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
 		owner_monitor?.hide_hud(owner)
 	stalked_human.remove_status_effect(/datum/status_effect/slasher/stalking)
+	stalked_human.clear_alert("slashing_stalkee")
+	reset_fear(stalked_human)
 	stalked_human = null
 
 
@@ -262,6 +277,8 @@
 		stalked_human.tracking_beacon.Destroy()
 		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
 		owner_monitor.hide_hud(owner)
+		owner.current.clear_alert("slashing_stalking")
+		reset_fear(stalked_human)
 	stalked_human = null
 
 /datum/antagonist/slasher/proc/check_attack(mob/living/attacking_person, mob/living/attacked_mob)

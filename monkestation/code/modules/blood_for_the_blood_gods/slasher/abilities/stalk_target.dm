@@ -22,6 +22,10 @@
 			continue
 		if(possible_target.soul_sucked == TRUE)
 			continue
+		if(istype(possible_target, /datum/species/abductor)) //prevents abductors being chosen, they can't be spooked.
+			continue
+		if(possible_target.ssd_indicator == TRUE) //ssd people can't be spooked.
+			continue
 		possible_targets += possible_target
 
 	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
