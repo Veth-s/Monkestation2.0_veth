@@ -19,6 +19,9 @@
 	create_storage(storage_type = /datum/storage/pockets/shoes/clown)
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_CLOWN, CELL_VIRUS_TABLE_GENERIC, rand(2,3), 0)
 
+/obj/item/clothing/shoes/magboots/boomboots/update_icon_state()
+	. = ..()
+
 /obj/item/clothing/shoes/magboots/boomboots/equipped(mob/user, slot)
 	. = ..()
 	var/mob/living/carbon/human/clown_user = user
