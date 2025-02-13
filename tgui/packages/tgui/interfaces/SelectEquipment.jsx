@@ -219,6 +219,7 @@ const CurrentlySelectedDisplay = (props) => {
 const ConfirmationBox = (props) => {
   const { act, data } = useBackend();
   const [holyEffect, setHolyEffect] = useLocalState('holyEffect', false);
+  const [unholyEffect, setunholyEffect] = useLocalState('unholyEffect', false);
   const [applyQuirks, setApplyQuirks] = useLocalState(
     'applyQuirks',
     'No Quirks',
@@ -249,6 +250,11 @@ const ConfirmationBox = (props) => {
               onClick={() => setHolyEffect(!holyEffect)}
               content="Holy Effect"
             />
+            <Button.Checkbox
+              checked={holyEffect}
+              onClick={() => setunholyEffect(!unholyEffect)}
+              content="Unholy Effect"
+            />
           </Stack.Item>
           <Stack.Item>
             <Button
@@ -259,6 +265,7 @@ const ConfirmationBox = (props) => {
                 act('applyoutfit', {
                   path: current_outfit,
                   holyEffect,
+                  unholyEffect,
                   applyQuirks,
                 })
               }
