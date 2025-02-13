@@ -63,7 +63,7 @@ export const SelectEquipment = (props) => {
   const currentOutfitEntry = getOutfitEntry(current_outfit);
 
   return (
-    <Window width={670} height={415} theme="admin">
+    <Window width={750} height={415} theme="admin">
       <Window.Content>
         <Stack fill>
           <Stack.Item>
@@ -218,19 +218,18 @@ const CurrentlySelectedDisplay = (props) => {
 
 const ConfirmationBox = (props) => {
   const { act, data } = useBackend();
+  const { current_outfit } = data;
   const [holyEffect, setHolyEffect] = useLocalState('holyEffect', false);
-  const [unholyEffect, setunholyEffect] = useLocalState('unholyEffect', false);
+  const [unholyEffect, setUnholyEffect] = useLocalState('unholyEffect', false);
   const [applyQuirks, setApplyQuirks] = useLocalState(
     'applyQuirks',
     'No Quirks',
   );
-  const { current_outfit } = data;
+
   return (
-    <Stack align="center">
+    <Stack>
       <Stack.Item grow>
         <Dropdown
-          width="200%"
-          // I would add more options here but that would be excessively long,- flleeppyy
           options={[
             'No Quirks',
             'All Quirks',
@@ -240,40 +239,37 @@ const ConfirmationBox = (props) => {
           ]}
           selected={applyQuirks}
           onSelected={(value) => setApplyQuirks(value)}
+          width="100%"
         />
       </Stack.Item>
       <Stack.Item>
-        <Stack>
-          <Stack.Item>
-            <Button.Checkbox
-              checked={holyEffect}
-              onClick={() => setHolyEffect(!holyEffect)}
-              content="Holy Effect"
-            />
-            <Button.Checkbox
-              checked={holyEffect}
-              onClick={() => setunholyEffect(!unholyEffect)}
-              content="Unholy Effect"
-            />
-          </Stack.Item>
-          <Stack.Item>
-            <Button
-              mr={0.8}
-              lineHeight={2}
-              color="green"
-              onClick={() =>
-                act('applyoutfit', {
-                  path: current_outfit,
-                  holyEffect,
-                  unholyEffect,
-                  applyQuirks,
-                })
-              }
-            >
-              Confirm
-            </Button>
-          </Stack.Item>
-        </Stack>
+        <Button.Checkbox
+          checked={holyEffect}
+          onClick={() => setHolyEffect(!holyEffect)}
+          content="Holy Effect"
+        />
+      </Stack.Item>
+      <Stack.Item>
+        <Button.Checkbox
+          checked={unholyEffect}
+          onClick={() => setUnholyEffect(!unholyEffect)}
+          content="Unholy Effect"
+        />
+      </Stack.Item>
+      <Stack.Item>
+        <Button
+          color="green"
+          onClick={() =>
+            act('applyoutfit', {
+              path: current_outfit,
+              holyEffect,
+              unholyEffect,
+              applyQuirks,
+            })
+          }
+        >
+          Confirm
+        </Button>
       </Stack.Item>
     </Stack>
   );

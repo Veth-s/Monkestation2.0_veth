@@ -21,3 +21,5 @@
 
 	if(params["holyEffect"])
 		new /obj/effect/holy(target_mob_living.loc)
+	if(params["unholyEffect"])
+		target_mob_living.mods_bring_them_to_life_fancy(size = 1)
