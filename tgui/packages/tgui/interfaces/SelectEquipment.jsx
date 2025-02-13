@@ -219,8 +219,7 @@ const CurrentlySelectedDisplay = (props) => {
 const ConfirmationBox = (props) => {
   const { act, data } = useBackend();
   const { current_outfit } = data;
-  const [holyEffect, setHolyEffect] = useLocalState('holyEffect', false);
-  const [unholyEffect, setUnholyEffect] = useLocalState('unholyEffect', false);
+  const [effectState, setEffectState] = useLocalState('effectState', 'None');
   const [applyQuirks, setApplyQuirks] = useLocalState(
     'applyQuirks',
     'No Quirks',
@@ -228,7 +227,7 @@ const ConfirmationBox = (props) => {
 
   return (
     <Stack>
-      <Stack.Item grow>
+      <Stack.Item grow={2}>
         <Dropdown
           options={[
             'No Quirks',
@@ -242,18 +241,12 @@ const ConfirmationBox = (props) => {
           width="100%"
         />
       </Stack.Item>
-      <Stack.Item>
-        <Button.Checkbox
-          checked={holyEffect}
-          onClick={() => setHolyEffect(!holyEffect)}
-          content="Holy Effect"
-        />
-      </Stack.Item>
-      <Stack.Item>
-        <Button.Checkbox
-          checked={unholyEffect}
-          onClick={() => setUnholyEffect(!unholyEffect)}
-          content="Unholy Effect"
+      <Stack.Item grow={1}>
+        <Dropdown
+          options={['None', 'Holy', 'Unholy']}
+          selected={effectState}
+          onSelected={(value) => setEffectState(value)}
+          width="100%"
         />
       </Stack.Item>
       <Stack.Item>
@@ -262,8 +255,7 @@ const ConfirmationBox = (props) => {
           onClick={() =>
             act('applyoutfit', {
               path: current_outfit,
-              holyEffect,
-              unholyEffect,
+              effectState: effectState, // Pass the state directly
               applyQuirks,
             })
           }
