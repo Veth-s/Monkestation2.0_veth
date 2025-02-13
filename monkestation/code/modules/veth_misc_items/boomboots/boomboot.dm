@@ -6,7 +6,7 @@
 	worn_icon = 'monkestation/icons/mob/clothing/feet.dmi'
 	icon_state = "boomboot0"
 	base_icon_state = "boomboot0"
-	inhand_icon_state = "boomboot0"
+	inhand_icon_state = "clown_shoes"
 	slowdown = SHOES_SLOWDOWN + 1
 	actions_types = list(/datum/action/item_action/toggle)
 	var/enabled_waddle = TRUE
