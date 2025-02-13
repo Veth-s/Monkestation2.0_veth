@@ -5,8 +5,8 @@
 	icon = 'monkestation/icons/obj/clothing/shoes.dmi'
 	worn_icon = 'monkestation/icons/mob/clothing/feet.dmi'
 	icon_state = "boomboot0"
-	base_icon_state = "boomboot"
-	inhand_icon_state = "boomboot"
+	base_icon_state = "boomboot0"
+	inhand_icon_state = "boomboot0"
 	slowdown = SHOES_SLOWDOWN + 1
 	actions_types = list(/datum/action/item_action/toggle)
 	var/enabled_waddle = TRUE
@@ -21,6 +21,10 @@
 
 /obj/item/clothing/shoes/magboots/boomboots/update_icon_state()
 	. = ..()
+	if(magpulse)
+		icon_state = "boomboot1"
+	else
+		icon_state = "boomboot0"
 
 /obj/item/clothing/shoes/magboots/boomboots/equipped(mob/user, slot)
 	. = ..()
