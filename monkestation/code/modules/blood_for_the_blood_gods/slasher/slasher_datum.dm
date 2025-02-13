@@ -17,6 +17,7 @@
 	hud_icon = 'monkestation/icons/mob/slasher.dmi'
 	preview_outfit = /datum/outfit/slasher
 	show_to_ghosts = TRUE
+	objectives = list("Harvest souls by stalking your targets and feasting on their fear.", "Use soulsteal to harvest souls.", "Use your traps to slow down your victims.")
 	var/datum/action/cooldown/slasher/active_action = null
 	///the linked machette that the slasher can summon even if destroyed and is unique to them
 	var/obj/item/slasher_machette/linked_machette
@@ -55,6 +56,7 @@
 	var/list/seers = list()
 	///this is the time counter for stalking
 	var/time_counter = 0
+
 
 /datum/antagonist/slasher/apply_innate_effects(mob/living/mob_override)
 	. = ..()
