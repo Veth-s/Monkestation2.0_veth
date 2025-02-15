@@ -142,6 +142,14 @@
 				human.overlay_fullscreen("slasher_prox", /atom/movable/screen/fullscreen/nearby, 1)
 				mobs_with_fullscreens |= held
 
+		else
+			if(held in heartbeats)
+				human.stop_sound_channel(CHANNEL_HEARTBEAT)
+				heartbeats -= held
+			if(held in mobs_with_fullscreens)
+				human.clear_fullscreen("slasher_prox", 15)
+				mobs_with_fullscreens -= held
+
 
 	for(var/datum/weakref/held_ref as anything in (heartbeats - currently_beating))
 		var/mob/living/carbon/human/human = held_ref.resolve()
