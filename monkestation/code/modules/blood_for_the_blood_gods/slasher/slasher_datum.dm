@@ -155,6 +155,10 @@
 		mobs_with_fullscreens -= held_ref
 		human.regenerate_icons()
 
+	for(var/datum/weakref/held_ref as anything in mobs_with_fullscreens - stalked_human)
+		var/mob/living/carbon/human/human = held_ref.resolve()
+		reduce_fear(human, 1)
+
 /datum/status_effect/slasher/stalking
 	id = "slasher_stalkee"
 	duration = STATUS_EFFECT_PERMANENT
