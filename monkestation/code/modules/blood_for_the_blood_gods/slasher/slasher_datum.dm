@@ -75,6 +75,7 @@
 	ADD_TRAIT(current_mob, TRAIT_LIMBATTACHMENT, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_SLASHER, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_NO_PAIN_EFFECTS, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_VIRUSIMMUNE, "slasher")
 
 	var/mob/living/carbon/carbon = current_mob
 	var/obj/item/organ/internal/eyes/shadow/shadow = new
@@ -149,7 +150,6 @@
 			if(held in mobs_with_fullscreens)
 				human.clear_fullscreen("slasher_prox", 15)
 				mobs_with_fullscreens -= held
-		var/datum/mind/mind = human.mind
 		for(var/mob/living/carbon/human/mobs_in_view as anything in view(7, src))
 			var/datum/mind/mind_in_view = mobs_in_view.mind
 			if(!mind_in_view.has_antag_datum(/datum/antagonist/slasher))
@@ -254,7 +254,8 @@
 	stalked_human.clear_alert("slashing_stalkee")
 	owner.current.clear_alert("slashing_stalker")
 	stalked_human.tracking_beacon.Destroy()
-	var/datum/component/team_monitor/owner_monitor = owner.mind.current.team_monitor
+	var/mob/living/carbon/human/human = owner.current
+	var/datum/component/team_monitor/owner_monitor = human.team_monitor
 	owner_monitor.hide_hud()
 	reset_fear(stalked_human)
 	stalked_human = null
