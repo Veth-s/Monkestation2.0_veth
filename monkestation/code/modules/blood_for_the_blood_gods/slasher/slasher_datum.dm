@@ -150,9 +150,12 @@
 			if(held in mobs_with_fullscreens)
 				human.clear_fullscreen("slasher_prox", 15)
 				mobs_with_fullscreens -= held
+	for(var/datum/weakref/weak as anything in fear_stages)
+		var/mob/living/carbon/human/human = weak.resolve()
+		var/datum/mind/mind = human.mind
 		for(var/mob/living/carbon/human/mobs_in_view as anything in view(7, src))
 			var/datum/mind/mind_in_view = mobs_in_view.mind
-			if(!mind_in_view.has_antag_datum(/datum/antagonist/slasher))
+			if(!mind_in_view.has_antag_datum(mind, /datum/antagonist/slasher))
 				reduce_fear(human, 2)
 			else
 				continue
