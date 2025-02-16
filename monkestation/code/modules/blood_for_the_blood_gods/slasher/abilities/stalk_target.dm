@@ -9,7 +9,7 @@
 /datum/action/cooldown/slasher/stalk_target/Activate(atom/target)
 	. = ..()
 	var/list/possible_targets = list()
-	for(var/mob/living/carbon/human/possible_target as anything in GLOB.mob_living_list)
+	for(var/mob/living/carbon/human/possible_target as anything in GLOB.player_list)
 		if(!possible_target.mind)
 			continue
 		if(possible_target == owner.mind)
