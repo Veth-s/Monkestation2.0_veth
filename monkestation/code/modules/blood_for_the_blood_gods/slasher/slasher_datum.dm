@@ -17,7 +17,7 @@
 	hud_icon = 'monkestation/icons/mob/slasher.dmi'
 	preview_outfit = /datum/outfit/slasher
 	show_to_ghosts = TRUE
-	objectives = list("Harvest souls by stalking your targets and feasting on their fear.", "Use soulsteal to harvest souls.", "Use your traps to slow down your victims.")
+	objectives = list(/datum/objective/slasher/harvest_souls, /datum/objective/slasher/soulsteal, /datum/objective/slasher/trappem)
 	var/datum/action/cooldown/slasher/active_action = null
 	///the linked machette that the slasher can summon even if destroyed and is unique to them
 	var/obj/item/slasher_machette/linked_machette
@@ -231,8 +231,9 @@
 		return FALSE
 	slasherdatum = set_slasherdatum
 
-/datum/status_effect/slasher/stalker/on_apply()
+/datum/status_effect/slasher/stalker/on_apply(mob/living/source)
 	. = ..()
+	var/datum/antagonist/slasher/slasherdatum = source.mind.has_antag_datum(/datum/antagonist/slasher)
 	to_chat(owner, span_notice("You begin stalking your target, [slasherdatum.stalked_human], who is a [slasherdatum.stalked_human.job]"))
 
 /atom/movable/screen/alert/status_effect/slasher/stalker
@@ -479,3 +480,19 @@
 	else
 		new_image.loc = source
 	add_client_image(new_image, enterer.client)
+
+/datum/objective/slasher/harvest_souls
+	name = "Harvest Souls"
+	explanation_text = "Harvest souls by stalking your targets and feasting on their fear."
+	admin_grantable = TRUE
+
+/datum/objective/slasher/soulsteal
+	name = "Soulsteal"
+	explanation_text = "Use soulsteal to harvest souls."
+	admin_grantable = TRUE
+
+/datum/objective/slasher/trappem
+	name = "Trapping"
+	explanation_text = "Use your traps to slow down your victims."
+	admin_grantable = TRUE
+
