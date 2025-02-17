@@ -85,8 +85,9 @@
 	RegisterSignal(current_mob, COMSIG_LIVING_PICKED_UP_ITEM, PROC_REF(item_pickup))
 	RegisterSignal(current_mob, COMSIG_MOB_DROPPING_ITEM, PROC_REF(item_drop))
 	RegisterSignal(current_mob, COMSIG_MOB_ITEM_ATTACK, PROC_REF(check_attack))
-	RegisterSignal(current_mob, COMSIG_LIVING_DEATH, PROC_REF(death_removal))
-
+	RegisterSignal(current_mob, COMSIG_LIVING_DEATH, PROC_REF(on_death))
+	for(var/datum/quirk/quirk as anything in current_mob.quirks)
+		current_mob.remove_quirk(quirk)
 	///abilities galore
 	for(var/datum/action/cooldown/slasher/listed_slasher as anything in subtypesof(/datum/action/cooldown/slasher))
 		var/datum/action/cooldown/slasher/new_ability = new listed_slasher
@@ -98,9 +99,9 @@
 		human.equipOutfit(/datum/outfit/slasher)
 	cached_brute_mod = human.dna.species.brutemod
 
-/datum/antagonist/slasher/proc/death_removal()
+/datum/antagonist/slasher/proc/on_death(mob/living/source)
 	SIGNAL_HANDLER
-	owner.remove_antag_datum(/datum/antagonist/slasher)
+	source.mind.remove_antag_datum(/datum/antagonist/slasher)
 
 /datum/antagonist/slasher/on_removal()
 	. = ..()
@@ -150,12 +151,10 @@
 			if(held in mobs_with_fullscreens)
 				human.clear_fullscreen("slasher_prox", 15)
 				mobs_with_fullscreens -= held
-	for(var/datum/weakref/weak as anything in fear_stages)
-		var/mob/living/carbon/human/human = weak.resolve()
-		var/datum/mind/mind = human.mind
-		for(var/mob/living/carbon/human/mobs_in_view as anything in view(7, src))
+
+		for(var/mob/living/carbon/human/mobs_in_view as anything in view(7, human))
 			var/datum/mind/mind_in_view = mobs_in_view.mind
-			if(!mind_in_view.has_antag_datum(mind, /datum/antagonist/slasher))
+			if(!mind_in_view.has_antag_datum(/datum/antagonist/slasher))
 				reduce_fear(human, 2)
 			else
 				continue
