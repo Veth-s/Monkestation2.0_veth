@@ -21,7 +21,7 @@
 	/// Sound played when exiting the jaunt
 	var/exit_sound = 'monkestation/sound/effects/slasher_jauntappear.ogg'
 	/// For how long are we jaunting?
-	var/jaunt_duration = 10 SECONDS
+	var/jaunt_duration = 4 SECONDS
 	/// For how long we become immobilized after exiting the jaunt
 	var/jaunt_in_time = 0.33 SECONDS
 	/// For how long we become immobilized when using this spell
@@ -56,7 +56,7 @@
 
 	if(!holder)
 		return
-
+	jaunter.set_timed_status_effect(15 SECONDS, /datum/status_effect/blood_trial)
 	if(jaunt_out_time > 0)
 		ADD_TRAIT(jaunter, TRAIT_IMMOBILIZED, REF(src))
 		addtimer(CALLBACK(src, PROC_REF(do_jaunt_out), jaunter, holder), jaunt_out_time)

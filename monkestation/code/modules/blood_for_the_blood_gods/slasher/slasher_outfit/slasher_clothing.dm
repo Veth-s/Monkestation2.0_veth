@@ -31,6 +31,7 @@
 	icon_state = "slasher_firemask"
 	inhand_icon_state = null
 	flash_protect = FLASH_PROTECTION_WELDER
+	clothing_flags = HIDEHAIR | HIDEFACIALHAIR
 	flags_cover = PEPPERPROOF | MASKCOVERSEYES
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	slowdown = 1
