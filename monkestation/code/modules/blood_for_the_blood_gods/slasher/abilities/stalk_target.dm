@@ -20,7 +20,7 @@
 
 	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
 	if(slasherdatum && slasherdatum.stalked_human)
-		qdel(slasherdatum.stalked_human.tracking_beacon)
+		slasherdatum.stalked_human.tracking_beacon.Destroy()
 
 	var/mob/living/living_target = pick(possible_targets)
 	var/mob/living/carbon/human/owner_human = owner

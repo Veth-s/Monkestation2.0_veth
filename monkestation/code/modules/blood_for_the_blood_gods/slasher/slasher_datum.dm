@@ -89,8 +89,22 @@
 	if(istype(human))
 		human.equipOutfit(/datum/outfit/slasher)
 	cached_brute_mod = human.dna.species.brutemod
-
-
+	current_mob.alpha = 150
+	current_mob.playsound_local(current_mob, 'monkestation/sound/effects/tape_start.ogg')
+/* needs fixing
+/datum/antagonist/slasher/proc/on_death()
+	. = ..()
+	owner.current.clear_fullscreen("slasher_prox", 15)
+	owner.current.remove_traits(list(TRAIT_BATON_RESISTANCE, TRAIT_CLUMSY, TRAIT_NODEATH, TRAIT_DUMB, TRAIT_LIMBATTACHMENT), "slasher")
+	for(var/datum/action/cooldown/slasher/listed_slasher as anything in powers)
+		listed_slasher.Remove(owner.current)
+	owner.current.tracking_beacon.Destroy()
+	owner.current.team_monitor.Destroy()
+	owner.current.tracking_beacon = null
+	owner.current.team_monitor = null
+	playsound(owner.current, 'monkestation/sound/effects/tape_end.ogg', 50, 1)
+	owner.current.playsound_local(owner.current, 'monkestation/sound/effects/tape_end.ogg', 50, 1)
+*/
 /datum/antagonist/slasher/on_removal()
 	. = ..()
 	owner.current.clear_fullscreen("slasher_prox", 15)
@@ -174,11 +188,8 @@
 /obj/item/var/last_multi = 1
 
 /datum/antagonist/slasher/proc/damage_multiplier(obj/item/source, mob/living/attacked, def_zone)
-	var/health_left = max(0, attacked.health) * 0.01
-
-	attacked.cause_pain(def_zone, source.force)
-
-	source.last_multi = health_left
+	//keeping this just in case we use it later, but the damage changing has been turned off
+	source.last_multi = 1
 
 	return TRUE
 

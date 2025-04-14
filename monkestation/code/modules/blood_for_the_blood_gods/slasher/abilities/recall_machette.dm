@@ -39,8 +39,8 @@
 	lefthand_file = 'monkestation/icons/mob/inhands/weapons/melee_lefthand.dmi'
 	righthand_file = 'monkestation/icons/mob/inhands/weapons/melee_righthand.dmi'
 
-	force = 15 //damage increases by 2.5 for every soul they take
-	throwforce = 15 //damage goes up by 2.5 for every soul they take
+	force = 20 //damage increases by 2.5 for every soul they take
+	throwforce = 20 //damage goes up by 2.5 for every soul they take
 	demolition_mod = 1.25
 
 	tool_behaviour = TOOL_CROWBAR // lets you pry open doors forcibly
