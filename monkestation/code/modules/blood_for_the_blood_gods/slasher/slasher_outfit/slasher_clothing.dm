@@ -22,6 +22,26 @@
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	slowdown = 1
 
+/obj/item/clothing/mask/gas/slasher2
+	name = "slasher's gas mask"
+	desc = "A close-fitting sealed gas mask, this one seems to be protruding some kind of dark aura."
+
+	icon = 'monkestation/icons/mob/slasher/slasher_items.dmi'
+	worn_icon = 'monkestation/icons/mob/slasher/slasher_wornstates.dmi'
+	icon_state = "slasher_firemask"
+	inhand_icon_state = "slasher_firemask"
+	flash_protect = FLASH_PROTECTION_WELDER
+	flags_cover = PEPPERPROOF | MASKCOVERSEYES
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	slowdown = 1
+
+/obj/item/clothing/mask/gas/slasher2/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+
+/obj/item/clothing/mask/gas/slasher2/adjustmask()
+	return
+
 /obj/item/clothing/mask/gas/slasher/Initialize(mapload)
 	. = ..()
 	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
@@ -41,8 +61,26 @@
 	. = ..()
 	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
 
-/obj/item/clothing/under/color/random/slasher
+/obj/item/clothing/suit/apron/slasher2
+	name = "butcher's apron"
+	desc = "A brown butcher's apron, you can feel an aura of something dark radiating off of it."
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	icon = 'monkestation/icons/mob/slasher/slasher_items.dmi'
+	worn_icon = 'monkestation/icons/mob/slasher/slasher_wornstates.dmi'
+	icon_state = "slasher_apron"
+	inhand_icon_state = "slasher_apron"
+
+/obj/item/clothing/suit/apron/slasher2/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+
+/obj/item/clothing/under/slasher
 	name = "butcher's jumpsuit"
+	icon = 'monkestation/icons/mob/slasher/slasher_items.dmi'
+	worn_icon = 'monkestation/icons/mob/slasher/slasher_wornstates.dmi'
+	icon_state = "slasher_under"
+	inhand_icon_state = "slasher_under"
+	desc = "A brown butcher's jumpsuit, you can feel an aura of something dark radiating off of it."
 	clothing_traits = list(TRAIT_NODROP)
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
