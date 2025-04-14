@@ -197,8 +197,19 @@
 				if (!posttransformoutfit)
 					return
 				var/mob/living/carbon/human/newmob = M.change_mob_type( /mob/living/carbon/human , null, null, delmob )
+				SSquirks.AssignQuirks(newmob, newmob.client, blacklist = list(/datum/quirk/stowaway)) //MONKESTATION ADDITION
 				if(posttransformoutfit && istype(newmob))
+				/* //MONKESTATION EDIT START - give me my loadout, NOW!
 					newmob.equipOutfit(posttransformoutfit)
+				*/ //MONKESTATION EDIT ORIGINAL
+					if(posttransformoutfit == "Naked")
+						posttransformoutfit = new /datum/outfit()
+					newmob.equip_outfit_and_loadout(posttransformoutfit, newmob.client.prefs)
+					for(var/datum/loadout_item/item as anything in loadout_list_to_datums(newmob.client?.prefs?.loadout_list))
+						if(length(item.restricted_roles))
+							continue
+						item.post_equip_item(newmob.client.prefs, newmob)
+				// MONKESTATION EDIT END
 			if("monkey")
 				M.change_mob_type( /mob/living/carbon/human/species/monkey , null, null, delmob )
 			if("robot")
@@ -786,6 +797,10 @@
 
 	else if(href_list["adminmoreinfo"])
 		var/mob/subject = locate(href_list["adminmoreinfo"]) in GLOB.mob_list
+		// MONKESTATION START
+		// Moved to monkestation/code/modules/admin/admin.dm
+		adminmoreinfo(subject)
+		/*
 		if(!ismob(subject))
 			to_chat(usr, "This can only be used on instances of type /mob.", confidential = TRUE)
 			return
@@ -860,6 +875,8 @@
 		exportable_text += ADMIN_FULLMONTY_NONAME(subject)
 
 		to_chat(src.owner, boxed_message(exportable_text), confidential = TRUE)
+		*/
+		// MONKESTATION END
 
 	else if(href_list["addjobslot"])
 		if(!check_rights(R_ADMIN))
@@ -1422,7 +1439,9 @@
 		var/list/dat = list("Related accounts by [uppertext(href_list["showrelatedacc"])]:")
 		dat += thing_to_check
 
-		usr << browse(dat.Join("<br>"), "window=related_[C];size=420x300")
+		var/datum/browser/browser = new(usr, "related_[C]", "[C.ckey] Related Accounts", 420, 300)
+		browser.set_content(dat.Join("<br>"))
+		browser.open()
 
 	else if(href_list["centcomlookup"])
 		if(!check_rights(R_ADMIN))
@@ -1790,9 +1809,9 @@
 		var/datum/meta_token_holder/token_holder = user_client?.client_token_holder
 		if(!token_holder?.in_queue)
 			return
-		token_holder.approve_antag_token()
 		message_admins("[key_name_admin(owner)] approved a [token_holder.in_queue] token from [ADMIN_LOOKUPFLW(user_client)]")
 		log_admin("[user_client]'s [token_holder.in_queue] token has been approved by [owner].")
+		token_holder.approve_antag_token()
 
 	else if(href_list["reject_antag_token"])
 		if(!check_rights(R_ADMIN))
@@ -1804,9 +1823,9 @@
 		var/datum/meta_token_holder/token_holder = user_client?.client_token_holder
 		if(!token_holder?.in_queue)
 			return
-		token_holder.reject_antag_token()
 		message_admins("[key_name_admin(owner)] rejected a [token_holder.in_queue] token from [ADMIN_LOOKUPFLW(user_client)]")
 		log_admin("[user_client]'s [token_holder.in_queue] token has been rejected by [owner].")
+		token_holder.reject_antag_token()
 
 	else if(href_list["open_music_review"])
 		if(!check_rights(R_ADMIN))

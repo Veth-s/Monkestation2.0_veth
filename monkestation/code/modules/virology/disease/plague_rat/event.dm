@@ -11,6 +11,8 @@
 	description = "Spawns a horde of plague rats."
 	min_wizard_trigger_potency = 6
 	max_wizard_trigger_potency = 7
+	tags = list(TAG_OUTSIDER_ANTAG, TAG_COMMUNAL, TAG_COMBAT, TAG_ALIEN)
+	dont_spawn_near_roundend = TRUE
 
 /datum/round_event/ghost_role/plague_rat
 	minimum_required = 1
