@@ -1,6 +1,6 @@
 /datum/action/cooldown/slasher/blood_walk
 	name = "Blood Trail"
-	desc = "Begin trailing blood in your wake. Spooky! "
+	desc = "You can tell by the way i use my walk im a spooky man, no time to talk."
 	button_icon_state = "trail_blood"
 
 	cooldown_time = 30 SECONDS
