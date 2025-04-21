@@ -71,7 +71,7 @@
 
 	if(give_objectives)
 		forge_objectives()
-		if(owner && owner.current)
+		if(owner?.current)
 			var/obj_count = 1
 			for(var/datum/objective/objective in objectives)
 				obj_count++
@@ -282,9 +282,9 @@
 		return FALSE
 	slasherdatum = set_slasherdatum
 
-/datum/status_effect/slasher/stalker/on_apply(mob/living/source)
+/datum/status_effect/slasher/stalker/on_apply()
 	. = ..()
-	var/datum/antagonist/slasher/slasherdatum = source.mind.has_antag_datum(/datum/antagonist/slasher)
+	var/datum/antagonist/slasher/slasherdatum = owner.mind.has_antag_datum(/datum/antagonist/slasher)
 	to_chat(owner, span_notice("You begin stalking your target, [slasherdatum.stalked_human], who is a [slasherdatum.stalked_human.job]"))
 
 /atom/movable/screen/alert/status_effect/slasher/stalker
@@ -307,7 +307,7 @@
 	stalked_human.remove_status_effect(/datum/status_effect/slasher/stalking)
 	stalked_human.clear_alert("slashing_stalkee")
 	owner.current.clear_alert("slashing_stalker")
-	stalked_human.tracking_beacon.Destroy()
+	QDEL_NULL(stalked_human.tracking_beacon)
 	var/mob/living/carbon/human/human = owner.current
 	var/datum/component/team_monitor/owner_monitor = human.team_monitor
 	owner_monitor.hide_hud()
@@ -336,7 +336,7 @@
 	stalked_human.say("AAAAAAHHHH!!!", forced = "soulsucked")
 	souls_sucked++
 	if(stalked_human?.tracking_beacon)
-		stalked_human.tracking_beacon.Destroy()
+		QDEL_NULL(stalked_human.tracking_beacon)
 		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
 		owner_monitor?.hide_hud(owner)
 	stalked_human.remove_status_effect(/datum/status_effect/slasher/stalking)
@@ -351,7 +351,7 @@
 		linked_machette.force -= 5
 		linked_machette.throwforce -= 5
 	if(stalked_human && stalked_human.tracking_beacon)
-		stalked_human.tracking_beacon.Destroy()
+		QDEL_NULL(stalked_human.tracking_beacon)
 		var/datum/component/team_monitor/owner_monitor = owner.current.team_monitor
 		owner_monitor.hide_hud(owner)
 		owner.current.clear_alert("slashing_stalking")

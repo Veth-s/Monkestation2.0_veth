@@ -38,14 +38,14 @@
 
 /obj/item/clothing/mask/gas/slasher2/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+	ADD_TRAIT(src, TRAIT_NODROP, INNATE_TRAIT)
 
 /obj/item/clothing/mask/gas/slasher2/adjustmask()
 	return
 
 /obj/item/clothing/mask/gas/slasher/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+	ADD_TRAIT(src, TRAIT_NODROP, INNATE_TRAIT)
 
 /obj/item/clothing/mask/gas/slasher/adjustmask()
 	return
@@ -60,7 +60,7 @@
 
 /obj/item/clothing/suit/apron/slasher/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+	ADD_TRAIT(src, TRAIT_NODROP, INNATE_TRAIT)
 
 /obj/item/clothing/suit/apron/slasher2
 	name = "butcher's apron"
@@ -73,7 +73,7 @@
 
 /obj/item/clothing/suit/apron/slasher2/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, "slasher")
+	ADD_TRAIT(src, TRAIT_NODROP, INNATE_TRAIT)
 
 /obj/item/clothing/under/slasher
 	name = "butcher's jumpsuit"
@@ -82,7 +82,6 @@
 	icon_state = "slasher_under"
 	inhand_icon_state = null
 	desc = "A brown butcher's jumpsuit, you can feel an aura of something dark radiating off of it."
-	clothing_traits = list(TRAIT_NODROP)
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
 /obj/item/storage/belt/slasher
