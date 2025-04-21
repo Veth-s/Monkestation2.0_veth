@@ -24,7 +24,7 @@
 	antag_hud_name = "slasher"
 	show_name_in_check_antagonists = TRUE
 	hud_icon = 'monkestation/icons/mob/slasher.dmi'
-	preview_outfit = /datum/outfit/slasher2
+	preview_outfit = /datum/outfit/slasher/slasher2
 	show_to_ghosts = TRUE
 	var/give_objectives = TRUE
 	var/datum/action/cooldown/slasher/active_action = null
