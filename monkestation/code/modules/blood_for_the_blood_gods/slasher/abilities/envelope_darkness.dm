@@ -53,10 +53,9 @@
 	ADD_TRAIT(jaunter, TRAIT_NO_TRANSFORM, REF(src))
 	var/obj/effect/dummy/phased_mob/slasher_jaunt/holder = enter_jaunt(jaunter)
 	REMOVE_TRAIT(jaunter, TRAIT_NO_TRANSFORM, REF(src))
-
 	if(!holder)
 		return
-	jaunter.set_timed_status_effect(15 SECONDS, /datum/status_effect/blood_trial)
+
 	if(jaunt_out_time > 0)
 		ADD_TRAIT(jaunter, TRAIT_IMMOBILIZED, REF(src))
 		addtimer(CALLBACK(src, PROC_REF(do_jaunt_out), jaunter, holder), jaunt_out_time)
@@ -69,6 +68,8 @@
 /datum/action/cooldown/slasher/envelope_darkness/proc/enter_jaunt(mob/living/jaunter)
 	var/obj/effect/dummy/phased_mob/slasher_jaunt/holder = new(get_turf(jaunter), jaunter)
 
+	// Add blood trail effect to the holder with callback removal
+	var/datum/component/blood_trail/trail = holder.AddComponent(/datum/component/blood_trail)
 	var/turf/cast_turf = get_turf(holder)
 	new jaunt_out_type(cast_turf, jaunter.dir)
 	jaunter.extinguish_mob()
@@ -169,6 +170,9 @@
 
 	ADD_TRAIT(jaunter, TRAIT_NO_TRANSFORM, REF(src))
 
+	// Remove blood trail effect before cleanup
+	qdel(holder.GetComponent(/datum/component/blood_trail))
+
 	// Exit the jaunt
 	jaunter.forceMove(final_point)
 	holder.jaunter = null
@@ -176,7 +180,6 @@
 
 	REMOVE_TRAIT(jaunter, TRAIT_NO_TRANSFORM, REF(src))
 	REMOVE_TRAIT(jaunter, TRAIT_IMMOBILIZED, REF(src))
-
 	if(final_point.density)
 		var/list/aside_turfs = get_adjacent_open_turfs(final_point)
 		if(length(aside_turfs))
