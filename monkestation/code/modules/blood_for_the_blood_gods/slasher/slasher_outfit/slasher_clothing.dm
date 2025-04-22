@@ -84,6 +84,10 @@
 	desc = "A brown butcher's jumpsuit, you can feel an aura of something dark radiating off of it."
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 
+/obj/item/clothing/under/slasher/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NODROP, INNATE_TRAIT)
+
 /obj/item/storage/belt/slasher
 	name = "slasher's trap fanny pack"
 	desc = "A place to put all your traps."

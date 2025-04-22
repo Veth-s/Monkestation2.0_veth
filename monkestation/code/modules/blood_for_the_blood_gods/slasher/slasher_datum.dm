@@ -24,7 +24,7 @@
 	antag_hud_name = "slasher"
 	show_name_in_check_antagonists = TRUE
 	hud_icon = 'monkestation/icons/mob/slasher.dmi'
-	preview_outfit = /datum/outfit/slasher
+	preview_outfit = /datum/outfit/slasher/slasher2
 	show_to_ghosts = TRUE
 	var/give_objectives = TRUE
 	var/datum/action/cooldown/slasher/active_action = null
@@ -207,6 +207,8 @@
 
 		for(var/mob/living/carbon/human/mobs_in_view in view(7, human))
 			var/datum/mind/mind_in_view = mobs_in_view.mind
+			if(!mind_in_view)
+				continue
 			if(!mind_in_view.has_antag_datum(/datum/antagonist/slasher))
 				reduce_fear(human, 2)
 
