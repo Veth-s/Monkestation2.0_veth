@@ -39,22 +39,22 @@
 	var/mob/living/carbon/human/human_owner = owner
 	var/turf/below_turf = get_turf(human_owner) // the turf below the person throwing
 	var/area/ismaints = get_area(below_turf)
-		human_owner.AdjustAllImmobility(-20 * seconds_per_tick)
-		human_owner.stamina.adjust(20, TRUE)
-		human_owner.adjustBruteLoss(-35)
-		human_owner.adjustFireLoss(-20, FALSE)
-		human_owner.adjustOxyLoss(-20)
-		human_owner.adjustToxLoss(-20)
-		human_owner.adjustCloneLoss(-20)
-		human_owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -20)
-		if(human_owner.blood_volume < BLOOD_VOLUME_NORMAL)
-			human_owner.blood_volume += 20
+	human_owner.AdjustAllImmobility(-20 * seconds_per_tick)
+	human_owner.stamina.adjust(20, TRUE)
+	human_owner.adjustBruteLoss(-35)
+	human_owner.adjustFireLoss(-20, FALSE)
+	human_owner.adjustOxyLoss(-20)
+	human_owner.adjustToxLoss(-20)
+	human_owner.adjustCloneLoss(-20)
+	human_owner.adjustOrganLoss(ORGAN_SLOT_BRAIN, -20)
+	if(human_owner.blood_volume < BLOOD_VOLUME_NORMAL)
+		human_owner.blood_volume += 20
+	if(human_owner.all_wounds)
+		var/datum/wound/picked_wound = pick(human_owner.all_wounds)
+		picked_wound.remove_wound(replaced = TRUE)
 		if(human_owner.all_wounds)
-			var/datum/wound/picked_wound = pick(human_owner.all_wounds)
-			picked_wound.remove_wound(replaced = TRUE)
-			if(human_owner.all_wounds)
-				var/datum/wound/picked_wound_2 = pick(human_owner.all_wounds)
-				picked_wound_2.remove_wound(replaced = TRUE)
+			var/datum/wound/picked_wound_2 = pick(human_owner.all_wounds)
+			picked_wound_2.remove_wound(replaced = TRUE)
 
 	for(var/i in human_owner.all_wounds)
 		var/datum/wound/iter_wound = i

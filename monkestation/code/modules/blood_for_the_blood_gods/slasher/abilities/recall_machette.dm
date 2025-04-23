@@ -87,7 +87,7 @@
 		playsound(src, 'goon/sounds/impact_sounds/Flesh_Stab_3.ogg', 25, 1)
 	if(isliving(hit_atom))
 		var/mob/living/hit_living = hit_atom
-		hit_living.Knockdown(1 SECONDS)
+		hit_living.Knockdown(2.5 SECONDS)
 
 /obj/item/slasher_machette/proc/post_throw(obj/item/source, datum/thrownthing, spin)
 	SIGNAL_HANDLER
