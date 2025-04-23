@@ -201,7 +201,7 @@
 /// The dummy that holds people jaunting
 /obj/effect/dummy/phased_mob/slasher_jaunt
 	name = "shadow"
-	movespeed = 2
+	movespeed = 1.5
 	var/reappearing = FALSE
 
 /obj/effect/dummy/phased_mob/slasher_jaunt/phased_check(mob/living/user, direction)
