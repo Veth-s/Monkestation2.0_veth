@@ -72,10 +72,8 @@
 	if(give_objectives)
 		forge_objectives()
 		if(owner?.current)
-			var/obj_count = 1
 			for(var/datum/objective/objective in objectives)
-				obj_count++
-			owner.announce_objectives()
+				owner.announce_objectives()
 
 /datum/antagonist/slasher/forge_objectives()
 	if(!owner)
@@ -113,6 +111,10 @@
 	ADD_TRAIT(current_mob, TRAIT_SLASHER, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_NO_PAIN_EFFECTS, "slasher")
 	ADD_TRAIT(current_mob, TRAIT_VIRUSIMMUNE, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_RESISTHEAT, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_RESISTCOLD, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_RESISTLOWPRESSURE, "slasher")
+	ADD_TRAIT(current_mob, TRAIT_RESISTHIGHPRESSURE, "slasher")
 
 	var/mob/living/carbon/carbon = current_mob
 	var/obj/item/organ/internal/eyes/shadow/shadow = new

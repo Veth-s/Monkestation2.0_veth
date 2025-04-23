@@ -69,7 +69,7 @@
 	var/obj/effect/dummy/phased_mob/slasher_jaunt/holder = new(get_turf(jaunter), jaunter)
 
 	// Add blood trail effect to the holder with callback removal
-	var/datum/component/blood_trail/trail = holder.AddComponent(/datum/component/blood_trail)
+//	var/datum/component/blood_trail/trail = holder.AddComponent(/datum/component/blood_trail)
 	var/turf/cast_turf = get_turf(holder)
 	new jaunt_out_type(cast_turf, jaunter.dir)
 	jaunter.extinguish_mob()
