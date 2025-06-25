@@ -22,6 +22,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	var/obj/effect/abstract/bingle_pit_storage/pit_storage
 	var/ghost_edible = FALSE
 	var/static/datum/team/bingles/bingle_team
+	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3
+	var/list/pit_overlays = list()
 
 /obj/structure/bingle_hole/examine(mob/user)
 	. = .. ()
@@ -60,54 +62,60 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	return ..()
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
-	var/turf/pit = get_turf(src)
-	for(var/atom/item in pit.contents)
-		if(ismob(item) || isobj(item))
-			swallow()
-	if(item_value_consumed >= 30) //change to 100 lol
-		var/datum/antagonist/bingle/bongle = IS_BINGLE(bingleprime.current)
-		var/datum/team/bingles/bingles_team = bongle.get_team()
-		for(var/mob/living/basic/bingle/bong in bingles_team.members)
-			SEND_SIGNAL(bong, BINGLE_EVOLVE)
+    for(var/turf/pit in get_all_pit_turfs())
+        for(var/atom/item in pit.contents)
+            if(ismob(item) || isobj(item))
+                if(istype(item, /mob/living/basic/bingle))
+                    continue
+                swallow(item)
+    if(item_value_consumed >= 200)
+        grow_pit(3)
+    else if(item_value_consumed >= 100)
+        grow_pit(2)
+    if(item_value_consumed >= 30) //change to 100 lol
+        var/datum/antagonist/bingle/bongle = IS_BINGLE(bingleprime.current)
+        var/datum/team/bingles/bingles_team = bongle.get_team()
+        for(var/mob/living/basic/bingle/bong in bingles_team.members)
+            SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
-	if(ismob(item))
-		var/mob/swallowed_mob = item
-		if(item_value_consumed < 10) //change to 50
-			var/dir = pick(GLOB.alldirs)
-			var/turf/target = get_edge_target_turf(src, dir)
-			swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
-			to_chat("The pit has not swallowed enough items to accept creatures yet!")
-			return
-		if(!(swallowed_mob in pit_contents_mobs))
-			pit_contents_mobs += swallowed_mob
-		ADD_TRAIT(swallowed_mob, TRAIT_IMMOBILIZED, BINGLE_PIT_TRAIT)
-		var/matrix/matrix_one = matrix()
-		var/matrix/matrix_two = matrix()
-		matrix_one.Scale(0,0)
-		matrix_two.Scale(1,1)
-		animate(swallowed_mob, transform = matrix_one, time = 1 SECONDS)
-		if(pit_storage)
-			swallowed_mob.forceMove(pit_storage)
-		else
-			qdel(swallowed_mob)
-		item_value_consumed += 10
-		animate(swallowed_mob, transform = matrix_two, time = 0.1 SECONDS)
-	else if(isobj(item))
-		var/obj/swallowed_obj = item
-		var/matrix/matrix_one = matrix()
-		var/matrix/matrix_two = matrix()
-		matrix_one.Scale(0,0)
-		matrix_two.Scale(1,1)
-		animate(swallowed_obj, transform = matrix_one, time = 1 SECONDS)
-		if(!(swallowed_obj in pit_contents_items))
-			pit_contents_items += swallowed_obj
-		if(pit_storage)
-			swallowed_obj.forceMove(pit_storage)
-		else
-			qdel(swallowed_obj)
-		item_value_consumed += 1
-		animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
+    if(ismob(item))
+        var/mob/swallowed_mob = item
+        if(item_value_consumed < 10) //change to 50
+            var/dir = pick(GLOB.alldirs)
+            var/turf/target = get_edge_target_turf(src, dir)
+            swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
+            to_chat("The pit has not swallowed enough items to accept creatures yet!")
+            return
+        if(!(swallowed_mob in pit_contents_mobs))
+            pit_contents_mobs += swallowed_mob
+            item_value_consumed += 10 // Only increment if newly added!
+        ADD_TRAIT(swallowed_mob, TRAIT_IMMOBILIZED, BINGLE_PIT_TRAIT)
+        var/matrix/matrix_one = matrix()
+        var/matrix/matrix_two = matrix()
+        matrix_one.Scale(0,0)
+        matrix_two.Scale(1,1)
+        animate(swallowed_mob, transform = matrix_one, time = 1 SECONDS)
+        if(pit_storage)
+            swallowed_mob.forceMove(pit_storage)
+        else
+            qdel(swallowed_mob)
+        animate(swallowed_mob, transform = matrix_two, time = 0.1 SECONDS)
+    else if(isobj(item))
+        var/obj/swallowed_obj = item
+        if(!(swallowed_obj in pit_contents_items))
+            pit_contents_items += swallowed_obj
+            item_value_consumed += 1 // Only increment if newly added!
+        var/matrix/matrix_one = matrix()
+        var/matrix/matrix_two = matrix()
+        matrix_one.Scale(0,0)
+        matrix_two.Scale(1,1)
+        animate(swallowed_obj, transform = matrix_one, time = 1 SECONDS)
+        if(pit_storage)
+            swallowed_obj.forceMove(pit_storage)
+        else
+            qdel(swallowed_obj)
+        animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
 
 /obj/effect/abstract/bingle_pit_storage
 	name = "bingle pits"
@@ -130,3 +138,43 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	. = ..()
 	if(isliving(gone))
 		LAZYREMOVE(GLOB.bingle_pit_mobs[get_chasm_category(loc)], gone)
+
+/obj/structure/bingle_hole/proc/grow_pit(new_size)
+    if(current_pit_size >= new_size)
+        return
+    var/turf/origin = get_turf(src)
+    if(!origin)
+        return
+
+    // Remove old overlays
+    for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
+        qdel(O)
+    pit_overlays.Cut()
+
+    var/half = (new_size - 1) / 2
+    for(var/dx = -half to half)
+        for(var/dy = -half to half)
+            if(dx == 0 && dy == 0)
+                continue // skip the origin tile
+            var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+            if(T)
+                var/obj/effect/bingle_pit_overlay/overlay = new(T)
+                overlay.icon = src.icon
+                overlay.icon_state = "binglepit_overlay" // Make this a blank or edge tile as needed
+                pit_overlays += overlay
+
+    current_pit_size = new_size
+
+/obj/effect/bingle_pit_overlay
+    name = "bingle pit"
+    desc = "The edge of a massive bingle pit."
+    anchored = TRUE
+    density = FALSE
+    layer = TURF_LAYER + 0.11
+    mouse_opacity = MOUSE_OPACITY_OPAQUE // or TRANSPARENT if you want clicks to go through
+
+/obj/structure/bingle_hole/proc/get_all_pit_turfs()
+    var/list/turfs = list(get_turf(src))
+    for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
+        turfs += get_turf(O)
+    return turfs

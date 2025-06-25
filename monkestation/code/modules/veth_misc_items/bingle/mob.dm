@@ -41,3 +41,22 @@
 	mob_target.Disorient(6 SECONDS, 5, paralyze = 10 SECONDS, stack_status = FALSE)
 	SEND_SIGNAL(target, COMSIG_LIVING_MINOR_SHOCK)
 	return ..()
+
+
+/mob/living/basic/bingle/lord
+	name = "bingle lord"
+	real_name = "bingle lord"
+	desc = "A rather large funny lil blue guy."
+	icon = 'monkestation/code/modules/veth_misc_items/bingle/icons/binglelord.dmi'
+	icon_state = "binglelord"
+	icon_living = "binglelord"
+	icon_dead = "binglelord"
+
+	melee_damage_lower = 40
+	melee_damage_upper = 40
+	var/pit_spawner = /datum/action/cooldown/bingle/spawn_hole
+
+/mob/living/basic/bingle/lord/Initialize(mapload)
+	. = ..()
+	var/datum/action/cooldown/bingle/spawn_hole/makehole = new pit_spawner(src)
+	makehole.Grant(src)
