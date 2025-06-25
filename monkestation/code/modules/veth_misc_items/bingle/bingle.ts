@@ -1,7 +1,7 @@
 import { Antagonist, Category } from '../base';
 import { multiline } from 'common/string';
 
-const PlagueRat: Antagonist = {
+const Bingle: Antagonist = {
   key: 'bingle',
   name: 'Bingle',
   description: [
@@ -13,4 +13,4 @@ const PlagueRat: Antagonist = {
   category: Category.Midround,
 };
 
-export default PlagueRat;
+export default Bingle;
