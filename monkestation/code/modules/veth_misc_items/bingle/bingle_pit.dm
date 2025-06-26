@@ -24,6 +24,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
 	var/last_bingle_spawn_value = 0
+	var/last_bingle_poll_value = 0
+
 
 /obj/structure/bingle_hole/examine(mob/user)
 	. = .. ()
@@ -72,67 +74,69 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	START_PROCESSING(SSfastprocess, src)
 
 /obj/structure/bingle_hole/Destroy()
-    STOP_PROCESSING(SSfastprocess, src)
-    spit_em_out()
-    // Gib all bingles in the world on pit destruction
-    for(var/mob/living/basic/bingle/B in world)
-        if(B)
-            B.gib()
-    // Remove all overlays on pit destruction
-    for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
-        if(O)
-            qdel(O)
-    pit_overlays.Cut()
-    return ..()
+	STOP_PROCESSING(SSfastprocess, src)
+	spit_em_out()
+	// Gib all bingles in the world on pit destruction
+	for(var/mob/living/basic/bingle/B in world)
+		if(B)
+			B.gib()
+	// Remove all overlays on pit destruction
+	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
+		if(O)
+			qdel(O)
+	pit_overlays.Cut()
+	return ..()
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
-    for(var/turf/pit in get_all_pit_turfs())
-        // Gather items to swallow first, then process them asynchronously
-        var/list/to_swallow = list()
-        for(var/atom/item in pit.contents)
-            if(item == src) // Prevent the pit from swallowing itself
-                continue
-            if(istype(item, /obj/structure/bingle_pit_overlay)) // Prevent swallowing overlays
-                continue
-            if(ismob(item) && istype(item, /mob/living))
-                if(istype(item, /mob/living/basic/bingle))
-                    continue
-                to_swallow += item
-            else if(isobj(item) && istype(item, /obj/item))
-                to_swallow += item
+	for(var/turf/pit in get_all_pit_turfs())
+		// Gather items to swallow first, then process them asynchronously
+		var/list/to_swallow = list()
+		for(var/atom/item in pit.contents)
+			if(item == src) // Prevent the pit from swallowing itself
+				continue
+			if(istype(item, /obj/structure/bingle_pit_overlay)) // Prevent swallowing overlays
+				continue
+			if(ismob(item) && istype(item, /mob/living))
+				if(istype(item, /mob/living/basic/bingle))
+					continue
+				to_swallow += item
+			else if(isobj(item) && istype(item, /obj/item))
+				to_swallow += item
 
-        // Async swallow: process one per tick to avoid stutter
-        if(length(to_swallow))
-            spawn(0)
-                for(var/atom/A in to_swallow)
-                    if(!A || QDELETED(A)) continue
-                    swallow(A)
-                    sleep(1) // Yield to avoid lag
+		// Async swallow: process one per tick to avoid stutter
+		if(length(to_swallow))
+			spawn(0)
+				for(var/atom/A in to_swallow)
+					if(!A || QDELETED(A)) continue
+					swallow(A)
+					sleep(1) // Yield to avoid lag
 
-    // Spawn a new bingle every 20 item value
-    while(item_value_consumed - last_bingle_spawn_value >= 20)
-        spawn_bingle_from_ghost()
-        last_bingle_spawn_value += 20
+	// Only poll for a new bingle every 30 item value, and only once per threshold
+	if(item_value_consumed - last_bingle_poll_value >= 30)
+		spawn_bingle_from_ghost()
+		last_bingle_poll_value += 30
 
-    // Grow pit as before
-    if(item_value_consumed >= 200)
-        grow_pit(3)
-    else if(item_value_consumed >= 100)
-        grow_pit(2)
+	// Grow pit as before
+	if(item_value_consumed >= 200)
+		grow_pit(3)
+	else if(item_value_consumed >= 100)
+		grow_pit(2)
 
-    // Evolve bingles and buff if item_value_consumed >= 100
-    var/datum/team/bingles/bingles_team = bingle_team
-    if(bingles_team)
-        for(var/mob/living/basic/bingle/bong in bingles_team.members)
-            if(item_value_consumed >= 100)
-                bong.icon_state = "bingle_armored"
-                bong.maxHealth = 300
-                bong.health = max(bong.health, 300)
-                bong.obj_damage = 100
-                bong.melee_damage_lower = 50
-                bong.melee_damage_upper = 60
-                bong.armour_penetration = 20
-            SEND_SIGNAL(bong, BINGLE_EVOLVE)
+	// Evolve bingles and buff if item_value_consumed >= 100
+	var/datum/team/bingles/bingles_team = bingle_team
+	if(bingles_team)
+		for(var/mob/living/basic/bingle/bong in bingles_team.members)
+			if(item_value_consumed >= 100)
+				bong.icon_state = "bingle_armored"
+				bong.maxHealth = 300
+				bong.health = max(bong.health, 300)
+				bong.obj_damage = 100
+				bong.melee_damage_lower = 50
+				bong.melee_damage_upper = 60
+				bong.armour_penetration = 20
+				bong.evolved = TRUE
+
+			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
@@ -311,3 +315,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	name = "bingle pit"
 	area_flags = NOTELEPORT | EVENT_PROTECTED | ABDUCTOR_PROOF
 	has_gravity = TRUE
+
+/obj/structure/bingle_pit_overlay/examine(mob/user)
+	. = ..()
+	if(parent_pit)
+		. += span_alert("The bingle pit has [parent_pit.item_value_consumed] items in it! Creatures are worth more, but cannot be deposited until 100 item value!")
