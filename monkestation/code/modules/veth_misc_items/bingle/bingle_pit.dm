@@ -150,33 +150,21 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		if(!(swallowed_mob in pit_contents_mobs))
 			pit_contents_mobs += swallowed_mob
 			item_value_consumed += 10
-		var/matrix/matrix_one = matrix()
-		var/matrix/matrix_two = matrix()
-		matrix_one.Scale(0,0)
-		matrix_two.Scale(1,1)
-		animate(swallowed_mob, transform = matrix_one, time = 1 SECONDS)
 		var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 		if(bingle_pit_turf)
 			swallowed_mob.forceMove(bingle_pit_turf)
 		else
 			qdel(swallowed_mob)
-		animate(swallowed_mob, transform = matrix_two, time = 0.1 SECONDS)
 	else if(isobj(item))
 		var/obj/swallowed_obj = item
 		if(!(swallowed_obj in pit_contents_items))
 			pit_contents_items += swallowed_obj
 			item_value_consumed++
-		var/matrix/matrix_one = matrix()
-		var/matrix/matrix_two = matrix()
-		matrix_one.Scale(0,0)
-		matrix_two.Scale(1,1)
-		animate(swallowed_obj, transform = matrix_one, time = 1 SECONDS)
 		var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 		if(bingle_pit_turf)
 			swallowed_obj.forceMove(bingle_pit_turf)
 		else
 			qdel(swallowed_obj)
-		animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
 
 /obj/structure/bingle_hole/proc/grow_pit(new_size)
 	if(current_pit_size >= new_size)
