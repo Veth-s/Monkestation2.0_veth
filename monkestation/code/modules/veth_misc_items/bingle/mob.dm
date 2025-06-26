@@ -95,3 +95,57 @@
 		icon_state = "binglelord_combat"
 	else
 		icon_state = "binglelord"
+
+/mob/living/basic/bingle/death()
+    . = ..()
+
+    var/list/possible_chems = list(
+        /datum/reagent/smoke_powder,
+        /datum/reagent/toxin/plasma,
+        /datum/reagent/drug/space_drugs,
+        /datum/reagent/drug/methamphetamine,
+        /datum/reagent/toxin/histamine,
+        /datum/reagent/consumable/nutriment,
+        /datum/reagent/water,
+        /datum/reagent/consumable/ethanol
+    )
+
+    // Pick 3-5 random chemicals and create smoke with each
+    var/chemicals_to_use = rand(3, 5)
+    for(var/i = 1 to chemicals_to_use)
+        var/chemical_type = pick(possible_chems)
+        do_chem_smoke(
+            range = 2,
+            holder = src,
+            location = get_turf(src),
+            reagent_type = chemical_type,
+            reagent_volume = rand(5, 15),
+            log = TRUE
+        )
+
+/mob/living/basic/bingle/lord/death()
+    . = ..()
+
+    var/list/possible_chems = list(
+        /datum/reagent/smoke_powder,
+        /datum/reagent/toxin/plasma,
+        /datum/reagent/drug/space_drugs,
+        /datum/reagent/drug/methamphetamine,
+        /datum/reagent/toxin/histamine,
+        /datum/reagent/consumable/nutriment,
+        /datum/reagent/water,
+        /datum/reagent/consumable/ethanol
+    )
+
+    // Pick 3-5 random chemicals and create smoke with each
+    var/chemicals_to_use = rand(10, 15)
+    for(var/i = 1 to chemicals_to_use)
+        var/chemical_type = pick(possible_chems)
+        do_chem_smoke(
+            range = 2,
+            holder = src,
+            location = get_turf(src),
+            reagent_type = chemical_type,
+            reagent_volume = rand(5, 15),
+            log = TRUE
+        )

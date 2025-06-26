@@ -72,48 +72,67 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	START_PROCESSING(SSfastprocess, src)
 
 /obj/structure/bingle_hole/Destroy()
-	STOP_PROCESSING(SSfastprocess, src)
-	spit_em_out()
-	return ..()
+    STOP_PROCESSING(SSfastprocess, src)
+    spit_em_out()
+    // Gib all bingles in the world on pit destruction
+    for(var/mob/living/basic/bingle/B in world)
+        if(B)
+            B.gib()
+    // Remove all overlays on pit destruction
+    for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
+        if(O)
+            qdel(O)
+    pit_overlays.Cut()
+    return ..()
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
-	for(var/turf/pit in get_all_pit_turfs())
-		for(var/atom/item in pit.contents)
-			if(item == src) // Prevent the pit from swallowing itself
-				continue
-			if(istype(item, /obj/effect/bingle_pit_overlay)) // Prevent swallowing overlays
-				continue
-			if(ismob(item) && istype(item, /mob/living))
-				if(istype(item, /mob/living/basic/bingle))
-					continue
-				swallow(item)
-			else if(isobj(item))
-				swallow(item)
+    for(var/turf/pit in get_all_pit_turfs())
+        // Gather items to swallow first, then process them asynchronously
+        var/list/to_swallow = list()
+        for(var/atom/item in pit.contents)
+            if(item == src) // Prevent the pit from swallowing itself
+                continue
+            if(istype(item, /obj/structure/bingle_pit_overlay)) // Prevent swallowing overlays
+                continue
+            if(ismob(item) && istype(item, /mob/living))
+                if(istype(item, /mob/living/basic/bingle))
+                    continue
+                to_swallow += item
+            else if(isobj(item) && istype(item, /obj/item))
+                to_swallow += item
 
-	// Spawn a new bingle every 20 item value
-	while(item_value_consumed - last_bingle_spawn_value >= 20)
-		spawn_bingle_from_ghost()
-		last_bingle_spawn_value += 20
+        // Async swallow: process one per tick to avoid stutter
+        if(length(to_swallow))
+            spawn(0)
+                for(var/atom/A in to_swallow)
+                    if(!A || QDELETED(A)) continue
+                    swallow(A)
+                    sleep(1) // Yield to avoid lag
 
-	// Grow pit as before
-	if(item_value_consumed >= 200)
-		grow_pit(3)
-	else if(item_value_consumed >= 100)
-		grow_pit(2)
+    // Spawn a new bingle every 20 item value
+    while(item_value_consumed - last_bingle_spawn_value >= 20)
+        spawn_bingle_from_ghost()
+        last_bingle_spawn_value += 20
 
-	// Evolve bingles and buff if item_value_consumed >= 100
-	var/datum/team/bingles/bingles_team = bingle_team
-	if(bingles_team) // <-- Add this check
-		for(var/mob/living/basic/bingle/bong in bingles_team.members)
-			if(item_value_consumed >= 100)
-				bong.icon_state = "bingle_armored"
-				bong.maxHealth = 300
-				bong.health = max(bong.health, 300)
-				bong.obj_damage = 100
-				bong.melee_damage_lower = 50
-				bong.melee_damage_upper = 60
-				bong.armour_penetration = 20
-			SEND_SIGNAL(bong, BINGLE_EVOLVE)
+    // Grow pit as before
+    if(item_value_consumed >= 200)
+        grow_pit(3)
+    else if(item_value_consumed >= 100)
+        grow_pit(2)
+
+    // Evolve bingles and buff if item_value_consumed >= 100
+    var/datum/team/bingles/bingles_team = bingle_team
+    if(bingles_team)
+        for(var/mob/living/basic/bingle/bong in bingles_team.members)
+            if(item_value_consumed >= 100)
+                bong.icon_state = "bingle_armored"
+                bong.maxHealth = 300
+                bong.health = max(bong.health, 300)
+                bong.obj_damage = 100
+                bong.melee_damage_lower = 50
+                bong.melee_damage_upper = 60
+                bong.armour_penetration = 20
+            SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
@@ -127,7 +146,6 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		if(!(swallowed_mob in pit_contents_mobs))
 			pit_contents_mobs += swallowed_mob
 			item_value_consumed += 10
-		ADD_TRAIT(swallowed_mob, TRAIT_IMMOBILIZED, BINGLE_PIT_TRAIT)
 		var/matrix/matrix_one = matrix()
 		var/matrix/matrix_two = matrix()
 		matrix_one.Scale(0,0)
@@ -157,74 +175,97 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
 
 /obj/structure/bingle_hole/proc/grow_pit(new_size)
-    if(current_pit_size >= new_size)
-        return
-    var/turf/origin = get_turf(src)
-    if(!origin)
-        return
+	if(current_pit_size >= new_size)
+		return
+	var/turf/origin = get_turf(src)
+	if(!origin)
+		return
 
-    // Remove old overlays
-    for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
-        qdel(O)
-    pit_overlays.Cut()
+	// Remove old overlays
+	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
+		qdel(O)
+	pit_overlays.Cut()
 
-    // If size is 1x1, use the default icon and no overlays
-    if(new_size == 1)
-        src.icon_state = "binglepit"
-        current_pit_size = 1
-        return
+	// If size is 1x1, use the default icon and no overlays
+	if(new_size == 1)
+		src.icon_state = "binglepit"
+		current_pit_size = 1
+		return
 
-    src.icon_state = "" // Make the pit itself invisible
+	src.icon_state = "" // Make the pit itself invisible
 
-    var/half = (new_size - 1) / 2
-    for(var/dx = -half to half)
-        for(var/dy = -half to half)
-            var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
-            if(!T)
-                continue
-            // REMOVE or comment out this line to allow the core overlay:
-            // if(dx == 0 && dy == 0)
-            //     continue // skip the origin tile
+	var/half = (new_size - 1) / 2
+	for(var/dx = -half to half)
+		for(var/dy = -half to half)
+			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+			if(!T)
+				continue
 
-            var/icon_state = "core"
-            // Corners (top left and bottom left are correct, swap the other two)
-            if(dx == -half && dy == -half)
-                icon_state = "corner_east"      // top left (correct)
-            else if(dx == half && dy == -half)
-                icon_state = "corner_south"     // top right (was corner_west, now corner_south)
-            else if(dx == -half && dy == half)
-                icon_state = "corner_north"     // bottom left (correct)
-            else if(dx == half && dy == half)
-                icon_state = "corner_west"      // bottom right (was corner_south, now corner_west)
-            // Edges (swap edge_north and edge_south)
-            else if(dy == -half)
-                icon_state = "edge_south"
-            else if(dy == half)
-                icon_state = "edge_north"
-            else if(dx == -half)
-                icon_state = "edge_west"
-            else if(dx == half)
-                icon_state = "edge_east"
-            else
-                icon_state = "core"
+			var/icon_state = "core"
+			// Corners (top left and bottom left are correct, swap the other two)
+			if(dx == -half && dy == -half)
+				icon_state = "corner_east"      // top left (correct)
+			else if(dx == half && dy == -half)
+				icon_state = "corner_south"     // top right (was corner_west, now corner_south)
+			else if(dx == -half && dy == half)
+				icon_state = "corner_north"     // bottom left (correct)
+			else if(dx == half && dy == half)
+				icon_state = "corner_west"      // bottom right (was corner_south, now corner_west)
+			// Edges (swap edge_north and edge_south)
+			else if(dy == -half)
+				icon_state = "edge_south"
+			else if(dy == half)
+				icon_state = "edge_north"
+			else if(dx == -half)
+				icon_state = "edge_west"
+			else if(dx == half)
+				icon_state = "edge_east"
+			else
+				icon_state = "core"
 
-            var/obj/effect/bingle_pit_overlay/overlay = new(T)
-            overlay.icon_state = icon_state
-            pit_overlays += overlay
+			var/obj/structure/bingle_pit_overlay/overlay = new(T)
+			overlay.icon_state = icon_state
+			overlay.parent_pit = src // <-- Link overlay to the main pit
+			pit_overlays += overlay
 
-    current_pit_size = new_size
+	current_pit_size = new_size
 
-/obj/effect/bingle_pit_overlay
-    name = "bingle pit"
-    icon = 'monkestation/code/modules/veth_misc_items/bingle/icons/binglepit.dmi'
-    layer = TURF_LAYER + 0.11
-    anchored = TRUE
-    density = FALSE
-    mouse_opacity = MOUSE_OPACITY_OPAQUE
+/obj/structure/bingle_pit_overlay
+	name = "bingle pit"
+	icon = 'monkestation/code/modules/veth_misc_items/bingle/icons/binglepit.dmi'
+	layer = TURF_LAYER + 0.5
+	plane = GAME_PLANE
+	anchored = TRUE
+	density = FALSE
+	mouse_opacity = MOUSE_OPACITY_OPAQUE
+	var/obj/structure/bingle_hole/parent_pit = null
+	uses_integrity = TRUE
+
+/obj/structure/bingle_pit_overlay/attackby(obj/item/W, mob/user)
+	if(parent_pit)
+		return parent_pit.attackby(W, user)
+	return ..()
+
+/obj/structure/bingle_pit_overlay/attack_hand(mob/user)
+	if(parent_pit)
+		return parent_pit.attack_hand(user)
+	return ..()
+
+/obj/structure/bingle_pit_overlay/bullet_act(var/obj/projectile/P)
+	if(parent_pit)
+		parent_pit.bullet_act(P)
+	else
+		..()
+
+/obj/structure/bingle_pit_overlay/take_damage(amount, type, source, flags)
+	if(parent_pit)
+		parent_pit.take_damage(amount, type, source, flags)
+	else
+		..()
 
 /obj/structure/bingle_hole/proc/get_all_pit_turfs()
 	var/list/turfs = list(get_turf(src))
-	for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
+	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
 		turfs += get_turf(O)
 	return turfs
 

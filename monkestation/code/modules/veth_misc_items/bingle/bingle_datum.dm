@@ -25,8 +25,6 @@
 	ADD_TRAIT(owner, TRAIT_RESISTLOWPRESSURE, "bingle")
 	ADD_TRAIT(owner, TRAIT_RESISTHIGHPRESSURE, "bingle")
 	ADD_TRAIT(owner, TRAIT_HEALS_FROM_BINGLE_HOLES, "bingle")
-	var/mob/living/basic/bingle/bingle = owner
-
 	if(!dont_bungle_the_bingle)
 		dont_bungle_the_bingle = new
 
@@ -66,11 +64,13 @@
 	return TRUE
 
 /datum/action/cooldown/bingle/spawn_hole/proc/spawn_hole(turf/selected_turf)
-	var/datum/antagonist/bingle/bingle_datum = IS_BINGLE(owner)
-	if(!selected_turf)
-		to_chat(owner, span_notice("No selected turf found!"))
-		return
-	var/obj/structure/bingle_hole/hole = new(selected_turf)
-	hole.bingleprime = owner
-	bingle_datum.pit_check = hole
-	Remove(owner)
+    var/datum/antagonist/bingle/bingle_datum = IS_BINGLE(owner)
+    if(!selected_turf)
+        to_chat(owner, span_notice("No selected turf found!"))
+        return
+    var/obj/structure/bingle_hole/hole = new(selected_turf)
+    hole.bingleprime = owner
+    bingle_datum.pit_check = hole
+    // Register the team in the pit
+    hole.bingle_team = bingle_datum.get_team()
+    Remove(owner)
