@@ -22,7 +22,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	var/obj/effect/abstract/bingle_pit_storage/pit_storage
 	var/ghost_edible = FALSE
 	var/static/datum/team/bingles/bingle_team
-	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3
+	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
 
 /obj/structure/bingle_hole/examine(mob/user)
@@ -151,17 +151,48 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
         qdel(O)
     pit_overlays.Cut()
 
+    // If size is 1x1, use the default icon and no overlays
+    if(new_size == 1)
+        src.icon_state = "binglepit"
+        current_pit_size = 1
+        return
+
+    // For larger sizes, set the center to blank/transparent and use overlays
+    src.icon_state = "" // Or a transparent/empty state if you have one
+
     var/half = (new_size - 1) / 2
     for(var/dx = -half to half)
         for(var/dy = -half to half)
+            var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+            if(!T)
+                continue
             if(dx == 0 && dy == 0)
                 continue // skip the origin tile
-            var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
-            if(T)
-                var/obj/effect/bingle_pit_overlay/overlay = new(T)
-                overlay.icon = src.icon
-                overlay.icon_state = "binglepit_overlay" // Make this a blank or edge tile as needed
-                pit_overlays += overlay
+
+            var/icon_state = "core"
+            // Corners
+            if(dx == -half && dy == -half)
+                icon_state = "corner_northwest"
+            else if(dx == half && dy == -half)
+                icon_state = "corner_northeast"
+            else if(dx == -half && dy == half)
+                icon_state = "corner_southwest"
+            else if(dx == half && dy == half)
+                icon_state = "corner_southeast"
+            // Edges
+            else if(dy == -half)
+                icon_state = "edge_north"
+            else if(dy == half)
+                icon_state = "edge_south"
+            else if(dx == -half)
+                icon_state = "edge_west"
+            else if(dx == half)
+                icon_state = "edge_east"
+
+            var/obj/effect/bingle_pit_overlay/overlay = new(T)
+            overlay.icon = src.icon
+            overlay.icon_state = icon_state
+            pit_overlays += overlay
 
     current_pit_size = new_size
 
