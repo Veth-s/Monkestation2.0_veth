@@ -24,6 +24,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	var/static/datum/team/bingles/bingle_team
 	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
+	var/last_bingle_spawn_value = 0
 
 /obj/structure/bingle_hole/examine(mob/user)
 	. = .. ()
@@ -62,60 +63,75 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	return ..()
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
-    for(var/turf/pit in get_all_pit_turfs())
-        for(var/atom/item in pit.contents)
-            if(ismob(item) || isobj(item))
-                if(istype(item, /mob/living/basic/bingle))
-                    continue
-                swallow(item)
-    if(item_value_consumed >= 200)
-        grow_pit(3)
-    else if(item_value_consumed >= 100)
-        grow_pit(2)
-    if(item_value_consumed >= 30) //change to 100 lol
-        var/datum/antagonist/bingle/bongle = IS_BINGLE(bingleprime.current)
-        var/datum/team/bingles/bingles_team = bongle.get_team()
-        for(var/mob/living/basic/bingle/bong in bingles_team.members)
-            SEND_SIGNAL(bong, BINGLE_EVOLVE)
+	for(var/turf/pit in get_all_pit_turfs())
+		for(var/atom/item in pit.contents)
+			if(ismob(item) || isobj(item))
+				if(istype(item, /mob/living/basic/bingle))
+					continue
+				swallow(item)
+
+	// Spawn a new bingle every 20 item value
+	while(item_value_consumed - last_bingle_spawn_value >= 20)
+		spawn_bingle_from_ghost()
+		last_bingle_spawn_value += 20
+
+	// Grow pit as before
+	if(item_value_consumed >= 200)
+		grow_pit(3)
+	else if(item_value_consumed >= 100)
+		grow_pit(2)
+
+	// Evolve bingles and buff if item_value_consumed >= 100
+	var/datum/team/bingles/bingles_team = bingle_team
+	for(var/mob/living/basic/bingle/bong in bingles_team.members)
+		if(item_value_consumed >= 100)
+			bong.icon_state = "bingle_armored"
+			bong.maxHealth = 300
+			bong.health = max(bong.health, 300)
+			bong.obj_damage = 100
+			bong.melee_damage_lower = 50
+			bong.melee_damage_upper = 60
+			bong.armour_penetration = 20
+		SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
-    if(ismob(item))
-        var/mob/swallowed_mob = item
-        if(item_value_consumed < 10) //change to 50
-            var/dir = pick(GLOB.alldirs)
-            var/turf/target = get_edge_target_turf(src, dir)
-            swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
-            to_chat("The pit has not swallowed enough items to accept creatures yet!")
-            return
-        if(!(swallowed_mob in pit_contents_mobs))
-            pit_contents_mobs += swallowed_mob
-            item_value_consumed += 10 // Only increment if newly added!
-        ADD_TRAIT(swallowed_mob, TRAIT_IMMOBILIZED, BINGLE_PIT_TRAIT)
-        var/matrix/matrix_one = matrix()
-        var/matrix/matrix_two = matrix()
-        matrix_one.Scale(0,0)
-        matrix_two.Scale(1,1)
-        animate(swallowed_mob, transform = matrix_one, time = 1 SECONDS)
-        if(pit_storage)
-            swallowed_mob.forceMove(pit_storage)
-        else
-            qdel(swallowed_mob)
-        animate(swallowed_mob, transform = matrix_two, time = 0.1 SECONDS)
-    else if(isobj(item))
-        var/obj/swallowed_obj = item
-        if(!(swallowed_obj in pit_contents_items))
-            pit_contents_items += swallowed_obj
-            item_value_consumed += 1 // Only increment if newly added!
-        var/matrix/matrix_one = matrix()
-        var/matrix/matrix_two = matrix()
-        matrix_one.Scale(0,0)
-        matrix_two.Scale(1,1)
-        animate(swallowed_obj, transform = matrix_one, time = 1 SECONDS)
-        if(pit_storage)
-            swallowed_obj.forceMove(pit_storage)
-        else
-            qdel(swallowed_obj)
-        animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
+	if(ismob(item))
+		var/mob/swallowed_mob = item
+		if(item_value_consumed < 10) //change to 50
+			var/dir = pick(GLOB.alldirs)
+			var/turf/target = get_edge_target_turf(src, dir)
+			swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
+			to_chat("The pit has not swallowed enough items to accept creatures yet!")
+			return
+		if(!(swallowed_mob in pit_contents_mobs))
+			pit_contents_mobs += swallowed_mob
+			item_value_consumed += 10 // Only increment if newly added!
+		ADD_TRAIT(swallowed_mob, TRAIT_IMMOBILIZED, BINGLE_PIT_TRAIT)
+		var/matrix/matrix_one = matrix()
+		var/matrix/matrix_two = matrix()
+		matrix_one.Scale(0,0)
+		matrix_two.Scale(1,1)
+		animate(swallowed_mob, transform = matrix_one, time = 1 SECONDS)
+		if(pit_storage)
+			swallowed_mob.forceMove(pit_storage)
+		else
+			qdel(swallowed_mob)
+		animate(swallowed_mob, transform = matrix_two, time = 0.1 SECONDS)
+	else if(isobj(item))
+		var/obj/swallowed_obj = item
+		if(!(swallowed_obj in pit_contents_items))
+			pit_contents_items += swallowed_obj
+			item_value_consumed++ // Only increment if newly added!
+		var/matrix/matrix_one = matrix()
+		var/matrix/matrix_two = matrix()
+		matrix_one.Scale(0,0)
+		matrix_two.Scale(1,1)
+		animate(swallowed_obj, transform = matrix_one, time = 1 SECONDS)
+		if(pit_storage)
+			swallowed_obj.forceMove(pit_storage)
+		else
+			qdel(swallowed_obj)
+		animate(swallowed_obj, transform = matrix_two, time = 0.1 SECONDS)
 
 /obj/effect/abstract/bingle_pit_storage
 	name = "bingle pits"
@@ -140,72 +156,99 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		LAZYREMOVE(GLOB.bingle_pit_mobs[get_chasm_category(loc)], gone)
 
 /obj/structure/bingle_hole/proc/grow_pit(new_size)
-    if(current_pit_size >= new_size)
-        return
-    var/turf/origin = get_turf(src)
-    if(!origin)
-        return
+	if(current_pit_size >= new_size)
+		return
+	var/turf/origin = get_turf(src)
+	if(!origin)
+		return
 
-    // Remove old overlays
-    for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
-        qdel(O)
-    pit_overlays.Cut()
+	// Remove old overlays
+	for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
+		qdel(O)
+	pit_overlays.Cut()
 
-    // If size is 1x1, use the default icon and no overlays
-    if(new_size == 1)
-        src.icon_state = "binglepit"
-        current_pit_size = 1
-        return
+	// If size is 1x1, use the default icon and no overlays
+	if(new_size == 1)
+		src.icon_state = "binglepit"
+		current_pit_size = 1
+		return
 
-    // For larger sizes, set the center to blank/transparent and use overlays
-    src.icon_state = "" // Or a transparent/empty state if you have one
+	// For larger sizes, set the center to blank/transparent and use overlays
+	src.icon_state = "" // Or a transparent/empty state if you have one
 
-    var/half = (new_size - 1) / 2
-    for(var/dx = -half to half)
-        for(var/dy = -half to half)
-            var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
-            if(!T)
-                continue
-            if(dx == 0 && dy == 0)
-                continue // skip the origin tile
+	var/half = (new_size - 1) / 2
+	for(var/dx = -half to half)
+		for(var/dy = -half to half)
+			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
+			if(!T)
+				continue
+			if(dx == 0 && dy == 0)
+				continue // skip the origin tile
 
-            var/icon_state = "core"
-            // Corners
-            if(dx == -half && dy == -half)
-                icon_state = "corner_northwest"
-            else if(dx == half && dy == -half)
-                icon_state = "corner_northeast"
-            else if(dx == -half && dy == half)
-                icon_state = "corner_southwest"
-            else if(dx == half && dy == half)
-                icon_state = "corner_southeast"
-            // Edges
-            else if(dy == -half)
-                icon_state = "edge_north"
-            else if(dy == half)
-                icon_state = "edge_south"
-            else if(dx == -half)
-                icon_state = "edge_west"
-            else if(dx == half)
-                icon_state = "edge_east"
+			var/icon_state = "core"
+			// Corners
+			if(dx == -half && dy == -half)
+				icon_state = "corner_northwest"
+			else if(dx == half && dy == -half)
+				icon_state = "corner_northeast"
+			else if(dx == -half && dy == half)
+				icon_state = "corner_southwest"
+			else if(dx == half && dy == half)
+				icon_state = "corner_southeast"
+			// Edges
+			else if(dy == -half)
+				icon_state = "edge_north"
+			else if(dy == half)
+				icon_state = "edge_south"
+			else if(dx == -half)
+				icon_state = "edge_west"
+			else if(dx == half)
+				icon_state = "edge_east"
 
-            var/obj/effect/bingle_pit_overlay/overlay = new(T)
-            overlay.icon = src.icon
-            overlay.icon_state = icon_state
-            pit_overlays += overlay
+			var/obj/effect/bingle_pit_overlay/overlay = new(T)
+			overlay.icon_state = icon_state
+			pit_overlays += overlay
 
-    current_pit_size = new_size
+	current_pit_size = new_size
 
 /obj/effect/bingle_pit_overlay
-    name = "bingle pit"
-    desc = "The edge of a massive bingle pit."
-    anchored = TRUE
-    density = FALSE
-    layer = TURF_LAYER + 0.11
-    mouse_opacity = MOUSE_OPACITY_OPAQUE // or TRANSPARENT if you want clicks to go through
+	icon = 'monkestation/code/modules/veth_misc_items/bingle/icons/binglepit_overlay.dmi'
+	layer = TURF_LAYER + 0.11
+	anchored = TRUE
+	density = FALSE
+	mouse_opacity = MOUSE_OPACITY_OPAQUE
 
 /obj/structure/bingle_hole/proc/get_all_pit_turfs()
-    var/list/turfs = list(get_turf(src))
-    for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
-        turfs += get_turf(O)
-    return turfs
+	var/list/turfs = list(get_turf(src))
+	for(var/obj/effect/bingle_pit_overlay/O in pit_overlays)
+		turfs += get_turf(O)
+	return turfs
+
+/obj/structure/bingle_hole/proc/spawn_bingle_from_ghost()
+    var/list/mob/dead/observer/candidates = SSpolling.poll_ghost_candidates(
+        question = "Do you want to play as a Bingle?",
+        role = ROLE_BINGLE,
+        check_jobban = ROLE_BINGLE,
+        poll_time = 20 SECONDS,
+        alert_pic = /mob/living/basic/bingle,
+        role_name_text = "bingle"
+    )
+
+    if(!length(candidates))
+        return
+
+    var/mob/dead/observer/selected = pick_n_take(candidates)
+    var/datum/mind/player_mind = new /datum/mind(selected.key)
+    player_mind.active = TRUE
+
+    var/turf/spawn_loc = get_turf(src) // Use the pit's location
+    if(isnull(spawn_loc))
+        return
+
+    var/mob/living/basic/bingle/bingle = new(spawn_loc)
+    player_mind.transfer_to(bingle)
+    player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
+    player_mind.special_role = ROLE_BINGLE
+    player_mind.add_antag_datum(/datum/antagonist/bingle)
+    message_admins("[ADMIN_LOOKUPFLW(bingle)] has been made into Bingle (pit spawn).")
+    log_game("[key_name(bingle)] was spawned as Bingle by the pit.")

@@ -24,7 +24,7 @@
 		role = ROLE_BINGLE,
 		check_jobban = ROLE_BINGLE,
 		poll_time = 20 SECONDS,
-		alert_pic = /mob/living/basic/bingle,
+		alert_pic = /mob/living/basic/bingle/lord,
 		role_name_text = "bingle"
 	)
 	spawn_loc = find_safe_turf_in_maintenance()//Used for the Drop Pod type of spawn for maints only
