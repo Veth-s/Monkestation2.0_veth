@@ -25,13 +25,8 @@
 	ADD_TRAIT(owner, TRAIT_RESISTLOWPRESSURE, "bingle")
 	ADD_TRAIT(owner, TRAIT_RESISTHIGHPRESSURE, "bingle")
 	ADD_TRAIT(owner, TRAIT_HEALS_FROM_BINGLE_HOLES, "bingle")
-	AddComponent(/datum/component/swarming, 16, 16)
-	RegisterSignal(owner, COMSIG_LIVING_LIFE, PROC_REF(LifeTick))
-	RegisterSignal(owner, BINGLE_EVOLVE, PROC_REF(evolve))
 	var/mob/living/basic/bingle/bingle = owner
 
-	for(var/datum/quirk/quirk as anything in bingle.quirks)
-		bingle.remove_quirk(quirk)
 	if(!dont_bungle_the_bingle)
 		dont_bungle_the_bingle = new
 
@@ -44,24 +39,6 @@
 
 /datum/antagonist/bingle/get_team()
 	return dont_bungle_the_bingle
-
-/datum/antagonist/bingle/proc/LifeTick(mob/living/source, seconds_between_ticks, times_fired)
-	SIGNAL_HANDLER
-
-	if(source.istate & source.istate == ISTATE_HARM)
-		source.icon_state = "bingle_combat"
-	else
-		source.icon_state = "bingle"
-
-/datum/antagonist/bingle/proc/evolve()
-	SIGNAL_HANDLER
-	var/mob/living/basic/bingle/bongle = owner.current
-	bongle.maxHealth = 300
-	bongle.health = 300
-	bongle.obj_damage = 100
-	bongle.melee_damage_lower = 50
-	bongle.melee_damage_upper = 60
-	bongle.armour_penetration = 20
 
 /datum/action/cooldown/bingle/spawn_hole
 	name = "Spawn Bingle Pit"

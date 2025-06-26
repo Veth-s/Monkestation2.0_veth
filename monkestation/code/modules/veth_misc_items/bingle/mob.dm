@@ -60,3 +60,38 @@
 	. = ..()
 	var/datum/action/cooldown/bingle/spawn_hole/makehole = new pit_spawner(src)
 	makehole.Grant(src)
+
+/mob/living/basic/bingle/Initialize(mapload)
+	. = ..()
+	RegisterSignal(src, BINGLE_EVOLVE, PROC_REF(evolve))
+
+/mob/living/basic/bingle/Life(seconds_between_ticks, times_fired)
+	. = ..()
+	update_icon()
+
+/mob/living/basic/bingle/lord/Life(seconds_between_ticks, times_fired)
+	. = ..()
+	update_icon()
+
+/mob/living/basic/bingle/proc/evolve()
+	var/mob/living/basic/bingle/bongle = src
+	bongle.maxHealth = 300
+	bongle.health = 300
+	bongle.obj_damage = 100
+	bongle.melee_damage_lower = 50
+	bongle.melee_damage_upper = 60
+	bongle.armour_penetration = 20
+
+/mob/living/basic/bingle/update_icon()
+	. = ..()
+	if(istate & ISTATE_HARM)
+		icon_state = "bingle_combat"
+	else
+		icon_state = "bingle"
+
+/mob/living/basic/bingle/lord/update_icon()
+	. = ..()
+	if(istate & ISTATE_HARM)
+		icon_state = "binglelord_combat"
+	else
+		icon_state = "binglelord"
