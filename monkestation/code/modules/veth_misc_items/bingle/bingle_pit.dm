@@ -146,10 +146,10 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
-    // Pit grows every 100 item value
-    var/desired_pit_size = min(1 + (item_value_consumed / 100), max_pit_size)
-    if(desired_pit_size > current_pit_size)
-        grow_pit(desired_pit_size)
+	// Pit grows every 100 item value
+	var/desired_pit_size = min(1 + (item_value_consumed / 100), max_pit_size)
+	if(desired_pit_size > current_pit_size)
+		grow_pit(desired_pit_size)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
