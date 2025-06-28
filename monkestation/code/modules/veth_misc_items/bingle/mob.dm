@@ -103,7 +103,7 @@
 	else
 		icon_state = "binglelord"
 
-/mob/living/basic/bingle/death()
+/mob/living/basic/bingle/death(gibbed)
 	. = ..()
 
 	var/list/possible_chems = list(
@@ -129,8 +129,10 @@
 			reagent_volume = rand(5, 15),
 			log = TRUE
 		)
+		if(!gibbed)
+		src.gib()
 
-/mob/living/basic/bingle/lord/death()
+/mob/living/basic/bingle/lord/death(gibbed)
 	. = ..()
 
 	var/list/possible_chems = list(
@@ -156,3 +158,5 @@
 			reagent_volume = rand(5, 15),
 			log = TRUE
 		)
+	if(!gibbed)
+		src.gib()
