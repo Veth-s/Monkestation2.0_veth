@@ -17,9 +17,9 @@
 	habitable_atmos = list("min_oxy" = 0, "max_oxy" = 0, "min_plas" = 0, "max_plas" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
 	bodytemp_cold_damage_limit = TCMB
 
-	obj_damage = 70
-	melee_damage_lower = 30
-	melee_damage_upper = 30
+	obj_damage = 100
+	melee_damage_lower = 10
+	melee_damage_upper = 10
 	melee_attack_cooldown = CLICK_CD_MELEE
 
 	lighting_cutoff_red = 10
@@ -53,8 +53,8 @@
 	icon_living = "binglelord"
 	icon_dead = "binglelord"
 
-	melee_damage_lower = 40
-	melee_damage_upper = 40
+	melee_damage_lower = 20
+	melee_damage_upper = 20
 	var/pit_spawner = /datum/action/cooldown/bingle/spawn_hole
 
 /mob/living/basic/bingle/lord/Initialize(mapload)
@@ -79,25 +79,29 @@
 	bongle.maxHealth = 300
 	bongle.health = 300
 	bongle.obj_damage = 100
-	bongle.melee_damage_lower = 50
-	bongle.melee_damage_upper = 60
-	bongle.armour_penetration = 20
+	bongle.melee_damage_lower = 15
+	bongle.melee_damage_upper = 20
+	bongle.armour_penetration = 10
 
 /mob/living/basic/bingle/update_icon()
 	. = ..()
-	if(istate & ISTATE_HARM)
+	if(evolved)
+		if(istate & ISTATE_HARM)
+			icon_state = "binglearmored_combat"
+		else
+			icon_state = "binglearmored"
+		return
+	else if(istate & ISTATE_HARM)
 		icon_state = "bingle_combat"
 	else
 		icon_state = "bingle"
-e
+
 /mob/living/basic/bingle/lord/update_icon()
 	. = ..()
-	if(evolved)
-		icon_state = "binglearmored"
 	if(istate & ISTATE_HARM)
-		icon_state = "[icon_state]_combat"
+		icon_state = "binglelord_combat"
 	else
-		icon_state = "[icon_state]"
+		icon_state = "binglelord"
 
 /mob/living/basic/bingle/death()
 	. = ..()

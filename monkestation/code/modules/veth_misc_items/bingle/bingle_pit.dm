@@ -13,7 +13,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	density = FALSE
 	layer = TURF_LAYER + 0.1
 	var/item_value_consumed = 0
-	var/max_item_value = 300
+	var/max_item_value = 500
 	var/bingles_ready = 0
 	var/datum/mind/bingleprime = null
 	var/bingle_per_item_value = 30
@@ -55,10 +55,10 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	pit_contents_items.Cut()
 
 /datum/armor/structure_bingle_hole
-	energy = 50
-	bomb = 50
+	energy = 75
+	bomb = 95
 	bio = 100
-	fire = 30
+	fire = 50
 	acid = 80
 
 /obj/structure/bingle_hole/Initialize(mapload)
@@ -110,7 +110,6 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 					if(!A || QDELETED(A)) continue
 					swallow(A)
 					sleep(1) // Yield to avoid lag
-
 	// Only poll for a new bingle every 30 item value, and only once per threshold
 	if(item_value_consumed - last_bingle_poll_value >= 30)
 		spawn_bingle_from_ghost()
@@ -292,8 +291,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		bingle.maxHealth = 300
 		bingle.health = max(bingle.health, 300)
 		bingle.obj_damage = 100
-		bingle.melee_damage_lower = 50
-		bingle.melee_damage_upper = 60
+		bingle.melee_damage_lower = 15
+		bingle.melee_damage_upper = 20
 		bingle.armour_penetration = 20
 		bingle.evolved = TRUE
 	message_admins("[ADMIN_LOOKUPFLW(bingle)] has been made into Bingle (pit spawn).")
@@ -317,3 +316,15 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	. = ..()
 	if(parent_pit)
 		. += span_alert("The bingle pit has [parent_pit.item_value_consumed] items in it! Creatures are worth more, but cannot be deposited until 100 item value!")
+
+/obj/structure/bingle_hole/attackby(obj/item/W, mob/user)
+    if(istype(user, /mob/living/basic/bingle))
+        to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
+        return
+    return ..()
+
+/obj/structure/bingle_hole/attack_hand(mob/user)
+    if(istype(user, /mob/living/basic/bingle))
+        to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
+        return
+    return ..()
