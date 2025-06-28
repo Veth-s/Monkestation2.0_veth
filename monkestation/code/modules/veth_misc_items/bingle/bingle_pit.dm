@@ -141,7 +141,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
 		var/mob/swallowed_mob = item
-		if(item_value_consumed < 10)
+		if(item_value_consumed < 100)
 			var/dir = pick(GLOB.alldirs)
 			var/turf/target = get_edge_target_turf(src, dir)
 			swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
@@ -287,6 +287,15 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
 	player_mind.special_role = ROLE_BINGLE
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
+	if(item_value_consumed >= 100)
+		bingle.icon_state = "bingle_armored"
+		bingle.maxHealth = 300
+		bingle.health = max(bong.health, 300)
+		bingle.obj_damage = 100
+		bingle.melee_damage_lower = 50
+		bingle.melee_damage_upper = 60
+		bingle.armour_penetration = 20
+		bingle.evolved = TRUE
 	message_admins("[ADMIN_LOOKUPFLW(bingle)] has been made into Bingle (pit spawn).")
 	log_game("[key_name(bingle)] was spawned as Bingle by the pit.")
 
