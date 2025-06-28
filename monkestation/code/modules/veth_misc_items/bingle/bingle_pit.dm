@@ -290,7 +290,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	if(item_value_consumed >= 100)
 		bingle.icon_state = "bingle_armored"
 		bingle.maxHealth = 300
-		bingle.health = max(bong.health, 300)
+		bingle.health = max(bingle.health, 300)
 		bingle.obj_damage = 100
 		bingle.melee_damage_lower = 50
 		bingle.melee_damage_upper = 60
