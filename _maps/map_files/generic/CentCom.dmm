@@ -19892,6 +19892,10 @@
 /obj/machinery/light/cold/directional/north,
 /turf/open/misc/asteroid,
 /area/cruiser_dock)
+"bDA" = (
+/obj/effect/area_lighting_helper,
+/turf/open/indestructible/bingle,
+/area/station/bingle_pit)
 "bDP" = (
 /obj/item/toy/plush/pooba_bee_plush,
 /turf/open/floor/plating,
@@ -25211,6 +25215,10 @@
 "kti" = (
 /turf/open/floor/sandy_dirt,
 /area/centcom/central_command_areas/adminroom)
+"ktw" = (
+/obj/structure/table/optable,
+/turf/open/indestructible/bingle,
+/area/station/bingle_pit)
 "kun" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 10
@@ -29095,7 +29103,7 @@
 /area/centcom/central_command_areas/adminroom)
 "ryY" = (
 /turf/closed/indestructible/bingle,
-/area/space)
+/area/station/bingle_pit)
 "rAI" = (
 /obj/machinery/button/door/directional/north{
 	name = "talking time button";
@@ -32664,6 +32672,10 @@
 	},
 /turf/open/floor/carpet/green,
 /area/centcom/central_command_areas/adminroom)
+"xLa" = (
+/obj/item/storage/backpack/duffelbag/med/surgery,
+/turf/open/indestructible/bingle,
+/area/station/bingle_pit)
 "xMe" = (
 /obj/machinery/light/neon_lining{
 	dir = 1;
@@ -92967,10 +92979,10 @@ wsF
 wsF
 wsF
 ryY
-wsF
-wsF
-wsF
-wsF
+ryY
+ryY
+ryY
+ryY
 ryY
 ryY
 wsF
@@ -93223,12 +93235,12 @@ wsF
 wsF
 ryY
 wsF
+ryY
+xLa
 wsF
-wsF
-wsF
-wsF
-wsF
-wsF
+ktw
+ktw
+ktw
 ryY
 wsF
 wsF
@@ -93480,13 +93492,13 @@ wsF
 wsF
 wsF
 wsF
+ryY
 wsF
+bDA
 wsF
+bDA
 wsF
-wsF
-wsF
-wsF
-wsF
+ryY
 wsF
 wsF
 wsF
@@ -93737,13 +93749,13 @@ wsF
 wsF
 wsF
 wsF
+ryY
 wsF
 wsF
 wsF
 wsF
 wsF
-wsF
-wsF
+ryY
 wsF
 wsF
 wsF

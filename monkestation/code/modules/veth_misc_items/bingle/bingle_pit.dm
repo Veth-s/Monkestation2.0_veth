@@ -1,4 +1,12 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
+GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
+// This can go in a subsystem, roundstart event, or a custom proc called at roundstart
+/proc/populate_bingle_pit_turfs()
+	GLOB.bingle_pit_turfs.Cut()
+	for(var/turf/T in world)
+		if(istype(get_area(T), /area/station/bingle_pit))
+			if(!T.density)
+				GLOB.bingle_pit_turfs += T
 
 /obj/structure/bingle_hole
 	name = "bingle pit"
@@ -13,7 +21,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	density = FALSE
 	layer = TURF_LAYER + 0.1
 	var/item_value_consumed = 0
-	var/max_item_value = 500
+	var/max_item_value = 300
 	var/bingles_ready = 0
 	var/datum/mind/bingleprime = null
 	var/bingle_per_item_value = 30
@@ -25,6 +33,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	var/list/pit_overlays = list()
 	var/last_bingle_spawn_value = 0
 	var/last_bingle_poll_value = 0
+	var/max_pit_size = 80 // Maximum size (80x80) for the pit
 
 
 /obj/structure/bingle_hole/examine(mob/user)
@@ -110,10 +119,10 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 					if(!A || QDELETED(A)) continue
 					swallow(A)
 					sleep(1) // Yield to avoid lag
-	// Only poll for a new bingle every 30 item value, and only once per threshold
-	if(item_value_consumed - last_bingle_poll_value >= 30)
+	// Only spawn a new bingle for each 30 item value milestone, and only once per milestone
+	while(item_value_consumed - last_bingle_spawn_value >= 30)
 		spawn_bingle_from_ghost()
-		last_bingle_poll_value += 30
+		last_bingle_spawn_value += 30
 
 	// Grow pit as before
 	if(item_value_consumed >= 200)
@@ -122,9 +131,9 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		grow_pit(2)
 
 	// Evolve bingles and buff if item_value_consumed >= 100
-	var/datum/team/bingles/bingles_team = bingle_team
-	if(bingles_team)
-		for(var/mob/living/basic/bingle/bong in bingles_team.members)
+
+	if(bingle_team)
+		for(var/mob/living/basic/bingle/bong in bingle_team.members)
 			if(item_value_consumed >= 100)
 				bong.icon_state = "bingle_armored"
 				bong.maxHealth = 300
@@ -136,6 +145,11 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 				bong.evolved = TRUE
 
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
+
+    // Pit grows every 100 item value
+    var/desired_pit_size = min(1 + (item_value_consumed / 100), max_pit_size)
+    if(desired_pit_size > current_pit_size)
+        grow_pit(desired_pit_size)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
@@ -166,6 +180,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 			qdel(swallowed_obj)
 
 /obj/structure/bingle_hole/proc/grow_pit(new_size)
+	if(new_size > max_pit_size)
+		new_size = max_pit_size
 	if(current_pit_size >= new_size)
 		return
 	var/turf/origin = get_turf(src)
@@ -191,9 +207,6 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
 			if(!T)
 				continue
-
-			var/icon_state = "core"
-			// Corners (top left and bottom left are correct, swap the other two)
 			if(dx == -half && dy == -half)
 				icon_state = "corner_east"      // top left (correct)
 			else if(dx == half && dy == -half)
@@ -212,12 +225,18 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 			else if(dx == half)
 				icon_state = "edge_east"
 			else
-				icon_state = "core"
+				icon_state = "filler"
 
 			var/obj/structure/bingle_pit_overlay/overlay = new(T)
 			overlay.icon_state = icon_state
-			overlay.parent_pit = src // <-- Link overlay to the main pit
+			overlay.parent_pit = src
 			pit_overlays += overlay
+
+			// If pit is larger than 3x3, consume walls on these tiles
+			if(new_size > 3)
+				for(var/obj/O in T)
+					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
+						qdel(O)
 
 	current_pit_size = new_size
 
@@ -299,13 +318,9 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 	log_game("[key_name(bingle)] was spawned as Bingle by the pit.")
 
 /obj/structure/bingle_hole/proc/get_random_bingle_pit_turf()
-	var/list/turfs = list()
-	for(var/turf/T in world)
-		if(istype(get_area(T), /area/station/bingle_pit))
-			turfs += T
-	if(!turfs.len)
+	if(!length(GLOB.bingle_pit_turfs))
 		return null
-	return pick(turfs)
+	return pick(GLOB.bingle_pit_turfs)
 
 /area/station/bingle_pit
 	name = "bingle pit"
@@ -318,13 +333,13 @@ GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 		. += span_alert("The bingle pit has [parent_pit.item_value_consumed] items in it! Creatures are worth more, but cannot be deposited until 100 item value!")
 
 /obj/structure/bingle_hole/attackby(obj/item/W, mob/user)
-    if(istype(user, /mob/living/basic/bingle))
-        to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
-        return
-    return ..()
+	if(istype(user, /mob/living/basic/bingle))
+		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
+		return
+	return ..()
 
 /obj/structure/bingle_hole/attack_hand(mob/user)
-    if(istype(user, /mob/living/basic/bingle))
-        to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
-        return
-    return ..()
+	if(istype(user, /mob/living/basic/bingle))
+		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
+		return
+	return ..()
