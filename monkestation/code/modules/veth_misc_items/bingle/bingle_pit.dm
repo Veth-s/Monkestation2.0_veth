@@ -228,7 +228,7 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
 						qdel(O)
 						item_value_consumed++
-					if(istype(O, /turf/closed/wall)
+					if(istype(O, /turf/closed/wall))
 						qdel(O)
 						item_value_consumed++
 
