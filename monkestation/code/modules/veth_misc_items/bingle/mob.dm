@@ -42,7 +42,9 @@
 	mob_target.Disorient(6 SECONDS, 5, paralyze = 10 SECONDS, stack_status = FALSE)
 	SEND_SIGNAL(target, COMSIG_LIVING_MINOR_SHOCK)
 	return ..()
-
+/mob/living/basic/bingle/Initialize(mapload)
+	. = ..()
+	GLOB.bingle_mobs += src
 
 /mob/living/basic/bingle/lord
 	name = "bingle lord"
@@ -61,6 +63,7 @@
 	. = ..()
 	var/datum/action/cooldown/bingle/spawn_hole/makehole = new pit_spawner(src)
 	makehole.Grant(src)
+	GLOB.bingle_mobs += src
 
 /mob/living/basic/bingle/Initialize(mapload)
 	. = ..()
@@ -130,7 +133,7 @@
 			log = TRUE
 		)
 		if(!gibbed)
-		src.gib()
+			src.gib()
 
 /mob/living/basic/bingle/lord/death(gibbed)
 	. = ..()

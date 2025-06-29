@@ -1,4 +1,5 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
+GLOBAL_LIST_EMPTY(bingle_mobs)
 GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 // This can go in a subsystem, roundstart event, or a custom proc called at roundstart
 /proc/populate_bingle_pit_turfs()
@@ -72,13 +73,9 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 
 /obj/structure/bingle_hole/Initialize(mapload)
 	. = ..()
-	if(bingleprime)
-		for(var/datum/antagonist/antag in bingleprime.antag_datums)
-			if(istype(antag, /datum/antagonist/bingle))
-				bingle_team = antag.get_team()
-				break
-
-	// Create the pit storage turf if it doesn't exist
+	var/datum/antagonist/bingle/prime_antag = locate() in bingleprime?.antag_datums
+	if(prime_antag)
+		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
 	START_PROCESSING(SSfastprocess, src)
 
@@ -86,14 +83,9 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 	STOP_PROCESSING(SSfastprocess, src)
 	spit_em_out()
 	// Gib all bingles in the world on pit destruction
-	for(var/mob/living/basic/bingle/B in world)
-		if(B)
-			B.gib()
-	// Remove all overlays on pit destruction
-	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
-		if(O)
-			qdel(O)
-	pit_overlays.Cut()
+	for(var/mob/living/basic/bingle/B in GLOB.bingle_mobs)
+		B?.gib()
+	QDEL_LIST(pit_overlays)
 	return ..()
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
@@ -105,20 +97,20 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 				continue
 			if(istype(item, /obj/structure/bingle_pit_overlay)) // Prevent swallowing overlays
 				continue
-			if(ismob(item) && istype(item, /mob/living))
+			if(isliving(item))
 				if(istype(item, /mob/living/basic/bingle))
 					continue
 				to_swallow += item
-			else if(isobj(item) && istype(item, /obj/item))
+			else if(isitem(item))
 				to_swallow += item
 
 		// Async swallow: process one per tick to avoid stutter
 		if(length(to_swallow))
-			spawn(0)
+			ASYNC
 				for(var/atom/A in to_swallow)
-					if(!A || QDELETED(A)) continue
+					if(QDELETED(A)) continue
 					swallow(A)
-					sleep(1) // Yield to avoid lag
+					CHECK_TICK // Yield to avoid lag
 	// Only spawn a new bingle for each 30 item value milestone, and only once per milestone
 	while(item_value_consumed - last_bingle_spawn_value >= 30)
 		spawn_bingle_from_ghost()
@@ -139,8 +131,8 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 				bong.maxHealth = 300
 				bong.health = max(bong.health, 300)
 				bong.obj_damage = 100
-				bong.melee_damage_lower = 50
-				bong.melee_damage_upper = 60
+				bong.melee_damage_lower = 30
+				bong.melee_damage_upper = 30
 				bong.armour_penetration = 20
 				bong.evolved = TRUE
 
@@ -189,9 +181,7 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 		return
 
 	// Remove old overlays
-	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
-		qdel(O)
-	pit_overlays.Cut()
+	QDEL_LIST(pit_overlays)
 
 	// If size is 1x1, use the default icon and no overlays
 	if(new_size == 1)
@@ -237,6 +227,10 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 				for(var/obj/O in T)
 					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
 						qdel(O)
+						item_value_consumed++
+					if(istype(O, /turf/closed/wall)
+						qdel(O)
+						item_value_consumed++
 
 	current_pit_size = new_size
 
