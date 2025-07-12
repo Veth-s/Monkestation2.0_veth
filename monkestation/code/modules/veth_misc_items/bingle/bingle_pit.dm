@@ -103,7 +103,6 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 				to_swallow += item
 			else if(isitem(item))
 				to_swallow += item
-
 		// Async swallow: process one per tick to avoid stutter
 		if(length(to_swallow))
 			ASYNC
@@ -112,9 +111,15 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 					swallow(A)
 					CHECK_TICK // Yield to avoid lag
 	// Only spawn a new bingle for each 30 item value milestone, and only once per milestone
-	while(item_value_consumed - last_bingle_spawn_value >= 30)
+	// Calculate how many bingles should exist based on current item value
+	var/target_bingle_count = round(item_value_consumed / 30)
+	var/current_bingle_count = round(last_bingle_spawn_value / 30)
+
+	// If we need more bingles, spawn one
+	if(target_bingle_count > current_bingle_count)
+		last_bingle_spawn_value = target_bingle_count * 30
 		spawn_bingle_from_ghost()
-		last_bingle_spawn_value += 30
+
 
 	// Grow pit as before
 	if(item_value_consumed >= 200)
@@ -228,11 +233,14 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
 						qdel(O)
 						item_value_consumed++
-					if(istype(O, /turf/closed/wall))
-						qdel(O)
+					// Remove wall turf itself, if present
+					if(istype(T, /turf/closed/wall))
+						var/turf/closed/wall/W = T
+						// Replace with a normal floor instead of space
+						var/turf/open/floor/F = new /turf/open/floor(W)
+						qdel(W)
 						item_value_consumed++
-
-	current_pit_size = new_size
+						current_pit_size = new_size
 
 /obj/structure/bingle_pit_overlay
 	name = "bingle pit"
