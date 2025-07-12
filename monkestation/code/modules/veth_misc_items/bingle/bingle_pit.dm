@@ -203,22 +203,21 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 			if(!T)
 				continue
 			if(dx == -half && dy == -half)
-				icon_state = "corner_east"      // top left (correct)
+				icon_state = "corner_north"      // top left
 			else if(dx == half && dy == -half)
-				icon_state = "corner_south"     // top right (was corner_west, now corner_south)
-			else if(dx == -half && dy == half)
-				icon_state = "corner_north"     // bottom left (correct)
+				icon_state = "corner_west"       // top right
 			else if(dx == half && dy == half)
-				icon_state = "corner_west"      // bottom right (was corner_south, now corner_west)
-			// Edges (swap edge_north and edge_south)
+				icon_state = "corner_south"      // bottom right
+			else if(dx == -half && dy == half)
+				icon_state = "corner_east"       // bottom left
 			else if(dy == -half)
-				icon_state = "edge_south"
+				icon_state = "edge_north"        // top edge
 			else if(dy == half)
-				icon_state = "edge_north"
+				icon_state = "edge_south"        // bottom edge
 			else if(dx == -half)
-				icon_state = "edge_west"
+				icon_state = "edge_west"         // left edge
 			else if(dx == half)
-				icon_state = "edge_east"
+				icon_state = "edge_east"         // right edge
 			else
 				icon_state = "filler"
 
