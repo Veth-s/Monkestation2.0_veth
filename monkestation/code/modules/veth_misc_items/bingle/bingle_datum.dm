@@ -20,14 +20,6 @@ if too much trash on ground bingles roll
 	return finish_preview_icon(icon('monkestation/code/modules/veth_misc_items/bingle/icons/bingles.dmi', "bingle"))
 
 /datum/antagonist/bingle/on_gain()
-	ADD_TRAIT(owner, TRAIT_BINGLE, "bingle")
-	ADD_TRAIT(owner, TRAIT_CLUMSY, "bingle")
-	ADD_TRAIT(owner, TRAIT_DUMB, "bingle")
-	ADD_TRAIT(owner, TRAIT_NO_PAIN_EFFECTS, "bingle")
-	ADD_TRAIT(owner, TRAIT_RESISTCOLD, "bingle")
-	ADD_TRAIT(owner, TRAIT_RESISTLOWPRESSURE, "bingle")
-	ADD_TRAIT(owner, TRAIT_RESISTHIGHPRESSURE, "bingle")
-	ADD_TRAIT(owner, TRAIT_HEALS_FROM_BINGLE_HOLES, "bingle")
 	if(!dont_bungle_the_bingle)
 		dont_bungle_the_bingle = new
 

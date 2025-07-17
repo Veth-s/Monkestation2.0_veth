@@ -1,5 +1,5 @@
-GLOBAL_LIST_EMPTY(bingle_pit_mobs)
-GLOBAL_LIST_EMPTY(bingle_mobs)
+GLOBAL_LIST(bingle_pit_mobs)
+GLOBAL_LIST(bingle_mobs)
 
 /obj/structure/bingle_hole
 	name = "bingle pit"
@@ -420,9 +420,6 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 		return
 
 	var/mob/living/basic/bingle/bingle = new(spawn_loc)
-	// Ensure it's added to global list (should happen in Initialize, but double-check)
-	if(!(bingle in GLOB.bingle_mobs))
-		GLOB.bingle_mobs += bingle
 
 	player_mind.transfer_to(bingle)
 	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))

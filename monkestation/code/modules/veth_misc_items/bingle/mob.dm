@@ -1,4 +1,4 @@
-/mob/living/basic/bingle/
+/mob/living/basic/bingle
 	name = "bingle"
 	real_name = "bingle"
 	desc = "A funny lil blue guy."
@@ -14,8 +14,9 @@
 
 	maxHealth = 150
 	health = 150
-	habitable_atmos = list("min_oxy" = 0, "max_oxy" = 0, "min_plas" = 0, "max_plas" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
-	bodytemp_cold_damage_limit = TCMB
+	habitable_atmos = null
+	bodytemp_cold_damage_limit = -1
+	bodytemp_heat_damage_limit = INFINITY
 
 	obj_damage = 100
 	melee_damage_lower = 10
@@ -31,28 +32,35 @@
 	attack_sound = 'sound/effects/blobattack.ogg' //'monkestation/code/moduoles/veth_misc_items/bingle/sound/bingle_attack.ogg'
 	attack_vis_effect = ATTACK_EFFECT_BITE //nom nom nom
 	butcher_results = null
-	var/evolved = FALSE
 
 	light_outer_range = 4
 
+	var/evolved = FALSE
+	var/static/list/bingle_traits = list(
+		TRAIT_HEALS_FROM_BINGLE_HOLES,
+		TRAIT_BINGLE,
+		TRAIT_CLUMSY,
+		TRAIT_DUMB,
+		TRAIT_NO_PAIN_EFFECTS,
+	)
+
 /mob/living/basic/bingle/Initialize(mapload)
 	. = ..()
-	GLOB.bingle_mobs += src
+	LAZYADD(GLOB.bingle_mobs, src)
 	RegisterSignal(src, BINGLE_EVOLVE, PROC_REF(evolve))
-	// Add the healing trait so bingles can be healed by the pit
-	ADD_TRAIT(src, TRAIT_HEALS_FROM_BINGLE_HOLES, INNATE_TRAIT)
+	add_traits(bingle_traits, INNATE_TRAIT)
 
 /mob/living/basic/bingle/Destroy()
 	// Remove from global tracking lists
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
+	LAZYREMOVE(GLOB.bingle_mobs, src)
+	LAZYREMOVE(GLOB.bingle_pit_mobs, src)
 
 	// Remove from any pit's tracking lists
 	for(var/obj/structure/bingle_hole/pit in world)
 		if(pit.pit_contents_mobs)
 			pit.pit_contents_mobs -= src
 
-	return ..() // Call parent Destroy()
+	return ..()
 
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
 	if(!isliving(target))
@@ -212,15 +220,3 @@
 		)
 	if(!gibbed)
 		src.gib()
-
-/mob/living/basic/bingle/Destroy()
-	// Remove from global tracking lists
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
-
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
-	return ..() // Call parent Destroy()
