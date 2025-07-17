@@ -1,7 +1,6 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 GLOBAL_LIST_EMPTY(bingle_mobs)
 GLOBAL_LIST_EMPTY(bingle_pit_turfs)
-// This can go in a subsystem, roundstart event, or a custom proc called at roundstart
 /proc/populate_bingle_pit_turfs()
 	GLOB.bingle_pit_turfs.Cut()
 	for(var/turf/T in world)
@@ -75,10 +74,8 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	if(prime_antag)
 		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
-	START_PROCESSING(SSfastprocess, src)
-
-	// Populate bingle pit turfs when a pit is created
 	populate_bingle_pit_turfs()
+	START_PROCESSING(SSfastprocess, src)
 
 /obj/structure/bingle_hole/Destroy()
 	STOP_PROCESSING(SSfastprocess, src)
@@ -184,7 +181,6 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 
 	// Make the item spin and shrink as it falls toward the center
 	var/original_transform = item.transform
-	var/original_alpha = item.alpha
 
 	// Calculate movement toward pit center
 	var/dx = pit_turf.x - item_turf.x
