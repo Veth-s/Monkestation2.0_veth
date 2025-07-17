@@ -449,7 +449,7 @@ GLOBAL_LIST(bingle_holes)
 
 /area/station/bingle_pit
 	name = "bingle pit"
-	area_flags = NOTELEPORT | EVENT_PROTECTED | ABDUCTOR_PROOF
+	area_flags = NOTELEPORT | EVENT_PROTECTED | ABDUCTOR_PROOF | ALWAYS_VALID_BLOODSUCKER_LAIR | UNIQUE_AREA
 	has_gravity = TRUE
 
 /obj/structure/bingle_pit_overlay/examine(mob/user)
