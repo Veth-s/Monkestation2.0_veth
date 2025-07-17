@@ -1,7 +1,7 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 GLOBAL_LIST_EMPTY(bingle_mobs)
-GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
-// This can go in a subsystem, roundstart event, or a custom proc called at roundstart
+GLOBAL_LIST_EMPTY(bingle_pit_turfs)
+
 /proc/populate_bingle_pit_turfs()
 	GLOB.bingle_pit_turfs.Cut()
 	for(var/turf/T in world)
