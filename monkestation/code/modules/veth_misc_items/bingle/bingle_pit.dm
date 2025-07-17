@@ -65,7 +65,6 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 	if(prime_antag)
 		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
-	SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
 	START_PROCESSING(SSfastprocess, src)
 
 /obj/structure/bingle_hole/Destroy()
@@ -382,24 +381,6 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
 		turfs += get_turf(O)
 	return turfs
-
-// Add this bingle cleanup code - you'll need to add this to your bingle mob definition file
-/mob/living/basic/bingle/Destroy()
-	// Remove from global tracking lists
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
-
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
-	return ..() // Call parent Destroy()
-
-// Also ensure bingles are properly added to the global list when spawned
-/mob/living/basic/bingle/Initialize(mapload)
-	. = ..()
-	GLOB.bingle_mobs += src  // Make sure this is in your bingle Initialize
 
 // Update the spawn proc to ensure proper tracking
 /obj/structure/bingle_hole/proc/spawn_bingle_from_ghost()
