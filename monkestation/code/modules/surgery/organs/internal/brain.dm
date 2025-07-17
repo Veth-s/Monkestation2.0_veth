@@ -499,11 +499,13 @@ GLOBAL_LIST_EMPTY_TYPED(dead_oozeling_cores, /obj/item/organ/internal/brain/slim
 	if(!reconfigure && is_species(user_human, /datum/species/ipc))
 		reconfigure = new
 		reconfigure.Grant(user_human)
+
 /obj/item/organ/internal/brain/synth/Remove(mob/living/carbon/brain_owner)
+	. = .. ()
 	if(reconfigure)
 		reconfigure.Remove(brain_owner)
 		QDEL_NULL(reconfigure)
-	return ..()
+
 /obj/item/organ/internal/brain/synth/emp_act(severity) // EMP act against the posi, keep the cap far below the organ health
 	. = ..()
 
