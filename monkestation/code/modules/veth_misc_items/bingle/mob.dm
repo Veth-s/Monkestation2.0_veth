@@ -35,6 +35,11 @@
 
 	light_outer_range = 4
 
+/mob/living/basic/bingle/Initialize(mapload)
+	. = ..()
+	GLOB.bingle_mobs += src
+	RegisterSignal(src, BINGLE_EVOLVE, PROC_REF(evolve))
+
 /mob/living/basic/bingle/Destroy()
 	// Remove from global tracking lists
 	GLOB.bingle_mobs -= src
@@ -47,6 +52,18 @@
 
 	return ..() // Call parent Destroy()
 
+/mob/living/basic/bingle/gib(no_brain, no_organs, no_bodyparts)
+	// Clean up global references before gibbing
+	GLOB.bingle_mobs -= src
+	GLOB.bingle_pit_mobs -= src
+
+	// Remove from any pit's tracking lists
+	for(var/obj/structure/bingle_hole/pit in world)
+		if(pit.pit_contents_mobs)
+			pit.pit_contents_mobs -= src
+
+	return ..()
+
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
 	if(!isliving(target))
 		return ..()
@@ -54,9 +71,6 @@
 	mob_target.Disorient(6 SECONDS, 5, paralyze = 10 SECONDS, stack_status = FALSE)
 	SEND_SIGNAL(target, COMSIG_LIVING_MINOR_SHOCK)
 	return ..()
-/mob/living/basic/bingle/Initialize(mapload)
-	. = ..()
-	GLOB.bingle_mobs += src
 
 /mob/living/basic/bingle/lord
 	name = "bingle lord"
@@ -75,11 +89,7 @@
 	. = ..()
 	var/datum/action/cooldown/bingle/spawn_hole/makehole = new pit_spawner(src)
 	makehole.Grant(src)
-	GLOB.bingle_mobs += src
-
-/mob/living/basic/bingle/Initialize(mapload)
-	. = ..()
-	RegisterSignal(src, BINGLE_EVOLVE, PROC_REF(evolve))
+	// Don't add to GLOB.bingle_mobs again - parent Initialize already did this
 
 /mob/living/basic/bingle/Life(seconds_between_ticks, times_fired)
 	. = ..()
@@ -119,6 +129,15 @@
 		icon_state = "binglelord"
 
 /mob/living/basic/bingle/death(gibbed)
+	// Clean up global references before death processing
+	GLOB.bingle_mobs -= src
+	GLOB.bingle_pit_mobs -= src
+
+	// Remove from any pit's tracking lists
+	for(var/obj/structure/bingle_hole/pit in world)
+		if(pit.pit_contents_mobs)
+			pit.pit_contents_mobs -= src
+
 	. = ..()
 
 	var/list/possible_chems = list(
@@ -144,10 +163,19 @@
 			reagent_volume = rand(5, 15),
 			log = TRUE
 		)
-		if(!gibbed)
-			src.gib()
+	if(!gibbed)
+		src.gib()
 
 /mob/living/basic/bingle/lord/death(gibbed)
+	// Clean up global references before death processing
+	GLOB.bingle_mobs -= src
+	GLOB.bingle_pit_mobs -= src
+
+	// Remove from any pit's tracking lists
+	for(var/obj/structure/bingle_hole/pit in world)
+		if(pit.pit_contents_mobs)
+			pit.pit_contents_mobs -= src
+
 	. = ..()
 
 	var/list/possible_chems = list(
@@ -161,7 +189,7 @@
 		/datum/reagent/consumable/ethanol
 	)
 
-	// Pick 3-5 random chemicals and create smoke with each
+	// Pick 10-15 random chemicals and create smoke with each
 	var/chemicals_to_use = rand(10, 15)
 	for(var/i = 1 to chemicals_to_use)
 		var/chemical_type = pick(possible_chems)
