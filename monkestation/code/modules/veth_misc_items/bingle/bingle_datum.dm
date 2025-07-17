@@ -36,7 +36,7 @@ if too much trash on ground bingles roll
 
 /datum/antagonist/bingle/greet()
 	. = ..()
-	to_chat(owner.current, span_warning("<B>You are a [name]! You must feed the pit at any cost! You are VALID ON SIGHT, and do not require escalation."))
+	to_chat(owner.current, span_boldwarning("You are a [name]! You must feed the pit at any cost! You are VALID ON SIGHT, and do not require escalation."))
 
 /datum/antagonist/bingle/get_team()
 	return dont_bungle_the_bingle
