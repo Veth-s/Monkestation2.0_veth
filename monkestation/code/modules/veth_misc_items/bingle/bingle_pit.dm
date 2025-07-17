@@ -171,7 +171,7 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 		addtimer(CALLBACK(src, PROC_REF(finish_swallow_obj), swallowed_obj), 1 SECONDS)
 
 /obj/structure/bingle_hole/proc/animate_falling_into_pit(atom/item)
-	if(!item || QDELETED(item))
+	if(QDELETED(item))
 		return
 
 	var/turf/item_turf = get_turf(item)
