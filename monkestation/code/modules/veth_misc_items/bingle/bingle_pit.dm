@@ -131,7 +131,8 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
-/obj/structure/bingle_hole/proc/swallow(atom/item)
+/obj/structure/bingle_hole/proc/swallow(atom/movable/item)
+	item.unbuckle_all_mobs()
 	if(ismob(item))
 		var/mob/swallowed_mob = item
 
