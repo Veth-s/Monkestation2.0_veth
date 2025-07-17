@@ -35,6 +35,54 @@
 
 	light_outer_range = 4
 
+	var/list/possible_chems = list(
+		/datum/reagent/smoke_powder,
+		/datum/reagent/toxin/plasma,
+		/datum/reagent/drug/space_drugs,
+		/datum/reagent/drug/methamphetamine,
+		/datum/reagent/toxin/histamine,
+		/datum/reagent/consumable/nutriment,
+		/datum/reagent/water,
+		/datum/reagent/consumable/ethanol,
+		/datum/reagent/colorful_reagent,
+		/datum/reagent/glitter,
+		/datum/reagent/consumable/sugar,
+		/datum/reagent/lube,
+		/datum/reagent/consumable/salt,
+		/datum/reagent/consumable/capsaicin,
+		/datum/reagent/consumable/frostoil,
+		/datum/reagent/medicine/omnizine,
+		/datum/reagent/consumable/honey,
+		/datum/reagent/clf3,
+		/datum/reagent/fluorosurfactant,
+		/datum/reagent/consumable/spacemountainwind,
+		/datum/reagent/consumable/dr_gibb,
+		/datum/reagent/consumable/space_cola,
+		/datum/reagent/consumable/coffee,
+		/datum/reagent/consumable/tea,
+		/datum/reagent/medicine/ephedrine,
+		/datum/reagent/medicine/diphenhydramine,
+		/datum/reagent/consumable/garlic,
+		/datum/reagent/consumable/banana,
+		/datum/reagent/iron,
+		/datum/reagent/copper,
+		/datum/reagent/silver,
+		/datum/reagent/gold,
+		/datum/reagent/uranium,
+		/datum/reagent/medicine/strange_reagent,
+		/datum/reagent/toxin/acid,
+		/datum/reagent/napalm,
+		/datum/reagent/thermite,
+		/datum/reagent/drug/krokodil,
+		/datum/reagent/drug/bath_salts,
+		/datum/reagent/drug/aranesp,
+		/datum/reagent/consumable/pineapplejuice,
+		/datum/reagent/consumable/tomatojuice,
+		/datum/reagent/consumable/potato_juice,
+		/datum/reagent/consumable/limejuice,
+		/datum/reagent/consumable/orangejuice
+	)
+
 /mob/living/basic/bingle/Initialize(mapload)
 	. = ..()
 	GLOB.bingle_mobs += src
@@ -51,18 +99,6 @@
 			pit.pit_contents_mobs -= src
 
 	return ..() // Call parent Destroy()
-
-/mob/living/basic/bingle/gib(no_brain = FALSE, no_organs = FALSE, no_bodyparts = FALSE, safe_gib = FALSE)
-	// Clean up global references before gibbing
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
-
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
-	return ..(no_brain, no_organs, no_bodyparts, safe_gib)
 
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
 	if(!isliving(target))
@@ -129,28 +165,7 @@
 		icon_state = "binglelord"
 
 /mob/living/basic/bingle/death(gibbed)
-	// Clean up global references before death processing
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
-
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
 	. = ..()
-
-	var/list/possible_chems = list(
-		/datum/reagent/smoke_powder,
-		/datum/reagent/toxin/plasma,
-		/datum/reagent/drug/space_drugs,
-		/datum/reagent/drug/methamphetamine,
-		/datum/reagent/toxin/histamine,
-		/datum/reagent/consumable/nutriment,
-		/datum/reagent/water,
-		/datum/reagent/consumable/ethanol
-	)
-
 	// Pick 3-5 random chemicals and create smoke with each
 	var/chemicals_to_use = rand(3, 5)
 	for(var/i = 1 to chemicals_to_use)
@@ -167,28 +182,7 @@
 		src.gib()
 
 /mob/living/basic/bingle/lord/death(gibbed)
-	// Clean up global references before death processing
-	GLOB.bingle_mobs -= src
-	GLOB.bingle_pit_mobs -= src
-
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
 	. = ..()
-
-	var/list/possible_chems = list(
-		/datum/reagent/smoke_powder,
-		/datum/reagent/toxin/plasma,
-		/datum/reagent/drug/space_drugs,
-		/datum/reagent/drug/methamphetamine,
-		/datum/reagent/toxin/histamine,
-		/datum/reagent/consumable/nutriment,
-		/datum/reagent/water,
-		/datum/reagent/consumable/ethanol
-	)
-
 	// Pick 10-15 random chemicals and create smoke with each
 	var/chemicals_to_use = rand(10, 15)
 	for(var/i = 1 to chemicals_to_use)

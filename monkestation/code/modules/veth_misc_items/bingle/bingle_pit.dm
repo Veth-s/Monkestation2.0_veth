@@ -181,7 +181,6 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 
 	// Make the item spin and shrink as it falls toward the center
 	var/original_transform = item.transform
-	var/original_alpha = item.alpha
 
 	// Calculate movement toward pit center
 	var/dx = pit_turf.x - item_turf.x
