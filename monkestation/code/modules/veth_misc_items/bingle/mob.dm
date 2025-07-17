@@ -52,7 +52,7 @@
 
 	return ..() // Call parent Destroy()
 
-/mob/living/basic/bingle/gib(no_brain, no_organs, no_bodyparts)
+/mob/living/basic/bingle/gib(no_brain = FALSE, no_organs = FALSE, no_bodyparts = FALSE, safe_gib = FALSE)
 	// Clean up global references before gibbing
 	GLOB.bingle_mobs -= src
 	GLOB.bingle_pit_mobs -= src
@@ -62,7 +62,7 @@
 		if(pit.pit_contents_mobs)
 			pit.pit_contents_mobs -= src
 
-	return ..()
+	return ..(no_brain, no_organs, no_bodyparts, safe_gib)
 
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
 	if(!isliving(target))
