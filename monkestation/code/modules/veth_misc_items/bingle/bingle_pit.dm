@@ -199,7 +199,7 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 	// Create a temporary visual effect object for the swirl
 	var/obj/effect/temp_visual/bingle_pit_swirl/swirl = new(target_turf)
 	swirl.icon = 'icons/effects/effects.dmi'
-	swirl.icon_state = "electricity2" // You can change this to a custom swirl icon if you have one
+	swirl.icon_state = "quantum_sparks" // You can change this to a custom swirl icon if you have one
 	swirl.layer = ABOVE_MOB_LAYER
 	swirl.alpha = 150
 
@@ -213,7 +213,7 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 	name = "swirling void"
 	desc = "Reality bends around the pit..."
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "electricity2"
+	icon_state = "quantum_sparks"
 	layer = ABOVE_MOB_LAYER
 	duration = 1.5 SECONDS
 
