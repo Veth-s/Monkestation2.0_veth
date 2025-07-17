@@ -196,33 +196,42 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 
 	src.icon_state = "" // Make the pit itself invisible
 
-	var/half = (new_size - 1) / 2
-	for(var/dx = -half to half)
-		for(var/dy = -half to half)
+	// Calculate the half-width more explicitly to avoid decimal issues
+	var/half = round((new_size - 1) / 2)
+	var/start_coord = -half
+	var/end_coord = half
+
+	for(var/dx = start_coord to end_coord)
+		for(var/dy = start_coord to end_coord)
 			var/turf/T = locate(origin.x + dx, origin.y + dy, origin.z)
 			if(!T)
 				continue
-			if(dx == -half && dy == -half)
-				icon_state = "corner_north"      // top left
-			else if(dx == half && dy == -half)
-				icon_state = "corner_west"       // top right
-			else if(dx == half && dy == half)
-				icon_state = "corner_south"      // bottom right
-			else if(dx == -half && dy == half)
-				icon_state = "corner_east"       // bottom left
-			else if(dy == -half)
-				icon_state = "edge_north"        // top edge
-			else if(dy == half)
-				icon_state = "edge_south"        // bottom edge
-			else if(dx == -half)
-				icon_state = "edge_west"         // left edge
-			else if(dx == half)
-				icon_state = "edge_east"         // right edge
+
+			var/icon_state_to_use
+			// Corners first (check both dx and dy conditions)
+			if(dx == start_coord && dy == end_coord)
+				icon_state_to_use = "corner_north"      // top left
+			else if(dx == end_coord && dy == end_coord)
+				icon_state_to_use = "corner_west"       // top right
+			else if(dx == end_coord && dy == start_coord)
+				icon_state_to_use = "corner_south"      // bottom right
+			else if(dx == start_coord && dy == start_coord)
+				icon_state_to_use = "corner_east"       // bottom left
+			// Edges (check single conditions)
+			else if(dy == end_coord)
+				icon_state_to_use = "edge_north"        // top edge
+			else if(dy == start_coord)
+				icon_state_to_use = "edge_south"        // bottom edge
+			else if(dx == start_coord)
+				icon_state_to_use = "edge_west"         // left edge
+			else if(dx == end_coord)
+				icon_state_to_use = "edge_east"         // right edge
+			// Center fill
 			else
-				icon_state = "filler"
+				icon_state_to_use = "filler"
 
 			var/obj/structure/bingle_pit_overlay/overlay = new(T)
-			overlay.icon_state = icon_state
+			overlay.icon_state = icon_state_to_use
 			overlay.parent_pit = src
 			pit_overlays += overlay
 
@@ -232,14 +241,30 @@ GLOBAL_LIST_INIT(bingle_pit_turfs, GLOBAL_PROC_REF(populate_bingle_pit_turfs))
 					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
 						qdel(O)
 						item_value_consumed++
-					// Remove wall turf itself, if present
-					if(istype(T, /turf/closed/wall))
-						var/turf/closed/wall/W = T
-						// Replace with a normal floor instead of space
-						var/turf/open/floor/F = new /turf/open/floor(W)
-						qdel(W)
-						item_value_consumed++
-						current_pit_size = new_size
+				// Remove wall turf itself, if present
+				if(istype(T, /turf/closed/wall))
+					// Replace with a normal floor instead of space
+					T.ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
+					item_value_consumed++
+
+	current_pit_size = new_size
+
+/obj/structure/bingle_hole/Destroy()
+	STOP_PROCESSING(SSfastprocess, src)
+	spit_em_out()
+
+	// Clean up any references to this pit in bingles
+	for(var/mob/living/basic/bingle/B in GLOB.bingle_mobs)
+		// If bingles have any reference to this pit, clear it
+		// (you might need to adjust this based on your bingle structure)
+		B?.gib()
+
+	// Clear the global lists to prevent references
+	GLOB.bingle_mobs?.Cut()
+	GLOB.bingle_pit_mobs?.Cut()
+
+	QDEL_LIST(pit_overlays)
+	return ..()
 
 /obj/structure/bingle_pit_overlay
 	name = "bingle pit"

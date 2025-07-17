@@ -35,6 +35,18 @@
 
 	light_outer_range = 4
 
+/mob/living/basic/bingle/Destroy()
+	// Remove from global tracking lists
+	GLOB.bingle_mobs -= src
+	GLOB.bingle_pit_mobs -= src
+
+	// Remove from any pit's tracking lists
+	for(var/obj/structure/bingle_hole/pit in world)
+		if(pit.pit_contents_mobs)
+			pit.pit_contents_mobs -= src
+
+	return ..() // Call parent Destroy()
+
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
 	if(!isliving(target))
 		return ..()
