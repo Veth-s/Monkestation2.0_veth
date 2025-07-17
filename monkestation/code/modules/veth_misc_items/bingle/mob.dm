@@ -56,7 +56,7 @@
 	LAZYREMOVE(GLOB.bingle_pit_mobs, src)
 
 	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in world)
+	for(var/obj/structure/bingle_hole/pit in GLOB.bingle_holes)
 		if(pit.pit_contents_mobs)
 			pit.pit_contents_mobs -= src
 
