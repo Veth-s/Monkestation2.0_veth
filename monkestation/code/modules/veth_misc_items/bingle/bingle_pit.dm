@@ -1,12 +1,5 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 GLOBAL_LIST_EMPTY(bingle_mobs)
-GLOBAL_LIST_EMPTY(bingle_pit_turfs)
-/proc/populate_bingle_pit_turfs()
-	GLOB.bingle_pit_turfs.Cut()
-	for(var/turf/T in world)
-		if(istype(get_area(T), /area/station/bingle_pit))
-			if(!T.density)
-				GLOB.bingle_pit_turfs += T
 
 /obj/structure/bingle_hole
 	name = "bingle pit"
@@ -45,17 +38,15 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	if(!target_turf)
 		return
 
-	// Find all turfs in the bingle pit area
-	for(var/turf/T in world)
-		if(!istype(get_area(T), /area/station/bingle_pit))
+	var/area/bingle_pit = GLOB.areas_by_type[/area/station/bingle_pit]
+	for(var/atom/movable/thing in bingle_pit?.contents)
+		if(QDELETED(thing))
 			continue
-		// Move all movables on this turf back to the pit
-		for(var/atom/movable/A in T)
-			A.forceMove(target_turf)
-			var/dir = pick(GLOB.alldirs)
-			var/turf/edge = get_edge_target_turf(src, dir)
-			if(ismob(A) || isobj(A))
-				A.throw_at(edge, rand(1,5), rand(1,5))
+		thing.forceMove(target_turf)
+		var/dir = pick(GLOB.alldirs)
+		var/turf/edge = get_edge_target_turf(src, dir)
+		if(ismob(thing) || isobj(thing))
+			thing.throw_at(edge, rand(1, 5), rand(1, 5))
 
 	// Clear the pit contents lists
 	pit_contents_mobs.Cut()
@@ -74,15 +65,15 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	if(prime_antag)
 		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
-	populate_bingle_pit_turfs()
+	SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
 	START_PROCESSING(SSfastprocess, src)
 
 /obj/structure/bingle_hole/Destroy()
 	STOP_PROCESSING(SSfastprocess, src)
 	spit_em_out()
 	// Gib all bingles in the world on pit destruction
-	for(var/mob/living/basic/bingle/B in GLOB.bingle_mobs)
-		B?.gib()
+	for(var/mob/living/basic/bingle/bingle in GLOB.bingle_mobs)
+		bingle?.gib()
 	QDEL_LIST(pit_overlays)
 	return ..()
 
@@ -454,9 +445,12 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	log_game("[key_name(bingle)] was spawned as Bingle by the pit.")
 
 /obj/structure/bingle_hole/proc/get_random_bingle_pit_turf()
-	if(!length(GLOB.bingle_pit_turfs))
-		return null
-	return pick(GLOB.bingle_pit_turfs)
+	var/list/eligible_turfs = list()
+	for(var/turf/open/open_turf in get_area_turfs(/area/station/bingle_pit))
+		if(!open_turf.is_blocked_turf_ignore_climbable())
+			eligible_turfs += eligible_turfs
+	if(length(eligible_turfs))
+		return pick(eligible_turfs)
 
 /area/station/bingle_pit
 	name = "bingle pit"
