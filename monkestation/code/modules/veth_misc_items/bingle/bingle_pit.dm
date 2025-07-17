@@ -54,7 +54,7 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 
 /datum/armor/structure_bingle_hole
 	energy = 75
-	bomb = 95
+	bomb = 99.5
 	bio = 100
 	fire = 50
 	acid = 80
