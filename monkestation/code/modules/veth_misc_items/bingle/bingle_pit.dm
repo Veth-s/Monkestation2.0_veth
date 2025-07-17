@@ -132,12 +132,17 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow(atom/item)
-	// Create falling animation before moving the item
-	animate_falling_into_pit(item)
-
 	if(ismob(item))
 		var/mob/swallowed_mob = item
 		if(item_value_consumed < 100)
+			// Reset any visual effects that might be lingering
+			swallowed_mob.pixel_x = 0
+			swallowed_mob.pixel_y = 0
+			swallowed_mob.transform = null
+			swallowed_mob.alpha = 255
+			// Stop any ongoing animations
+			animate(swallowed_mob)
+
 			var/dir = pick(GLOB.alldirs)
 			var/turf/target = get_edge_target_turf(src, dir)
 			swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
@@ -146,6 +151,8 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 		if(!(swallowed_mob in pit_contents_mobs))
 			pit_contents_mobs += swallowed_mob
 			item_value_consumed += 10
+		// Only animate if we're actually swallowing
+		animate_falling_into_pit(item)
 		// Delay the actual movement to let animation play
 		addtimer(CALLBACK(src, PROC_REF(finish_swallow_mob), swallowed_mob), 1 SECONDS)
 	else if(isobj(item))
@@ -153,6 +160,8 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 		if(!(swallowed_obj in pit_contents_items))
 			pit_contents_items += swallowed_obj
 			item_value_consumed++
+		// Only animate if we're actually swallowing
+		animate_falling_into_pit(item)
 		// Delay the actual movement to let animation play
 		addtimer(CALLBACK(src, PROC_REF(finish_swallow_obj), swallowed_obj), 1 SECONDS)
 
