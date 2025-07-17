@@ -1,7 +1,7 @@
 GLOBAL_LIST_EMPTY(bingle_pit_mobs)
 GLOBAL_LIST_EMPTY(bingle_mobs)
 GLOBAL_LIST_EMPTY(bingle_pit_turfs)
-
+// This can go in a subsystem, roundstart event, or a custom proc called at roundstart
 /proc/populate_bingle_pit_turfs()
 	GLOB.bingle_pit_turfs.Cut()
 	for(var/turf/T in world)
@@ -76,6 +76,9 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
 	START_PROCESSING(SSfastprocess, src)
+
+	// Populate bingle pit turfs when a pit is created
+	populate_bingle_pit_turfs()
 
 /obj/structure/bingle_hole/Destroy()
 	STOP_PROCESSING(SSfastprocess, src)
@@ -181,6 +184,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 
 	// Make the item spin and shrink as it falls toward the center
 	var/original_transform = item.transform
+	var/original_alpha = item.alpha
 
 	// Calculate movement toward pit center
 	var/dx = pit_turf.x - item_turf.x
@@ -199,7 +203,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	// Create a temporary visual effect object for the swirl
 	var/obj/effect/temp_visual/bingle_pit_swirl/swirl = new(target_turf)
 	swirl.icon = 'icons/effects/effects.dmi'
-	swirl.icon_state = "quantum_sparks" // You can change this to a custom swirl icon if you have one
+	swirl.icon_state = "electricity2" // You can change this to a custom swirl icon if you have one
 	swirl.layer = ABOVE_MOB_LAYER
 	swirl.alpha = 150
 
@@ -213,7 +217,7 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 	name = "swirling void"
 	desc = "Reality bends around the pit..."
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "quantum_sparks"
+	icon_state = "electricity2"
 	layer = ABOVE_MOB_LAYER
 	duration = 1.5 SECONDS
 
@@ -392,6 +396,25 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 		turfs += get_turf(O)
 	return turfs
 
+// Add this bingle cleanup code - you'll need to add this to your bingle mob definition file
+/mob/living/basic/bingle/Destroy()
+	// Remove from global tracking lists
+	GLOB.bingle_mobs -= src
+	GLOB.bingle_pit_mobs -= src
+
+	// Remove from any pit's tracking lists
+	for(var/obj/structure/bingle_hole/pit in world)
+		if(pit.pit_contents_mobs)
+			pit.pit_contents_mobs -= src
+
+	return ..() // Call parent Destroy()
+
+// Also ensure bingles are properly added to the global list when spawned
+/mob/living/basic/bingle/Initialize(mapload)
+	. = ..()
+	GLOB.bingle_mobs += src  // Make sure this is in your bingle Initialize
+
+// Update the spawn proc to ensure proper tracking
 /obj/structure/bingle_hole/proc/spawn_bingle_from_ghost()
 	var/list/mob/dead/observer/candidates = SSpolling.poll_ghost_candidates(
 		question = "Do you want to play as a Bingle?",
@@ -414,6 +437,10 @@ GLOBAL_LIST_EMPTY(bingle_pit_turfs)
 		return
 
 	var/mob/living/basic/bingle/bingle = new(spawn_loc)
+	// Ensure it's added to global list (should happen in Initialize, but double-check)
+	if(!(bingle in GLOB.bingle_mobs))
+		GLOB.bingle_mobs += bingle
+
 	player_mind.transfer_to(bingle)
 	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
 	player_mind.special_role = ROLE_BINGLE

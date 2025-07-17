@@ -35,58 +35,12 @@
 
 	light_outer_range = 4
 
-	var/list/possible_chems = list(
-		/datum/reagent/smoke_powder,
-		/datum/reagent/toxin/plasma,
-		/datum/reagent/drug/space_drugs,
-		/datum/reagent/drug/methamphetamine,
-		/datum/reagent/toxin/histamine,
-		/datum/reagent/consumable/nutriment,
-		/datum/reagent/water,
-		/datum/reagent/consumable/ethanol,
-		/datum/reagent/colorful_reagent,
-		/datum/reagent/glitter,
-		/datum/reagent/consumable/sugar,
-		/datum/reagent/lube,
-		/datum/reagent/consumable/salt,
-		/datum/reagent/consumable/capsaicin,
-		/datum/reagent/consumable/frostoil,
-		/datum/reagent/medicine/omnizine,
-		/datum/reagent/consumable/honey,
-		/datum/reagent/clf3,
-		/datum/reagent/fluorosurfactant,
-		/datum/reagent/consumable/spacemountainwind,
-		/datum/reagent/consumable/dr_gibb,
-		/datum/reagent/consumable/space_cola,
-		/datum/reagent/consumable/coffee,
-		/datum/reagent/consumable/tea,
-		/datum/reagent/medicine/ephedrine,
-		/datum/reagent/medicine/diphenhydramine,
-		/datum/reagent/consumable/garlic,
-		/datum/reagent/consumable/banana,
-		/datum/reagent/iron,
-		/datum/reagent/copper,
-		/datum/reagent/silver,
-		/datum/reagent/gold,
-		/datum/reagent/uranium,
-		/datum/reagent/medicine/strange_reagent,
-		/datum/reagent/toxin/acid,
-		/datum/reagent/napalm,
-		/datum/reagent/thermite,
-		/datum/reagent/drug/krokodil,
-		/datum/reagent/drug/bath_salts,
-		/datum/reagent/drug/aranesp,
-		/datum/reagent/consumable/pineapplejuice,
-		/datum/reagent/consumable/tomatojuice,
-		/datum/reagent/consumable/potato_juice,
-		/datum/reagent/consumable/limejuice,
-		/datum/reagent/consumable/orangejuice
-	)
-
 /mob/living/basic/bingle/Initialize(mapload)
 	. = ..()
 	GLOB.bingle_mobs += src
 	RegisterSignal(src, BINGLE_EVOLVE, PROC_REF(evolve))
+	// Add the healing trait so bingles can be healed by the pit
+	ADD_TRAIT(src, TRAIT_HEALS_FROM_BINGLE_HOLES, INNATE_TRAIT)
 
 /mob/living/basic/bingle/Destroy()
 	// Remove from global tracking lists
@@ -166,6 +120,60 @@
 
 /mob/living/basic/bingle/death(gibbed)
 	. = ..()
+
+	var/list/possible_chems = list(
+		/datum/reagent/smoke_powder,
+		/datum/reagent/toxin/plasma,
+		/datum/reagent/drug/space_drugs,
+		/datum/reagent/drug/methamphetamine,
+		/datum/reagent/toxin/histamine,
+		/datum/reagent/consumable/nutriment,
+		/datum/reagent/water,
+		/datum/reagent/consumable/ethanol,
+		/datum/reagent/medicine/healing_powder,
+		/datum/reagent/colorful_reagent,
+		/datum/reagent/glitter,
+		/datum/reagent/consumable/sugar,
+		/datum/reagent/lube,
+		/datum/reagent/foam_surfactant,
+		/datum/reagent/consumable/salt,
+		/datum/reagent/consumable/capsaicin,
+		/datum/reagent/consumable/frostoil,
+		/datum/reagent/medicine/omnizine,
+		/datum/reagent/medicine/synthflesh,
+		/datum/reagent/consumable/honey,
+		/datum/reagent/clf3,
+		/datum/reagent/fluorosurfactant,
+		/datum/reagent/consumable/spacemountainwind,
+		/datum/reagent/consumable/dr_gibb,
+		/datum/reagent/consumable/space_cola,
+		/datum/reagent/consumable/coffee,
+		/datum/reagent/consumable/tea,
+		/datum/reagent/medicine/ephedrine,
+		/datum/reagent/medicine/diphenhydramine,
+		/datum/reagent/consumable/garlic,
+		/datum/reagent/consumable/banana,
+		/datum/reagent/iron,
+		/datum/reagent/copper,
+		/datum/reagent/silver,
+		/datum/reagent/gold,
+		/datum/reagent/uranium,
+		/datum/reagent/consumable/sodiumchloride,
+		/datum/reagent/medicine/strange_reagent,
+		/datum/reagent/medicine/tricordrazine,
+		/datum/reagent/toxin/acid,
+		/datum/reagent/napalm,
+		/datum/reagent/thermite,
+		/datum/reagent/drug/krokodil,
+		/datum/reagent/drug/bath_salts,
+		/datum/reagent/drug/aranesp,
+		/datum/reagent/consumable/pineapplejuice,
+		/datum/reagent/consumable/tomatojuice,
+		/datum/reagent/consumable/potato_juice,
+		/datum/reagent/consumable/limejuice,
+		/datum/reagent/consumable/orangejuice
+	)
+
 	// Pick 3-5 random chemicals and create smoke with each
 	var/chemicals_to_use = rand(3, 5)
 	for(var/i = 1 to chemicals_to_use)
@@ -183,6 +191,18 @@
 
 /mob/living/basic/bingle/lord/death(gibbed)
 	. = ..()
+
+	var/list/possible_chems = list(
+		/datum/reagent/smoke_powder,
+		/datum/reagent/toxin/plasma,
+		/datum/reagent/drug/space_drugs,
+		/datum/reagent/drug/methamphetamine,
+		/datum/reagent/toxin/histamine,
+		/datum/reagent/consumable/nutriment,
+		/datum/reagent/water,
+		/datum/reagent/consumable/ethanol
+	)
+
 	// Pick 10-15 random chemicals and create smoke with each
 	var/chemicals_to_use = rand(10, 15)
 	for(var/i = 1 to chemicals_to_use)
