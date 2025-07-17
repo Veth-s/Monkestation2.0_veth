@@ -55,10 +55,8 @@ if too much trash on ground bingles roll
 
 
 /datum/action/cooldown/bingle/spawn_hole/proc/check_hole_spawn(turf/selected_turf)
-	var/list/direction_list = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
-	for(var/direction in direction_list)
-		var/turf/checker = get_step(selected_turf, direction)
-		if(!checker || checker.density)
+	for(var/turf/adjacent_turf as anything in RANGE_TURFS(1, selected_turf))
+		if(isnull(adjacent_turf) || adjacent_turf.density)
 			return FALSE
 	return TRUE
 
