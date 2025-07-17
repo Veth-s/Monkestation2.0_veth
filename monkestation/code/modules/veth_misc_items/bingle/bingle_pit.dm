@@ -448,7 +448,7 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 	var/list/eligible_turfs = list()
 	for(var/turf/open/open_turf in get_area_turfs(/area/station/bingle_pit))
 		if(!open_turf.is_blocked_turf_ignore_climbable())
-			eligible_turfs += eligible_turfs
+			eligible_turfs += open_turf
 	if(length(eligible_turfs))
 		return pick(eligible_turfs)
 
