@@ -78,8 +78,6 @@
 	var/datum/action/innate/change_screen/change_screen
 	/// This is the screen that is given to the user after they get revived. On death, their screen is temporarily set to BSOD before it turns off, hence the need for this var.
 	var/saved_screen = "Blank"
-	/// The innate action for reconfiguring limbs
-	var/datum/action/innate/reconfigure_limbs/reconfigure
 	var/will_it_blend_timer
 	COOLDOWN_DECLARE(blend_cd)
 	var/blending
@@ -110,9 +108,6 @@
 	if(ishuman(C) && !change_screen)
 		change_screen = new
 		change_screen.Grant(C)
-	if(ishuman(C) && !reconfigure)
-		reconfigure = new
-		reconfigure.Grant(C)
 
 	RegisterSignal(C, COMSIG_ATOM_EMAG_ACT, PROC_REF(on_emag_act))
 	RegisterSignal(C, COMSIG_LIVING_DEATH, PROC_REF(bsod_death)) // screen displays bsod on death, if they have one
@@ -188,6 +183,10 @@
 /datum/action/innate/reconfigure_limbs/Activate()
 	if(!owner)
 		return
+	if(!is_species(owner, /datum/species/ipc))
+		Destroy()
+		return
+
 	var/mob/living/carbon/human/target_ipc = owner
 	var/datum/species/ipc/target_species = target_ipc.dna.species
 	target_species.update_chassis(target_ipc)
