@@ -134,6 +134,10 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 /obj/structure/bingle_hole/proc/swallow(atom/item)
 	if(ismob(item))
 		var/mob/swallowed_mob = item
+
+		if((swallowed_mob.movement_type & (FLYING | FLOATING)) && swallowed_mob.stat == CONSCIOUS)
+			return
+
 		if(item_value_consumed < 100)
 			// Reset any visual effects that might be lingering
 			swallowed_mob.pixel_x = 0
