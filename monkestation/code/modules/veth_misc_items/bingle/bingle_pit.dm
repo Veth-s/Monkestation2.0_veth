@@ -177,7 +177,7 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 	var/turf/item_turf = get_turf(item)
 	var/turf/pit_turf = get_turf(src)
 
-	if(!item_turf || !pit_turf)
+	if(isnull(item_turf) || isnull(pit_turf))
 		return
 
 	// Create visual effects
@@ -388,12 +388,12 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 	if(parent_pit)
 		parent_pit.bullet_act(P)
 	else
-		..()
+		return ..()
 
 /obj/structure/bingle_hole/proc/get_all_pit_turfs()
 	var/list/turfs = list(get_turf(src))
-	for(var/obj/structure/bingle_pit_overlay/O in pit_overlays)
-		turfs += get_turf(O)
+	for(var/obj/structure/bingle_pit_overlay/overlay in pit_overlays)
+		turfs += get_turf(overlay)
 	return turfs
 
 // Update the spawn proc to ensure proper tracking
@@ -403,6 +403,7 @@ GLOBAL_LIST_EMPTY(bingle_mobs)
 		role = ROLE_BINGLE,
 		check_jobban = ROLE_BINGLE,
 		poll_time = 20 SECONDS,
+		ignore_category = POLL_IGNORE_BINGLE,
 		alert_pic = /mob/living/basic/bingle,
 		role_name_text = "bingle"
 	)
