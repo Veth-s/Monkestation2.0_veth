@@ -502,7 +502,7 @@ GLOBAL_LIST_EMPTY_TYPED(dead_oozeling_cores, /obj/item/organ/internal/brain/slim
 /obj/item/organ/internal/brain/synth/Remove(mob/living/carbon/brain_owner)
 	if(reconfigure)
 		reconfigure.Remove(brain_owner)
-		QDELL_NULL(reconfigure)
+		QDEL_NULL(reconfigure)
 	return ..()
 /obj/item/organ/internal/brain/synth/emp_act(severity) // EMP act against the posi, keep the cap far below the organ health
 	. = ..()
