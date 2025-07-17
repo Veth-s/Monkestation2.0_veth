@@ -40,7 +40,6 @@
 	var/mob/living/basic/bingle/lord/bingle = new(spawn_loc) //This is to catch errors by just giving them a location in general.
 	player_mind.transfer_to(bingle)
 	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
-	player_mind.special_role = ROLE_BINGLE
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
 	message_admins("[ADMIN_LOOKUPFLW(bingle)] has been made into Bingle.")
 	log_game("[key_name(bingle)] was spawned as Bingle by an event.")

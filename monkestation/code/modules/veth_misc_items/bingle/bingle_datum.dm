@@ -23,6 +23,7 @@ if too much trash on ground bingles roll
 	if(!dont_bungle_the_bingle)
 		dont_bungle_the_bingle = new
 
+	owner.special_role = ROLE_BINGLE
 	dont_bungle_the_bingle.add_member(owner)
 	return ..()
 

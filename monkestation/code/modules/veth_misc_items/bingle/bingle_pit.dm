@@ -426,7 +426,6 @@ GLOBAL_LIST(bingle_holes)
 
 	player_mind.transfer_to(bingle)
 	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
-	player_mind.special_role = ROLE_BINGLE
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
 	if(item_value_consumed >= 100)
 		bingle.icon_state = "bingle_armored"
