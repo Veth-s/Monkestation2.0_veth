@@ -51,7 +51,22 @@ GLOBAL_LIST(bingle_holes)
 /obj/structure/bingle_hole/examine(mob/user)
 	. = .. ()
 	if(IS_BINGLE(user) || !isliving(user))
-		. += span_alert("The bingle pit has [item_value_consumed] items in it! Creatures are worth more, but cannot be deposited until 100 item value!")
+		. += span_alert("The bingle pit has [item_value_consumed] items in it!")
+		. += span_notice("Creatures are worth more, but cannot be deposited until 100 item value!")
+
+/obj/structure/bingle_hole/CanAStarPass(to_dir, datum/can_pass_info/pass_info)
+	if(!pass_info.is_living)
+		return TRUE
+	if(istype(pass_info.caller_ref?.resolve(), /mob/living/basic/bingle))
+		return TRUE
+	if(pass_info.thrown || pass_info.incorporeal_move)
+		return TRUE
+	if(!pass_info.incapacitated)
+		if(!pass_info.has_gravity)
+			return TRUE
+		if(pass_info.movement_type & (FLYING | FLOATING))
+			return TRUE
+	return FALSE
 
 /obj/structure/bingle_hole/proc/spit_em_out()
 	var/turf/target_turf = get_turf(src)
@@ -134,44 +149,70 @@ GLOBAL_LIST(bingle_holes)
 
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
+/obj/structure/bingle_hole/proc/can_fall_into_pit(atom/movable/thing)
+	if(ismob(thing))
+		var/mob/mob = thing
+		if(mob.stat == CONSCIOUS)
+			if(!mob.has_gravity())
+				return FALSE
+			if(mob.movement_type & (FLYING | FLOATING))
+				return FALSE
+	else if(!isobj(thing))
+		return FALSE
+	return TRUE
+
+/obj/structure/bingle_hole/proc/swallow_mob(mob/living/victim)
+	if(!isliving(victim))
+		return FALSE
+	if(victim.buckled) // you'll fall in once your buddy falls in
+		return FALSE
+	if(victim.incorporeal_move)
+		return FALSE
+	if(victim.stat == CONSCIOUS)
+		if(!victim.has_gravity())
+			return FALSE
+		if(victim.movement_type & (FLYING | FLOATING))
+			return FALSE
+
+	if(item_value_consumed < 100)
+		// Reset any visual effects that might be lingering
+		victim.pixel_x = victim.base_pixel_x
+		victim.pixel_y = victim.base_pixel_y
+		victim.transform = matrix()
+		victim.alpha = 255
+		// Stop any ongoing animations
+		animate(victim)
+
+		var/turf/target = get_edge_target_turf(src, pick(GLOB.alldirs))
+		victim.throw_at(target, rand(1, 5), rand(1, 5))
+		to_chat(victim, "The pit has not swallowed enough items to accept creatures yet!")
+		return
+	if(!(victim in pit_contents_mobs))
+		pit_contents_mobs += victim
+		item_value_consumed += 10
+	// Only animate if we're actually swallowing
+	animate_falling_into_pit(victim)
+	// Delay the actual movement to let animation play
+	addtimer(CALLBACK(src, PROC_REF(finish_swallow_mob), victim), 1 SECONDS)
+	return TRUE
+
+/obj/structure/bingle_hole/proc/swallow_obj(obj/thing)
+	if(!isobj(thing) || iseffect(thing))
+		return FALSE
+	if(!(thing in pit_contents_items))
+		pit_contents_items += thing
+		item_value_consumed++
+	// Only animate if we're actually swallowing
+	animate_falling_into_pit(thing)
+	// Delay the actual movement to let animation play
+	addtimer(CALLBACK(src, PROC_REF(finish_swallow_obj), thing), 1 SECONDS)
+	return TRUE
+
 /obj/structure/bingle_hole/proc/swallow(atom/movable/item)
-	item.unbuckle_all_mobs()
-	if(ismob(item))
-		var/mob/swallowed_mob = item
-
-		if((swallowed_mob.movement_type & (FLYING | FLOATING)) && swallowed_mob.stat == CONSCIOUS)
-			return
-
-		if(item_value_consumed < 100)
-			// Reset any visual effects that might be lingering
-			swallowed_mob.pixel_x = 0
-			swallowed_mob.pixel_y = 0
-			swallowed_mob.transform = null
-			swallowed_mob.alpha = 255
-			// Stop any ongoing animations
-			animate(swallowed_mob)
-
-			var/dir = pick(GLOB.alldirs)
-			var/turf/target = get_edge_target_turf(src, dir)
-			swallowed_mob.throw_at(target, rand(1,5), rand(1,5))
-			to_chat(swallowed_mob, "The pit has not swallowed enough items to accept creatures yet!")
-			return
-		if(!(swallowed_mob in pit_contents_mobs))
-			pit_contents_mobs += swallowed_mob
-			item_value_consumed += 10
-		// Only animate if we're actually swallowing
-		animate_falling_into_pit(item)
-		// Delay the actual movement to let animation play
-		addtimer(CALLBACK(src, PROC_REF(finish_swallow_mob), swallowed_mob), 1 SECONDS)
-	else if(isobj(item))
-		var/obj/swallowed_obj = item
-		if(!(swallowed_obj in pit_contents_items))
-			pit_contents_items += swallowed_obj
-			item_value_consumed++
-		// Only animate if we're actually swallowing
-		animate_falling_into_pit(item)
-		// Delay the actual movement to let animation play
-		addtimer(CALLBACK(src, PROC_REF(finish_swallow_obj), swallowed_obj), 1 SECONDS)
+	if(item.throwing && item.throwing.target_turf != loc) // you can throw things over the pit
+		return
+	if(swallow_mob(item) || swallow_obj(item))
+		item.unbuckle_all_mobs()
 
 /obj/structure/bingle_hole/proc/animate_falling_into_pit(atom/item)
 	if(QDELETED(item))
@@ -425,7 +466,6 @@ GLOBAL_LIST(bingle_holes)
 	var/mob/living/basic/bingle/bingle = new(spawn_loc)
 
 	player_mind.transfer_to(bingle)
-	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
 	if(item_value_consumed >= 100)
 		bingle.icon_state = "bingle_armored"

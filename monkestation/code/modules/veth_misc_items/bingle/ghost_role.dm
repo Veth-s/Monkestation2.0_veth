@@ -5,12 +5,13 @@
 	max_occurrences = 1
 	track = EVENT_TRACK_MODERATE
 	description = "Spawns a pesky little blue fella."
-	tags = list(TAG_COMBAT, TAG_EXTERNAL, TAG_OUTSIDER_ANTAG)
+	tags = list(TAG_COMBAT, TAG_EXTERNAL, TAG_OUTSIDER_ANTAG, TAG_TEAM_ANTAG, TAG_ALIEN)
 	checks_antag_cap = TRUE
 	dont_spawn_near_roundend = TRUE
 
 /datum/job/bingle
- 	title = ROLE_BINGLE
+	title = ROLE_BINGLE
+	faction = ROLE_BINGLE
 
 /datum/round_event/ghost_role/bingle
 	minimum_required = 1
@@ -39,7 +40,6 @@
 		return MAP_ERROR
 	var/mob/living/basic/bingle/lord/bingle = new(spawn_loc) //This is to catch errors by just giving them a location in general.
 	player_mind.transfer_to(bingle)
-	player_mind.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
 	message_admins("[ADMIN_LOOKUPFLW(bingle)] has been made into Bingle.")
 	log_game("[key_name(bingle)] was spawned as Bingle by an event.")

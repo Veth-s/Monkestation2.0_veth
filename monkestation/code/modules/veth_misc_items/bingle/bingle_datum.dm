@@ -24,6 +24,7 @@ if too much trash on ground bingles roll
 		dont_bungle_the_bingle = new
 
 	owner.special_role = ROLE_BINGLE
+	owner.set_assigned_role(SSjob.GetJobType(/datum/job/bingle))
 	dont_bungle_the_bingle.add_member(owner)
 	return ..()
 
