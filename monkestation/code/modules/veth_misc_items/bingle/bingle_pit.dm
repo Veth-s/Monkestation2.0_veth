@@ -149,18 +149,6 @@ GLOBAL_LIST(bingle_holes)
 
 			SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
-/obj/structure/bingle_hole/proc/can_fall_into_pit(atom/movable/thing)
-	if(ismob(thing))
-		var/mob/mob = thing
-		if(mob.stat == CONSCIOUS)
-			if(!mob.has_gravity())
-				return FALSE
-			if(mob.movement_type & (FLYING | FLOATING))
-				return FALSE
-	else if(!isobj(thing))
-		return FALSE
-	return TRUE
-
 /obj/structure/bingle_hole/proc/swallow_mob(mob/living/victim)
 	if(!isliving(victim))
 		return FALSE
