@@ -156,7 +156,7 @@ GLOBAL_LIST(bingle_holes)
 		return FALSE
 	if(victim.incorporeal_move)
 		return FALSE
-	if(victim.stat == CONSCIOUS)
+	if(!victim.incapacitated(IGNORE_RESTRAINTS | IGNORE_GRAB))
 		if(!victim.has_gravity())
 			return FALSE
 		if(victim.movement_type & (FLYING | FLOATING))
