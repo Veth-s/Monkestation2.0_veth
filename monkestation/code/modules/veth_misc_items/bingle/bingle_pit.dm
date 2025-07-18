@@ -132,22 +132,23 @@ GLOBAL_LIST(bingle_mobs)
 		grow_pit(desired_pit_size)
 
 	// Evolve bingles and buff if item_value_consumed >= 100
-	if(bingle_team)
-		for(var/mob/living/basic/bingle/bong in bingle_team.members)
-			if(item_value_consumed >= 100)
-				bong.icon_state = "bingle_armored"
-				bong.maxHealth = 300
-				bong.health = max(bong.health, 300)
-				bong.obj_damage = 100
-				bong.melee_damage_lower = 30
-				bong.melee_damage_upper = 30
-				bong.armour_penetration = 20
-				bong.evolved = TRUE
+	for(var/mob/living/basic/bingle/bong in bingle_team?.members)
+		if(item_value_consumed >= 100)
+			bong.icon_state = "bingle_armored"
+			bong.maxHealth = 300
+			bong.health = max(bong.health, 300)
+			bong.obj_damage = 100
+			bong.melee_damage_lower = 30
+			bong.melee_damage_upper = 30
+			bong.armour_penetration = 20
+			bong.evolved = TRUE
 
-			SEND_SIGNAL(bong, BINGLE_EVOLVE)
+		SEND_SIGNAL(bong, BINGLE_EVOLVE)
 
 /obj/structure/bingle_hole/proc/swallow_mob(mob/living/victim)
 	if(!isliving(victim))
+		return FALSE
+	if(victim in pit_contents_mobs) // avoid things being swallowed repeatedly
 		return FALSE
 	if(victim.buckled) // you'll fall in once your buddy falls in
 		return FALSE
@@ -172,9 +173,8 @@ GLOBAL_LIST(bingle_mobs)
 		victim.throw_at(target, rand(1, 5), rand(1, 5))
 		to_chat(victim, span_warning("The pit has not swallowed enough items to accept creatures yet!"))
 		return FALSE
-	if(!(victim in pit_contents_mobs))
-		pit_contents_mobs += victim
-		item_value_consumed += 10
+	pit_contents_mobs += victim
+	item_value_consumed += 10
 	// Only animate if we're actually swallowing
 	animate_falling_into_pit(victim)
 	// Delay the actual movement to let animation play
@@ -184,9 +184,10 @@ GLOBAL_LIST(bingle_mobs)
 /obj/structure/bingle_hole/proc/swallow_obj(obj/thing)
 	if(!isobj(thing) || iseffect(thing))
 		return FALSE
-	if(!(thing in pit_contents_items))
-		pit_contents_items += thing
-		item_value_consumed++
+	if(thing in pit_contents_items) // avoid things being swallowed repeatedly
+		return FALSE
+	pit_contents_items += thing
+	item_value_consumed++
 	// Only animate if we're actually swallowing
 	animate_falling_into_pit(thing)
 	// Delay the actual movement to let animation play
