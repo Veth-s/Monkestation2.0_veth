@@ -70,6 +70,11 @@
 	SEND_SIGNAL(target, COMSIG_LIVING_MINOR_SHOCK)
 	return ..()
 
+/mob/living/basic/bingle/mind_initialize()
+	. = ..()
+	if(!IS_BINGLE(src))
+		mind.add_antag_datum(/datum/antagonist/bingle)
+
 /mob/living/basic/bingle/lord
 	name = "bingle lord"
 	real_name = "bingle lord"
