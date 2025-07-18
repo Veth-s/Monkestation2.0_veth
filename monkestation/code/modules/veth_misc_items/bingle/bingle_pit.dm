@@ -1,6 +1,5 @@
 GLOBAL_LIST(bingle_pit_mobs)
 GLOBAL_LIST(bingle_mobs)
-GLOBAL_LIST(bingle_holes)
 
 /obj/structure/bingle_hole
 	name = "bingle pit"
@@ -35,12 +34,10 @@ GLOBAL_LIST(bingle_holes)
 	if(prime_antag)
 		bingle_team = prime_antag.get_team()
 	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
-	LAZYADD(GLOB.bingle_holes, src)
-	START_PROCESSING(SSbingle_pit, src)
+	SSbingle_pit.add_bingle_hole(src)
 
 /obj/structure/bingle_hole/Destroy()
-	STOP_PROCESSING(SSbingle_pit, src)
-	LAZYREMOVE(GLOB.bingle_holes, src)
+	SSbingle_pit.remove_bingle_hole(src)
 	spit_em_out()
 	// Gib all bingles in the world on pit destruction
 	for(var/mob/living/basic/bingle/bingle in GLOB.bingle_mobs)
