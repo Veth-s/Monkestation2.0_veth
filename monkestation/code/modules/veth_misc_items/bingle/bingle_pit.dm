@@ -163,7 +163,7 @@ GLOBAL_LIST(bingle_mobs)
 		// Reset any visual effects that might be lingering
 		victim.pixel_x = victim.base_pixel_x
 		victim.pixel_y = victim.base_pixel_y
-		victim.transform = matrix()
+		//victim.transform = matrix()
 		victim.alpha = 255
 		// Stop any ongoing animations
 		animate(victim)
