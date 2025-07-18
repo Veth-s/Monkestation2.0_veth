@@ -173,7 +173,7 @@ GLOBAL_LIST(bingle_holes)
 
 		var/turf/target = get_edge_target_turf(src, pick(GLOB.alldirs))
 		victim.throw_at(target, rand(1, 5), rand(1, 5))
-		to_chat(victim, "The pit has not swallowed enough items to accept creatures yet!")
+		to_chat(victim, span_warning("The pit has not swallowed enough items to accept creatures yet!"))
 		return
 	if(!(victim in pit_contents_mobs))
 		pit_contents_mobs += victim
