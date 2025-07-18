@@ -197,15 +197,14 @@ GLOBAL_LIST(bingle_holes)
 	return TRUE
 
 /obj/structure/bingle_hole/proc/swallow(atom/movable/item)
+	if(QDELETED(item))
+		return
 	if(item.throwing && item.throwing.target_turf != loc) // you can throw things over the pit
 		return
 	if(swallow_mob(item) || swallow_obj(item))
 		item.unbuckle_all_mobs()
 
 /obj/structure/bingle_hole/proc/animate_falling_into_pit(atom/item)
-	if(QDELETED(item))
-		return
-
 	var/turf/item_turf = get_turf(item)
 	var/turf/pit_turf = get_turf(src)
 
