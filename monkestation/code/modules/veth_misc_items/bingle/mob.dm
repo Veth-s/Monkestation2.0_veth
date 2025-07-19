@@ -12,13 +12,13 @@
 	mob_biotypes = MOB_BEAST
 	pass_flags = PASSTABLE
 
-	maxHealth = 150
-	health = 150
+	maxHealth = 100
+	health = 100
 	habitable_atmos = null
 	bodytemp_cold_damage_limit = -1
 	bodytemp_heat_damage_limit = INFINITY
 
-	obj_damage = 100
+	obj_damage = 70
 	melee_damage_lower = 10
 	melee_damage_upper = 10
 	melee_attack_cooldown = CLICK_CD_MELEE
@@ -104,11 +104,11 @@
 
 /mob/living/basic/bingle/proc/evolve()
 	var/mob/living/basic/bingle/bongle = src
-	bongle.maxHealth = 300
-	bongle.health = 300
+	bongle.maxHealth = 200
+	bongle.health = 200
 	bongle.obj_damage = 100
 	bongle.melee_damage_lower = 15
-	bongle.melee_damage_upper = 20
+	bongle.melee_damage_upper = 15
 	bongle.armour_penetration = 10
 
 /mob/living/basic/bingle/update_icon()

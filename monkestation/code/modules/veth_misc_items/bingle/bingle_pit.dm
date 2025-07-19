@@ -135,12 +135,12 @@ GLOBAL_LIST(bingle_mobs)
 	for(var/mob/living/basic/bingle/bong in bingle_team?.members)
 		if(item_value_consumed >= 100)
 			bong.icon_state = "bingle_armored"
-			bong.maxHealth = 300
-			bong.health = max(bong.health, 300)
+			bong.maxHealth = 200
+			bong.health = 200
 			bong.obj_damage = 100
-			bong.melee_damage_lower = 30
-			bong.melee_damage_upper = 30
-			bong.armour_penetration = 20
+			bong.melee_damage_lower = 15
+			bong.melee_damage_upper = 15
+			bong.armour_penetration = 10
 			bong.evolved = TRUE
 
 		SEND_SIGNAL(bong, BINGLE_EVOLVE)
