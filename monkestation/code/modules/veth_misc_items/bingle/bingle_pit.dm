@@ -30,6 +30,8 @@ GLOBAL_LIST(bingle_mobs)
 	var/max_pit_size = 80 // Maximum size (80x80) for the pit
 	var/datum/component/aura_healing/aura_healing
 	var/static/datum/team/bingles/bingle_team
+	/// Cooldown for taking bomb damage - basically a cheat solution to handle it taking damage for each tile from one bomb.
+	COOLDOWN_DECLARE(bomb_cooldown)
 
 /obj/structure/bingle_hole/Initialize(mapload)
 	. = ..()
@@ -70,6 +72,12 @@ GLOBAL_LIST(bingle_mobs)
 		if(pass_info.movement_type & (FLYING | FLOATING))
 			return TRUE
 	return FALSE
+
+/obj/structure/bingle_hole/ex_act(severity, target)
+	if(!COOLDOWN_FINISHED(src, bomb_cooldown))
+		return FALSE
+	COOLDOWN_START(src, bomb_cooldown, 2 SECONDS)
+	return ..()
 
 /obj/structure/bingle_hole/proc/on_entered(datum/source, atom/movable/arrived)
 	SIGNAL_HANDLER
@@ -369,6 +377,9 @@ GLOBAL_LIST(bingle_mobs)
 	SIGNAL_HANDLER
 	if(!QDELETED(src))
 		parent_pit.on_entered(source, arrived)
+
+/obj/structure/bingle_pit_overlay/ex_act(severity, target)
+	return parent_pit.ex_act(severity, target)
 
 /obj/structure/bingle_pit_overlay/attackby(obj/item/W, mob/user)
 	if(isbingle(user))
