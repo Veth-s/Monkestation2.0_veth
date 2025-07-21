@@ -68,7 +68,6 @@ if too much trash on ground bingles roll
         to_chat(owner, span_notice("No selected turf found!"))
         return
     var/obj/structure/bingle_hole/hole = new(selected_turf)
-    hole.bingleprime = owner
     bingle_datum.pit_check = hole
     // Register the team in the pit
     hole.bingle_team = bingle_datum.get_team()

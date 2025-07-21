@@ -1,3 +1,6 @@
+/// Trait used to ensure that things don't get animated as falling in multiple times
+#define TRAIT_FALLING_INTO_BINGLE_HOLE "falling_into_bingle_pit"
+
 GLOBAL_LIST(bingle_pit_mobs)
 GLOBAL_LIST(bingle_mobs)
 
@@ -16,27 +19,30 @@ GLOBAL_LIST(bingle_mobs)
 	var/item_value_consumed = 0
 	var/max_item_value = 300
 	var/bingles_ready = 0
-	var/datum/mind/bingleprime = null
 	var/bingle_per_item_value = 30
 	var/list/pit_contents_mobs = list()
 	var/list/pit_contents_items = list()
 	var/ghost_edible = FALSE
-	var/static/datum/team/bingles/bingle_team
 	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
 	var/last_bingle_spawn_value = 0
 	var/last_bingle_poll_value = 0
 	var/max_pit_size = 80 // Maximum size (80x80) for the pit
+	var/datum/component/aura_healing/aura_healing
+	var/static/datum/team/bingles/bingle_team
 
 /obj/structure/bingle_hole/Initialize(mapload)
 	. = ..()
-	var/datum/antagonist/bingle/prime_antag = locate() in bingleprime?.antag_datums
-	if(prime_antag)
-		bingle_team = prime_antag.get_team()
-	AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
+	aura_healing = AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
 	SSbingle_pit.add_bingle_hole(src)
+	var/static/list/loc_connections = list(
+		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
+		COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON = PROC_REF(on_entered),
+	)
+	AddElement(/datum/element/connect_loc, loc_connections)
 
 /obj/structure/bingle_hole/Destroy()
+	QDEL_NULL(aura_healing)
 	SSbingle_pit.remove_bingle_hole(src)
 	spit_em_out()
 	// Gib all bingles in the world on pit destruction
@@ -54,7 +60,7 @@ GLOBAL_LIST(bingle_mobs)
 /obj/structure/bingle_hole/CanAStarPass(to_dir, datum/can_pass_info/pass_info)
 	if(!pass_info.is_living)
 		return TRUE
-	if(istype(pass_info.caller_ref?.resolve(), /mob/living/basic/bingle))
+	if(isbingle(pass_info.caller_ref?.resolve()))
 		return TRUE
 	if(pass_info.thrown || pass_info.incorporeal_move)
 		return TRUE
@@ -65,12 +71,18 @@ GLOBAL_LIST(bingle_mobs)
 			return TRUE
 	return FALSE
 
+/obj/structure/bingle_hole/proc/on_entered(datum/source, atom/movable/arrived)
+	SIGNAL_HANDLER
+	if(QDELETED(src) || HAS_TRAIT(arrived, TRAIT_FALLING_INTO_BINGLE_HOLE) || HAS_TRAIT(arrived, TRAIT_NO_TRANSFORM))
+		return
+	swallow(arrived)
+
 /obj/structure/bingle_hole/proc/spit_em_out()
 	var/turf/target_turf = get_turf(src)
 	if(!target_turf)
 		return
 
-	var/area/bingle_pit = GLOB.areas_by_type[/area/station/bingle_pit]
+	var/area/bingle_pit = GLOB.areas_by_type[/area/misc/bingle_pit]
 	for(var/atom/movable/thing in bingle_pit?.contents)
 		if(QDELETED(thing))
 			continue
@@ -92,28 +104,6 @@ GLOBAL_LIST(bingle_mobs)
 	acid = 80
 
 /obj/structure/bingle_hole/process(seconds_per_tick)
-	for(var/turf/pit in get_all_pit_turfs())
-		// Gather items to swallow first, then process them asynchronously
-		var/list/to_swallow = list()
-		for(var/atom/item in pit.contents)
-			if(item == src) // Prevent the pit from swallowing itself
-				continue
-			if(istype(item, /obj/structure/bingle_pit_overlay)) // Prevent swallowing overlays
-				continue
-			if(isliving(item))
-				if(istype(item, /mob/living/basic/bingle))
-					continue
-				to_swallow += item
-			else if(isitem(item))
-				to_swallow += item
-		// Async swallow: process one per tick to avoid stutter
-		if(length(to_swallow))
-			ASYNC
-				for(var/atom/A in to_swallow)
-					if(QDELETED(A)) continue
-					swallow(A)
-					CHECK_TICK // Yield to avoid lag
-
 	// Only spawn a new bingle for each 30 item value milestone, and only once per milestone
 	// Calculate how many bingles should exist based on current item value
 	var/target_bingle_count = round(item_value_consumed / 30)
@@ -122,7 +112,7 @@ GLOBAL_LIST(bingle_mobs)
 	// If we need more bingles, spawn one
 	if(target_bingle_count > current_bingle_count)
 		last_bingle_spawn_value = target_bingle_count * 30
-		spawn_bingle_from_ghost()
+		INVOKE_ASYNC(src, PROC_REF(spawn_bingle_from_ghost))
 
 	// Pit grows every 100 item value - calculate target size
 	var/desired_pit_size = 1 + round(item_value_consumed / 100)
@@ -161,18 +151,11 @@ GLOBAL_LIST(bingle_mobs)
 			return FALSE
 
 	if(item_value_consumed < 100)
-		// Reset any visual effects that might be lingering
-		victim.pixel_x = victim.base_pixel_x
-		victim.pixel_y = victim.base_pixel_y
-		//victim.transform = matrix()
-		victim.alpha = 255
-		// Stop any ongoing animations
-		animate(victim)
-
 		var/turf/target = get_edge_target_turf(src, pick(GLOB.alldirs))
 		victim.throw_at(target, rand(1, 5), rand(1, 5))
 		to_chat(victim, span_warning("The pit has not swallowed enough items to accept creatures yet!"))
 		return FALSE
+	victim.add_traits(list(TRAIT_FALLING_INTO_BINGLE_HOLE, TRAIT_NO_TRANSFORM), REF(src))
 	pit_contents_mobs += victim
 	item_value_consumed += 10
 	// Only animate if we're actually swallowing
@@ -186,6 +169,7 @@ GLOBAL_LIST(bingle_mobs)
 		return FALSE
 	if(thing in pit_contents_items) // avoid things being swallowed repeatedly
 		return FALSE
+	ADD_TRAIT(thing, TRAIT_FALLING_INTO_BINGLE_HOLE, REF(src))
 	pit_contents_items += thing
 	item_value_consumed++
 	// Only animate if we're actually swallowing
@@ -195,14 +179,16 @@ GLOBAL_LIST(bingle_mobs)
 	return TRUE
 
 /obj/structure/bingle_hole/proc/swallow(atom/movable/item)
-	if(QDELETED(item))
+	if(QDELETED(src) || QDELETED(item) || item == src || istype(item, /obj/structure/bingle_pit_overlay) || isbingle(item))
 		return
 	if(item.throwing && item.throwing.target_turf != loc) // you can throw things over the pit
 		return
 	if(swallow_mob(item) || swallow_obj(item))
+		item.pulledby?.stop_pulling()
+		item.stop_pulling()
 		item.unbuckle_all_mobs()
 
-/obj/structure/bingle_hole/proc/animate_falling_into_pit(atom/item)
+/obj/structure/bingle_hole/proc/animate_falling_into_pit(atom/movable/item)
 	var/turf/item_turf = get_turf(item)
 	var/turf/pit_turf = get_turf(src)
 
@@ -213,7 +199,7 @@ GLOBAL_LIST(bingle_mobs)
 	playsound(item_turf, 'sound/effects/gravhit.ogg', 50, TRUE)
 
 	// Make the item spin and shrink as it falls toward the center
-	var/original_transform = item.transform
+	var/original_transform = matrix(item.transform)
 
 	// Calculate movement toward pit center
 	var/dx = pit_turf.x - item_turf.x
@@ -250,19 +236,14 @@ GLOBAL_LIST(bingle_mobs)
 	layer = ABOVE_MOB_LAYER
 	duration = 1.5 SECONDS
 
-/obj/structure/bingle_hole/proc/finish_swallow_mob(mob/swallowed_mob)
+/obj/structure/bingle_hole/proc/finish_swallow_mob(mob/living/swallowed_mob)
 	if(QDELETED(swallowed_mob))
 		return
-
-	// Reset visual effects in case they're still applied
-	swallowed_mob.pixel_x = 0
-	swallowed_mob.pixel_y = 0
-	swallowed_mob.transform = null
-	swallowed_mob.alpha = 255
 
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
 		swallowed_mob.forceMove(bingle_pit_turf)
+		swallowed_mob.remove_traits(list(TRAIT_FALLING_INTO_BINGLE_HOLE, TRAIT_NO_TRANSFORM), REF(src))
 	else
 		qdel(swallowed_mob)
 
@@ -270,15 +251,10 @@ GLOBAL_LIST(bingle_mobs)
 	if(QDELETED(swallowed_obj))
 		return
 
-	// Reset visual effects in case they're still applied
-	swallowed_obj.pixel_x = 0
-	swallowed_obj.pixel_y = 0
-	swallowed_obj.transform = null
-	swallowed_obj.alpha = 255
-
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
 		swallowed_obj.forceMove(bingle_pit_turf)
+		REMOVE_TRAIT(swallowed_obj, TRAIT_FALLING_INTO_BINGLE_HOLE, REF(src))
 	else
 		qdel(swallowed_obj)
 
@@ -298,6 +274,7 @@ GLOBAL_LIST(bingle_mobs)
 	if(new_size == 1)
 		src.icon_state = "binglepit"
 		current_pit_size = 1
+		aura_healing.range = 3
 		return
 
 	src.icon_state = "" // Make the pit itself invisible
@@ -342,23 +319,23 @@ GLOBAL_LIST(bingle_mobs)
 			else
 				icon_state_to_use = "filler"
 
-			var/obj/structure/bingle_pit_overlay/overlay = new(T)
+			var/obj/structure/bingle_pit_overlay/overlay = new(T, src)
 			overlay.icon_state = icon_state_to_use
-			overlay.parent_pit = src
 			pit_overlays += overlay
 
 			// If pit is larger than 3x3, consume walls on these tiles
 			if(new_size > 3)
-				for(var/obj/O in T)
-					if(O.density && istype(O, /obj/structure/) && !istype(O, /obj/structure/bingle_pit_overlay))
-						qdel(O)
+				for(var/obj/thing in T)
+					if(thing.density && isstructure(thing) && !istype(thing, /obj/structure/bingle_pit_overlay))
+						qdel(thing)
 						item_value_consumed++
 				// Remove wall turf itself, if present
-				if(istype(T, /turf/closed/wall))
+				if(iswallturf(T))
 					T.ScrapeAway(flags = CHANGETURF_INHERIT_AIR)
 					item_value_consumed++
 
 	current_pit_size = new_size
+	aura_healing.range = new_size + 2
 
 /obj/structure/bingle_pit_overlay
 	name = "bingle pit"
@@ -368,11 +345,33 @@ GLOBAL_LIST(bingle_mobs)
 	anchored = TRUE
 	density = FALSE
 	mouse_opacity = MOUSE_OPACITY_OPAQUE
-	var/obj/structure/bingle_hole/parent_pit = null
 	uses_integrity = TRUE
+	var/obj/structure/bingle_hole/parent_pit
+
+/obj/structure/bingle_pit_overlay/Initialize(mapload, obj/structure/bingle_hole/parent_pit)
+	. = ..()
+	var/static/list/loc_connections = list(
+		COMSIG_ATOM_ENTERED = PROC_REF(on_entered),
+		COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON = PROC_REF(on_entered),
+	)
+	AddElement(/datum/element/connect_loc, loc_connections)
+	src.parent_pit = parent_pit
+
+/obj/structure/bingle_pit_overlay/Destroy()
+	parent_pit?.pit_overlays -= src
+	parent_pit = null
+	return ..()
+
+/obj/structure/bingle_pit_overlay/CanAStarPass(to_dir, datum/can_pass_info/pass_info)
+	return parent_pit.CanAStarPass(to_dir, pass_info)
+
+/obj/structure/bingle_pit_overlay/proc/on_entered(datum/source, atom/movable/arrived)
+	SIGNAL_HANDLER
+	if(!QDELETED(src))
+		parent_pit.on_entered(source, arrived)
 
 /obj/structure/bingle_pit_overlay/attackby(obj/item/W, mob/user)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
 		return TRUE
 	if(parent_pit)
@@ -380,7 +379,7 @@ GLOBAL_LIST(bingle_mobs)
 	return ..()
 
 /obj/structure/bingle_pit_overlay/attack_hand(mob/user)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
 		return TRUE
 	if(parent_pit)
@@ -388,7 +387,7 @@ GLOBAL_LIST(bingle_mobs)
 	return ..()
 
 /obj/structure/bingle_pit_overlay/attack_animal(mob/living/simple_animal/user, list/modifiers)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("You cannot bring yourself to harm the sacred pit!"))
 		return TRUE
 	if(parent_pit)
@@ -396,7 +395,7 @@ GLOBAL_LIST(bingle_mobs)
 	return ..()
 
 /obj/structure/bingle_pit_overlay/attack_basic_mob(mob/living/basic/user, list/modifiers)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("You cannot bring yourself to harm the sacred pit!"))
 		return TRUE
 	if(parent_pit)
@@ -404,26 +403,20 @@ GLOBAL_LIST(bingle_mobs)
 	return ..()
 
 /obj/structure/bingle_pit_overlay/take_damage(amount, type, source, flags)
-	if(istype(source, /mob/living/basic/bingle))
+	if(isbingle(source))
 		return FALSE // No damage from bingles
 	if(parent_pit)
 		parent_pit.take_damage(amount, type, source, flags)
 	else
 		..()
 
-/obj/structure/bingle_pit_overlay/bullet_act(var/obj/projectile/P)
-	if(istype(P.firer, /mob/living/basic/bingle))
+/obj/structure/bingle_pit_overlay/bullet_act(obj/projectile/projectile)
+	if(isbingle(projectile.firer))
 		return BULLET_ACT_FORCE_PIERCE // Projectiles from bingles pass through
 	if(parent_pit)
-		parent_pit.bullet_act(P)
+		return parent_pit.bullet_act(projectile)
 	else
 		return ..()
-
-/obj/structure/bingle_hole/proc/get_all_pit_turfs()
-	var/list/turfs = list(get_turf(src))
-	for(var/obj/structure/bingle_pit_overlay/overlay in pit_overlays)
-		turfs += get_turf(overlay)
-	return turfs
 
 // Update the spawn proc to ensure proper tracking
 /obj/structure/bingle_hole/proc/spawn_bingle_from_ghost()
@@ -433,7 +426,7 @@ GLOBAL_LIST(bingle_mobs)
 		check_jobban = ROLE_BINGLE,
 		poll_time = 20 SECONDS,
 		ignore_category = POLL_IGNORE_BINGLE,
-		alert_pic = /mob/living/basic/bingle,
+		alert_pic = icon(/mob/living/basic/bingle::icon, /mob/living/basic/bingle::icon_state, SOUTH),
 		role_name_text = "bingle"
 	)
 
@@ -466,16 +459,17 @@ GLOBAL_LIST(bingle_mobs)
 
 /obj/structure/bingle_hole/proc/get_random_bingle_pit_turf()
 	var/list/eligible_turfs = list()
-	for(var/turf/open/open_turf in get_area_turfs(/area/station/bingle_pit))
+	for(var/turf/open/open_turf in get_area_turfs(/area/misc/bingle_pit))
 		if(!open_turf.is_blocked_turf_ignore_climbable())
 			eligible_turfs += open_turf
 	if(length(eligible_turfs))
 		return pick(eligible_turfs)
 
-/area/station/bingle_pit
-	name = "bingle pit"
+/area/misc/bingle_pit
+	name = "Bingle Pit"
 	area_flags = NOTELEPORT | EVENT_PROTECTED | ABDUCTOR_PROOF | ALWAYS_VALID_BLOODSUCKER_LAIR | UNIQUE_AREA
 	has_gravity = TRUE
+	requires_power = FALSE
 
 /obj/structure/bingle_pit_overlay/examine(mob/user)
 	. = ..()
@@ -483,13 +477,15 @@ GLOBAL_LIST(bingle_mobs)
 		. += span_alert("The bingle pit has [parent_pit.item_value_consumed] items in it! Creatures are worth more, but cannot be deposited until 100 item value!")
 
 /obj/structure/bingle_hole/attackby(obj/item/W, mob/user)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
 		return
 	return ..()
 
 /obj/structure/bingle_hole/attack_hand(mob/user)
-	if(istype(user, /mob/living/basic/bingle))
+	if(isbingle(user))
 		to_chat(user, span_warning("Your bingle hands pass harmlessly through the pit!"))
 		return
 	return ..()
+
+#undef TRAIT_FALLING_INTO_BINGLE_HOLE

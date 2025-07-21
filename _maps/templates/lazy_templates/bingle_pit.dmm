@@ -5,32 +5,32 @@
 "u" = (
 /obj/item/trash/sosjerky,
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "D" = (
 /turf/closed/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "H" = (
 /obj/effect/area_lighting_helper,
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "L" = (
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "T" = (
 /obj/item/storage/backpack/duffelbag/med/surgery,
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "U" = (
 /turf/open/space/basic,
 /area/space)
 "V" = (
 /obj/effect/mob_spawn/corpse/human/skeleton,
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 "Z" = (
 /obj/structure/table/optable,
 /turf/open/indestructible/bingle,
-/area/station/bingle_pit)
+/area/misc/bingle_pit)
 
 (1,1,1) = {"
 a
