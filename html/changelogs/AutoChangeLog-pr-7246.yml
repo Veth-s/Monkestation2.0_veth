@@ -1,6 +1,0 @@
-author: "EssentialTomato"
-delete-after: True
-changes:
-  - bugfix: "(MTandi) Binary devices no longer ignore the volume of the output pipe network"
-  - bugfix: "(MTandi) Made 10 MJ & 20 MJ cells properly correspond to tiers 1 & 2 in lathes."
-  - image: "(MTandi) Updated cell sprites"
