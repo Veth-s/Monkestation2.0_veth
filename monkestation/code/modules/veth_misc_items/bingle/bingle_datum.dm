@@ -50,9 +50,6 @@ if too much trash on ground bingles roll
 	if(!check_hole_spawn(selected_turf))
 		to_chat(owner, span_warning("This area doesn't have enough space to spawn a bingle pit! It needs a total of 3 by 3 meters of space!"))
 		return FALSE
-	ASYNC
-		SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
-		log_game("Bingle Pit Template loaded.")
 	spawn_hole(selected_turf)
 
 

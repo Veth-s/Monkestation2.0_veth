@@ -42,6 +42,9 @@ GLOBAL_LIST(bingle_mobs)
 		COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON = PROC_REF(on_entered),
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
+	ASYNC
+		SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
+		log_game("Bingle Pit Template loaded.")
 
 /obj/structure/bingle_hole/Destroy()
 	QDEL_NULL(aura_healing)
