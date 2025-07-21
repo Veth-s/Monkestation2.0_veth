@@ -331,6 +331,11 @@
 2025-07-21:
   CannibalHunter:
   - rscadd: The (Lab "Coat") donator item for SethDiedAgain
+  Cmpwarrior:
+  - rscadd: 'Added a "carved square pumpkin" to the loadout selector under hats. Note:
+      The "toggle helmet light" does not actually produce laight.'
+  - rscadd: Cigarettes, cigars, and other smokable items now produce faint amounts
+      of light when lit up.
   EssentialTomato:
   - bugfix: (MTandi) Binary devices no longer ignore the volume of the output pipe
       network
