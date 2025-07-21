@@ -34,7 +34,7 @@ GLOBAL_LIST(bingle_mobs)
 	COOLDOWN_DECLARE(bomb_cooldown)
 
 /obj/structure/bingle_hole/Initialize(mapload)
-	. = ..()
+	..()
 	aura_healing = AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
 	SSbingle_pit.add_bingle_hole(src)
 	var/static/list/loc_connections = list(
@@ -42,9 +42,11 @@ GLOBAL_LIST(bingle_mobs)
 		COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON = PROC_REF(on_entered),
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
-	ASYNC
-		SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
-		log_game("Bingle Pit Template loaded.")
+	return INITIALIZE_HINT_LATELOAD
+
+/obj/structure/bingle_hole/LateInitialize()
+	SSmapping.lazy_load_template(LAZY_TEMPLATE_KEY_BINGLE_PIT)
+	log_game("Bingle Pit Template loaded.")
 
 /obj/structure/bingle_hole/Destroy()
 	QDEL_NULL(aura_healing)
@@ -256,7 +258,10 @@ GLOBAL_LIST(bingle_mobs)
 		swallowed_mob.forceMove(bingle_pit_turf)
 		swallowed_mob.remove_traits(list(TRAIT_FALLING_INTO_BINGLE_HOLE, TRAIT_NO_TRANSFORM), REF(src))
 	else
-		qdel(swallowed_mob)
+		if(swallowed_mob.client || swallowed_mob.mind)
+			swallowed_mob.moveToNullspace()
+		else
+			qdel(swallowed_mob)
 
 /obj/structure/bingle_hole/proc/finish_swallow_obj(obj/swallowed_obj)
 	if(QDELETED(swallowed_obj))
