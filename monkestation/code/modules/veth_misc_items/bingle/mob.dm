@@ -19,8 +19,8 @@
 	bodytemp_heat_damage_limit = INFINITY
 
 	obj_damage = 70
-	melee_damage_lower = 10
-	melee_damage_upper = 10
+	melee_damage_lower = 5
+	melee_damage_upper = 5
 	melee_attack_cooldown = CLICK_CD_MELEE
 
 	lighting_cutoff_red = 10
@@ -84,15 +84,14 @@
 	icon_living = "binglelord"
 	icon_dead = "binglelord"
 
-	melee_damage_lower = 20
-	melee_damage_upper = 20
+	melee_damage_lower = 10
+	melee_damage_upper = 15
 	var/pit_spawner = /datum/action/cooldown/bingle/spawn_hole
 
 /mob/living/basic/bingle/lord/Initialize(mapload)
 	. = ..()
 	var/datum/action/cooldown/bingle/spawn_hole/makehole = new pit_spawner(src)
 	makehole.Grant(src)
-	// Don't add to GLOB.bingle_mobs again - parent Initialize already did this
 
 /mob/living/basic/bingle/Life(seconds_between_ticks, times_fired)
 	. = ..()
@@ -104,12 +103,12 @@
 
 /mob/living/basic/bingle/proc/evolve()
 	var/mob/living/basic/bingle/bongle = src
-	bongle.maxHealth = 200
-	bongle.health = 200
+	bongle.maxHealth = 160
+	bongle.health = 160
 	bongle.obj_damage = 100
-	bongle.melee_damage_lower = 15
-	bongle.melee_damage_upper = 15
-	bongle.armour_penetration = 10
+	bongle.melee_damage_lower = 10
+	bongle.melee_damage_upper = 10
+	bongle.armour_penetration = 0
 
 /mob/living/basic/bingle/update_icon()
 	. = ..()
