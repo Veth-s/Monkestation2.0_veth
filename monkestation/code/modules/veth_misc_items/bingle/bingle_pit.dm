@@ -489,6 +489,7 @@ GLOBAL_LIST(bingle_mobs)
 	area_flags = NOTELEPORT | EVENT_PROTECTED | ABDUCTOR_PROOF | ALWAYS_VALID_BLOODSUCKER_LAIR | UNIQUE_AREA
 	has_gravity = TRUE
 	requires_power = FALSE
+	static_lighting = TRUE
 
 /obj/structure/bingle_pit_overlay/examine(mob/user)
 	. = ..()
