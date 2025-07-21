@@ -253,6 +253,12 @@ GLOBAL_LIST(bingle_mobs)
 	if(QDELETED(swallowed_mob))
 		return
 
+	swallowed_mob.pixel_x = swallowed_mob.base_pixel_x
+	swallowed_mob.pixel_y = swallowed_mob.base_pixel_y
+	swallowed_mob.alpha = swallowed_mob::alpha
+	/* swallowed_mob.pixel_w = swallowed_mob.base_pixel_w */
+	/* swallowed_mob.pixel_z = swallowed_mob.base_pixel_z */
+
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
 		swallowed_mob.forceMove(bingle_pit_turf)
@@ -266,6 +272,12 @@ GLOBAL_LIST(bingle_mobs)
 /obj/structure/bingle_hole/proc/finish_swallow_obj(obj/swallowed_obj)
 	if(QDELETED(swallowed_obj))
 		return
+
+	swallowed_obj.pixel_x = swallowed_obj.base_pixel_x
+	swallowed_obj.pixel_y = swallowed_obj.base_pixel_y
+	swallowed_obj.alpha = swallowed_obj::alpha
+	/* swallowed_obj.pixel_w = swallowed_obj.base_pixel_w */
+	/* swallowed_obj.pixel_z = swallowed_obj.base_pixel_z */
 
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
