@@ -1,7 +1,6 @@
 /// Trait used to ensure that things don't get animated as falling in multiple times
 #define TRAIT_FALLING_INTO_BINGLE_HOLE "falling_into_bingle_pit"
 
-GLOBAL_LIST(bingle_pit_mobs)
 GLOBAL_LIST(bingle_mobs)
 
 /obj/structure/bingle_hole

@@ -51,10 +51,7 @@
 	add_traits(bingle_traits, INNATE_TRAIT)
 
 /mob/living/basic/bingle/Destroy()
-	// Remove from global tracking lists
 	LAZYREMOVE(GLOB.bingle_mobs, src)
-	LAZYREMOVE(GLOB.bingle_pit_mobs, src)
-
 	return ..()
 
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)
