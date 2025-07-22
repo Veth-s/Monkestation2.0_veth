@@ -346,3 +346,10 @@
   - refactor: Refactored mutation code backend. Report any issue.
   notghosti:
   - balance: Bamboo syringe guns no longer use firing pins
+2025-07-22:
+  Wisemonster:
+  - balance: rReduced heretic's void chill temperature loss from -12 kelvin per tick,
+      to -5 kelvin per tick
+  notghosti:
+  - qol: Evil subtypes of drones no longer have door passthrough, and will have to
+      open the door like anyone normal.

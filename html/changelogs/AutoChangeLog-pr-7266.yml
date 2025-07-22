@@ -1,0 +1,4 @@
+author: "Tractor Maam"
+delete-after: True
+changes:
+  - spellcheck: "the regular Hardlight Spear Implant will not use the Commanding Hardlight Spear Implant's information when inside a implant pad."
