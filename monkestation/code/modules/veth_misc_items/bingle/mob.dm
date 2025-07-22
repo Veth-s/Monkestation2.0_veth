@@ -55,11 +55,6 @@
 	LAZYREMOVE(GLOB.bingle_mobs, src)
 	LAZYREMOVE(GLOB.bingle_pit_mobs, src)
 
-	// Remove from any pit's tracking lists
-	for(var/obj/structure/bingle_hole/pit in SSbingle_pit.bingle_holes)
-		if(pit.pit_contents_mobs)
-			pit.pit_contents_mobs -= src
-
 	return ..()
 
 /mob/living/basic/bingle/melee_attack(atom/target, list/modifiers, ignore_cooldown = FALSE)

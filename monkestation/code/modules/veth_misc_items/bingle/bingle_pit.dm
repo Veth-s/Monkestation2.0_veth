@@ -20,8 +20,6 @@ GLOBAL_LIST(bingle_mobs)
 	var/max_item_value = 300
 	var/bingles_ready = 0
 	var/bingle_per_item_value = 30
-	var/list/pit_contents_mobs = list()
-	var/list/pit_contents_items = list()
 	var/ghost_edible = FALSE
 	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
@@ -30,11 +28,21 @@ GLOBAL_LIST(bingle_mobs)
 	var/max_pit_size = 80 // Maximum size (80x80) for the pit
 	var/datum/component/aura_healing/aura_healing
 	var/static/datum/team/bingles/bingle_team
+	/// Typecache of things that won't be swallowed by the pit.
+	var/static/list/swallow_blacklist
 	/// Cooldown for taking bomb damage - basically a cheat solution to handle it taking damage for each tile from one bomb.
 	COOLDOWN_DECLARE(bomb_cooldown)
 
 /obj/structure/bingle_hole/Initialize(mapload)
 	..()
+	if(isnull(swallow_blacklist))
+		swallow_blacklist = typecacheof(list(
+			/mob/living/basic/bingle,
+			/obj/effect,
+			/obj/projectile,
+			/obj/structure/bingle_hole,
+			/obj/structure/bingle_pit_overlay,
+		))
 	aura_healing = AddComponent(/datum/component/aura_healing, range = 3, simple_heal = 5, limit_to_trait = TRAIT_HEALS_FROM_BINGLE_HOLES, healing_color = COLOR_BLUE_LIGHT)
 	SSbingle_pit.add_bingle_hole(src)
 	var/static/list/loc_connections = list(
@@ -86,9 +94,7 @@ GLOBAL_LIST(bingle_mobs)
 
 /obj/structure/bingle_hole/proc/on_entered(datum/source, atom/movable/arrived)
 	SIGNAL_HANDLER
-	if(QDELETED(src) || HAS_TRAIT(arrived, TRAIT_FALLING_INTO_BINGLE_HOLE) || HAS_TRAIT(arrived, TRAIT_NO_TRANSFORM))
-		return
-	swallow(arrived)
+	swallow(arrived) // swallow does all the needed checks
 
 /obj/structure/bingle_hole/proc/spit_em_out()
 	var/turf/target_turf = get_turf(src)
@@ -104,10 +110,6 @@ GLOBAL_LIST(bingle_mobs)
 		var/turf/edge = get_edge_target_turf(src, dir)
 		if(ismob(thing) || isobj(thing))
 			thing.throw_at(edge, rand(1, 5), rand(1, 5))
-
-	// Clear the pit contents lists
-	pit_contents_mobs.Cut()
-	pit_contents_items.Cut()
 
 /datum/armor/structure_bingle_hole
 	energy = 75
@@ -151,8 +153,6 @@ GLOBAL_LIST(bingle_mobs)
 /obj/structure/bingle_hole/proc/swallow_mob(mob/living/victim)
 	if(!isliving(victim))
 		return FALSE
-	if(victim in pit_contents_mobs) // avoid things being swallowed repeatedly
-		return FALSE
 	if(victim.buckled) // you'll fall in once your buddy falls in
 		return FALSE
 	if(victim.incorporeal_move)
@@ -169,7 +169,6 @@ GLOBAL_LIST(bingle_mobs)
 		to_chat(victim, span_warning("The pit has not swallowed enough items to accept creatures yet!"))
 		return FALSE
 	victim.add_traits(list(TRAIT_FALLING_INTO_BINGLE_HOLE, TRAIT_NO_TRANSFORM), REF(src))
-	pit_contents_mobs += victim
 	item_value_consumed += 10
 	// Only animate if we're actually swallowing
 	animate_falling_into_pit(victim)
@@ -178,13 +177,17 @@ GLOBAL_LIST(bingle_mobs)
 	return TRUE
 
 /obj/structure/bingle_hole/proc/swallow_obj(obj/thing)
-	if(!isobj(thing) || iseffect(thing))
-		return FALSE
-	if(thing in pit_contents_items) // avoid things being swallowed repeatedly
+	if(!isobj(thing))
 		return FALSE
 	ADD_TRAIT(thing, TRAIT_FALLING_INTO_BINGLE_HOLE, REF(src))
-	pit_contents_items += thing
 	item_value_consumed++
+	for(var/atom/movable/content as anything in thing.get_all_contents(HOLOGRAM_1) - thing) // ensure holograms are ignored!!
+		if(QDELETED(content) || HAS_TRAIT(content, TRAIT_FALLING_INTO_BINGLE_HOLE) || isbrain(content))
+			continue
+		if(isliving(content) || is_type_in_typecache(content, swallow_blacklist))
+			content.forceMove(content.drop_location())
+		else if(isobj(content))
+			item_value_consumed++
 	// Only animate if we're actually swallowing
 	animate_falling_into_pit(thing)
 	// Delay the actual movement to let animation play
@@ -192,7 +195,11 @@ GLOBAL_LIST(bingle_mobs)
 	return TRUE
 
 /obj/structure/bingle_hole/proc/swallow(atom/movable/item)
-	if(QDELETED(src) || QDELETED(item) || item == src || istype(item, /obj/structure/bingle_pit_overlay) || isbingle(item))
+	if(QDELETED(src) || QDELETED(item) || item == src)
+		return
+	if(is_type_in_typecache(item, swallow_blacklist) || (item.flags_1 & HOLOGRAM_1))
+		return
+	if(HAS_TRAIT(item, TRAIT_FALLING_INTO_BINGLE_HOLE) || HAS_TRAIT(item, TRAIT_NO_TRANSFORM))
 		return
 	if(item.throwing && item.throwing.target_turf != loc) // you can throw things over the pit
 		return
@@ -232,21 +239,7 @@ GLOBAL_LIST(bingle_mobs)
 	animate(pixel_x = original_px, pixel_y = original_py, alpha = original_alpha, transform = original_transform, time = 0.5 SECONDS, easing = EASE_IN)
 
 	// Create swirling particle effect at the pit
-	create_pit_swirl_effect(pit_turf)
-
-/obj/structure/bingle_hole/proc/create_pit_swirl_effect(turf/target_turf)
-	// Create a temporary visual effect object for the swirl
-	var/obj/effect/temp_visual/bingle_pit_swirl/swirl = new(target_turf)
-	swirl.icon = 'icons/effects/effects.dmi'
-	swirl.icon_state = "quantum_sparks" // You can change this to a custom swirl icon if you have one
-	swirl.layer = ABOVE_MOB_LAYER
-	swirl.alpha = 150
-
-	// Animate the swirl effect
-	animate(swirl, transform = turn(swirl.transform, 360), time = 1 SECONDS)
-	animate(alpha = 0, time = 0.5 SECONDS)
-
-	QDEL_IN(swirl, 1.5 SECONDS)
+	new /obj/effect/temp_visual/bingle_pit_swirl(pit_turf)
 
 /obj/effect/temp_visual/bingle_pit_swirl
 	name = "swirling void"
@@ -255,6 +248,12 @@ GLOBAL_LIST(bingle_mobs)
 	icon_state = "quantum_sparks"
 	layer = ABOVE_MOB_LAYER
 	duration = 1.5 SECONDS
+	alpha = 150
+
+/obj/effect/temp_visual/bingle_pit_swirl/Initialize(mapload)
+	. = ..()
+	animate(src, transform = turn(transform, 360), time = 1 SECONDS)
+	animate(alpha = 0, time = 0.5 SECONDS)
 
 /obj/structure/bingle_hole/proc/finish_swallow_mob(mob/living/swallowed_mob)
 	if(QDELETED(swallowed_mob))
@@ -358,7 +357,7 @@ GLOBAL_LIST(bingle_mobs)
 					item_value_consumed++
 
 	current_pit_size = new_size
-	aura_healing.range = new_size + 2
+	aura_healing.range = max(round(new_size / 2, 1) + 2, 3)
 
 /obj/structure/bingle_pit_overlay
 	name = "bingle pit"
