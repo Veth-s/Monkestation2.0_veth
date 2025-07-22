@@ -211,6 +211,10 @@ GLOBAL_LIST(bingle_mobs)
 	// Create visual effects
 	playsound(item_turf, 'sound/effects/gravhit.ogg', 50, TRUE)
 
+	var/original_px = item.pixel_x
+	var/original_py = item.pixel_y
+	var/original_alpha = item.alpha
+
 	// Make the item spin and shrink as it falls toward the center
 	var/original_transform = matrix(item.transform)
 
@@ -219,10 +223,13 @@ GLOBAL_LIST(bingle_mobs)
 	var/dy = pit_turf.y - item_turf.y
 
 	// Animate the item moving toward pit center while spinning and shrinking
-	animate(item, pixel_x = dx * 32, pixel_y = dy * 32, transform = turn(original_transform, 360) * 0.3, alpha = 100, time = 0.8 SECONDS, easing = EASE_IN)
+	animate(item, pixel_x = dx * world.icon_size, pixel_y = dy * world.icon_size, transform = turn(original_transform, 360) * 0.3, alpha = 100, time = 0.8 SECONDS, easing = EASE_IN)
 
 	// Final disappear animation
 	animate(transform = turn(original_transform, 720) * 0.1, alpha = 0, time = 0.2 SECONDS, easing = EASE_IN)
+
+	// and ensure they animate back to normal afterwards
+	animate(pixel_x = original_px, pixel_y = original_py, alpha = original_alpha, transform = original_transform, time = 0.5 SECONDS, easing = EASE_IN)
 
 	// Create swirling particle effect at the pit
 	create_pit_swirl_effect(pit_turf)
@@ -253,12 +260,6 @@ GLOBAL_LIST(bingle_mobs)
 	if(QDELETED(swallowed_mob))
 		return
 
-	swallowed_mob.pixel_x = swallowed_mob.base_pixel_x
-	swallowed_mob.pixel_y = swallowed_mob.base_pixel_y
-	swallowed_mob.alpha = swallowed_mob::alpha
-	/* swallowed_mob.pixel_w = swallowed_mob.base_pixel_w */
-	/* swallowed_mob.pixel_z = swallowed_mob.base_pixel_z */
-
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
 		swallowed_mob.forceMove(bingle_pit_turf)
@@ -272,12 +273,6 @@ GLOBAL_LIST(bingle_mobs)
 /obj/structure/bingle_hole/proc/finish_swallow_obj(obj/swallowed_obj)
 	if(QDELETED(swallowed_obj))
 		return
-
-	swallowed_obj.pixel_x = swallowed_obj.base_pixel_x
-	swallowed_obj.pixel_y = swallowed_obj.base_pixel_y
-	swallowed_obj.alpha = swallowed_obj::alpha
-	/* swallowed_obj.pixel_w = swallowed_obj.base_pixel_w */
-	/* swallowed_obj.pixel_z = swallowed_obj.base_pixel_z */
 
 	var/turf/bingle_pit_turf = get_random_bingle_pit_turf()
 	if(bingle_pit_turf)
