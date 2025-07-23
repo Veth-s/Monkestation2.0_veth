@@ -469,7 +469,7 @@ GLOBAL_LIST(bingle_mobs)
 
 	player_mind.transfer_to(bingle)
 	player_mind.add_antag_datum(/datum/antagonist/bingle)
-	if(item_value_consumed >= 100)
+	if(item_value_consumed >= 500)
 		bingle.icon_state = "bingle_armored"
 		bingle.maxHealth = 300
 		bingle.health = max(bingle.health, 300)
