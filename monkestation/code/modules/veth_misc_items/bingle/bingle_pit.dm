@@ -18,7 +18,7 @@ GLOBAL_LIST(bingle_mobs)
 	var/item_value_consumed = 0
 	var/max_item_value = 300
 	var/bingles_ready = 0
-	var/bingle_per_item_value = 30
+	var/bingle_per_item_value = 50
 	var/ghost_edible = FALSE
 	var/current_pit_size = 1 // 1 = 1x1, 2 = 2x2, 3 = 3x3 can go higher
 	var/list/pit_overlays = list()
@@ -137,7 +137,7 @@ GLOBAL_LIST(bingle_mobs)
 
 	// Evolve bingles and buff if item_value_consumed >= 100
 	for(var/mob/living/basic/bingle/bong in bingle_team?.members)
-		if(item_value_consumed >= 100)
+		if(item_value_consumed >= 500)
 			bong.icon_state = "bingle_armored"
 			bong.maxHealth = 200
 			bong.health = 200
