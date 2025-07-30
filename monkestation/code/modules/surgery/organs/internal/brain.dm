@@ -500,7 +500,7 @@ GLOBAL_LIST_EMPTY_TYPED(dead_oozeling_cores, /obj/item/organ/internal/brain/slim
 		reconfigure = new
 		reconfigure.Grant(user_human)
 
-/obj/item/organ/internal/brain/synth/Remove(mob/living/carbon/brain_owner)
+/obj/item/organ/internal/brain/synth/Remove(mob/living/carbon/brain_owner, special = 0, no_id_transfer = FALSE)
 	. = .. ()
 	if(reconfigure)
 		reconfigure.Remove(brain_owner)
