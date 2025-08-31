@@ -182,9 +182,7 @@
 /datum/action/innate/reconfigure_limbs/Activate()
 	if(!owner)
 		return
-	if(!is_species(owner, /datum/species/ipc))
-		Destroy()
-		return
+
 
 	var/mob/living/carbon/human/target_ipc = owner
 	var/datum/species/ipc/target_species = target_ipc.dna.species

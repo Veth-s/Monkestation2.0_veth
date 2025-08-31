@@ -497,15 +497,13 @@ ADMIN_VERB(cmd_admin_heal_oozeling, R_ADMIN, FALSE, "Heal Oozeling Core", "Use t
 	if(HAS_TRAIT(user_human, TRAIT_REVIVES_BY_HEALING) && user_human.health > SYNTH_BRAIN_WAKE_THRESHOLD)
 		if(!HAS_TRAIT(user_human, TRAIT_DEFIB_BLACKLISTED))
 			user_human.revive(FALSE)
-	if(!reconfigure && is_species(user_human, /datum/species/ipc))
+	if(!reconfigure && isipc(user_human))
 		reconfigure = new
 		reconfigure.Grant(user_human)
 
 /obj/item/organ/internal/brain/synth/Remove(mob/living/carbon/brain_owner, special = 0, no_id_transfer = FALSE)
 	. = .. ()
-	if(reconfigure)
-		reconfigure.Remove(brain_owner)
-		QDEL_NULL(reconfigure)
+	QDEL_NULL(reconfigure)
 
 /obj/item/organ/internal/brain/synth/emp_act(severity) // EMP act against the posi, keep the cap far below the organ health
 	. = ..()
