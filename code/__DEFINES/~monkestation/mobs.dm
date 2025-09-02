@@ -4,26 +4,23 @@
 #define SPECIES_ORNITHID "ornithid"
 
 GLOBAL_REAL_VAR(list/voice_type2sound = list(
-	"1" = list(
+	"default" = list(
 		"1" = sound('goon/sounds/speak_1.ogg'),
+		"2" = sound('goon/sounds/speak_2.ogg'),
+		"3" = sound('goon/sounds/speak_3.ogg'),
+		"4" = sound('goon/sounds/speak_4.ogg'),
 		"!" = sound('goon/sounds/speak_1_exclaim.ogg'),
 		"?" = sound('goon/sounds/speak_1_ask.ogg')
 	),
-	"2" = list(
-		"2" = sound('goon/sounds/speak_2.ogg'),
-		"!" = sound('goon/sounds/speak_2_exclaim.ogg'),
-		"?" = sound('goon/sounds/speak_2_ask.ogg')
+	"cbat" = list(
+		"1" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_1.ogg'),
+		"2" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_2.ogg'),
+		"3" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_3.ogg'),
+		"4" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_4.ogg'),
+		"!" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_exclaim.ogg'),
+		"?" = sound('monkestation/sound/voice/voice_customization/cbat/cbat_ask.ogg')
 	),
-	"3" = list(
-		"3" = sound('goon/sounds/speak_3.ogg'),
-		"!" = sound('goon/sounds/speak_3_exclaim.ogg'),
-		"?" = sound('goon/sounds/speak_3_ask.ogg')
-	),
-	"4" = list(
-		"4" = sound('goon/sounds/speak_4.ogg'),
-		"!" = sound('goon/sounds/speak_4_exclaim.ogg'),
-		"?" = sound('goon/sounds/speak_4_ask.ogg')
-	),
+	// Add more voice types here
 ))
 
 ///Managed global that is a reference to the real global
