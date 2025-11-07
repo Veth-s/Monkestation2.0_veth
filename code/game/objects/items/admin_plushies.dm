@@ -286,7 +286,21 @@
 /obj/item/toy/plush/admin/veth
 	name = "veth"
 	desc = "It's Veth! Suprisingly not upside down!"
-	icon_state = "veth"
+	icon_state = "veth-2-mask"
+	pet_message ="Veth purrs gently."
+	gender = FEMALE
+	squeak_override = list('sound/effects/slosh.ogg' = 1)
+
+/obj/item/toy/plush/admin/veth/click_alt(mob/user)
+	if(icon_state == "veth-2-mask")
+		icon_state = "veth-2-nomask"
+	if(icon_state == "veth-2-nomask")
+		icon_state = "veth"
+	if(icon_state == "veth")
+		icon_state = "veth-2-mask"
+
+	update_appearance(UPDATE_OVERLAYS)
+
 /datum/loadout_item/plushies/veth
 	name = "Veth Plush"
 	item_path = /obj/item/toy/plush/admin/veth
@@ -586,4 +600,34 @@
 /datum/store_item/plushies/birdion
 	name = "Birdion Plush"
 	item_path = /obj/item/toy/plush/admin/birdion
+	item_cost = 7500
+
+/obj/item/toy/plush/admin/drag
+	name = "\"Snuggle with Standards\" Collectable Plush"
+	desc = "Strangely, you feel lik hitting someone with a rock."
+	icon_state = "drag"
+	inhand_icon_state = "drag-inhand"
+	pet_message = "Drag glares at you. That bitch."
+	gender = FEMALE
+	squeak_override = list('sound/effects/slosh.ogg' = 1)
+
+/obj/item/toy/plush/admin/drag/click_alt(mob/user)
+	if(icon_state == "drag")
+		icon_state = "drag-alt"
+	if(icon_state == "drag-alt")
+		icon_state = "drag2"
+	if(icon_state == "drag2")
+		icon_state = "drag2-alt"
+	if(icon_state == "drag2-alt")
+		icon_state = "drag"
+
+	update_appearance(UPDATE_OVERLAYS)
+
+/datum/loadout_item/plushies/veth
+	name = "\"Snuggle with Standards\" Collectable Plush"
+	item_path = /obj/item/toy/plush/admin/drag
+
+/datum/store_item/plushies/drag
+	name = "\"Snuggle with Standards\" Collectable Plush"
+	item_path = /obj/item/toy/plush/admin/drag
 	item_cost = 7500

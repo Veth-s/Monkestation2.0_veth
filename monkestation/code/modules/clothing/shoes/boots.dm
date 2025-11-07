@@ -8,3 +8,8 @@
 	icon_state = "admiral"
 	icon = 'monkestation/icons/obj/clothing/shoes.dmi'
 	worn_icon = 'monkestation/icons/mob/clothing/feet.dmi'
+
+/obj/item/clothing/shoes/admiral/drag
+	name = "NT-QCAC Series VII \"Silent Step Boots\""
+	desc = "Shoes only for the most bitchin' of the Elite."
+	icon_state = "admiral-drag"
