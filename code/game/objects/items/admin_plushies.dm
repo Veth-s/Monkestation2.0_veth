@@ -287,19 +287,22 @@
 	name = "veth"
 	desc = "It's Veth! Suprisingly not upside down!"
 	icon_state = "veth-2-mask"
-	pet_message ="Veth purrs gently."
+	pet_message = "Veth purrs gently."
 	gender = FEMALE
 	squeak_override = list('sound/effects/slosh.ogg' = 1)
 
-/obj/item/toy/plush/admin/veth/click_alt(mob/user)
-	if(icon_state == "veth-2-mask")
-		icon_state = "veth-2-nomask"
-	if(icon_state == "veth-2-nomask")
-		icon_state = "veth"
-	if(icon_state == "veth")
-		icon_state = "veth-2-mask"
-
-	update_appearance(UPDATE_OVERLAYS)
+/obj/item/toy/plush/admin/veth/click_alt(mob/living/user)
+	switch(icon_state)
+		if("veth-2-mask")
+			icon_state = "veth-2-nomask"
+			return
+		if("veth-2-nomask")
+			icon_state = "veth"
+			return
+		if("veth")
+			icon_state = "veth-2-mask"
+			return
+	update_appearance()
 
 /datum/loadout_item/plushies/veth
 	name = "Veth Plush"
@@ -391,7 +394,7 @@
 
 /obj/item/toy/plush/admin/jay
 	name = "jay kouri"
-	desc = "Doesn't seem to get a break. From making sure his underlings in the war dont die, to making sure the station's crew doesn't kill each other. Has beautiful blue eyes though, too bad he doesn't take off his sunglasses."
+	desc = "Doesn't seem to get a return. From making sure his underlings in the war dont die, to making sure the station's crew doesn't kill each other. Has beautiful blue eyes though, too bad he doesn't take off his sunglasses."
 	icon_state = "jay"
 	squeak_override = list('sound/weapons/gun/rifle/shot.ogg'=1)
 /datum/loadout_item/plushies/jay
@@ -602,32 +605,36 @@
 	item_path = /obj/item/toy/plush/admin/birdion
 	item_cost = 7500
 
-/obj/item/toy/plush/admin/drag
+/obj/item/toy/plush/admin/vex
 	name = "\"Snuggle with Standards\" Collectable Plush"
-	desc = "Strangely, you feel lik hitting someone with a rock."
+	desc = "Strangely, you feel like hitting someone with a rock."
 	icon_state = "drag"
 	inhand_icon_state = "drag-inhand"
-	pet_message = "Drag glares at you. That bitch."
+	pet_message = "Vex glares at you. That bitch."
 	gender = FEMALE
 	squeak_override = list('sound/effects/slosh.ogg' = 1)
 
-/obj/item/toy/plush/admin/drag/click_alt(mob/user)
-	if(icon_state == "drag")
-		icon_state = "drag-alt"
-	if(icon_state == "drag-alt")
-		icon_state = "drag2"
-	if(icon_state == "drag2")
-		icon_state = "drag2-alt"
-	if(icon_state == "drag2-alt")
-		icon_state = "drag"
+/obj/item/toy/plush/admin/vex/click_alt(mob/living/user)
+	switch(icon_state)
+		if("drag")
+			icon_state = "drag-alt"
+			return
+		if("drag-alt")
+			icon_state = "drag2"
+			return
+		if("drag2")
+			icon_state = "drag2-alt"
+			return
+		if("drag2-alt")
+			icon_state = "drag"
+			return
+	update_appearance()
 
-	update_appearance(UPDATE_OVERLAYS)
-
-/datum/loadout_item/plushies/veth
+/datum/loadout_item/plushies/vex
 	name = "\"Snuggle with Standards\" Collectable Plush"
-	item_path = /obj/item/toy/plush/admin/drag
+	item_path = /obj/item/toy/plush/admin/vex
 
-/datum/store_item/plushies/drag
+/datum/store_item/plushies/vex
 	name = "\"Snuggle with Standards\" Collectable Plush"
-	item_path = /obj/item/toy/plush/admin/drag
+	item_path = /obj/item/toy/plush/admin/vex
 	item_cost = 7500

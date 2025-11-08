@@ -1,18 +1,14 @@
-/obj/item/clothing/suit/armor/centcom_admiral/admiral_drag
+/obj/item/clothing/under/rank/centcom/admiral/admiral_vex
 	name = "NT-QCAC Series VII \"Assurance Undersuit\""
 	desc = "Wearing this fills you with unbridled rock-related rage."
-	worn_icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
-	icon_state = "admiral-uni-2"
-	worn_icon_state = "admiral-uni-2"
-
-
-/obj/item/clothing/suit/armor/centcom_admiral/admiral_drag_alt
-	name = "NT-QCAC Series VII \"Assurance Undersuit\""
-	desc = "Wearing this fills you with unbridled rock-related rage."
-	worn_icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
 	icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
-	icon_state = "admiral-uni-2"
-	worn_icon_state = "admiral-uni-2"
+	worn_icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
+	lefthand_file = 'monkestation/code/modules/veth_misc_items/drag/drag_lefthand.dmi'
+	righthand_file = 'monkestation/code/modules/veth_misc_items/drag/drag_righthand.dmi'
+	worn_icon_state = "admiral-uni"
+	inhand_icon_state = "admiral-uni"
+	icon_state = "admiral-uni"
+	can_adjust = TRUE
 
 /obj/item/clothing/neck/hornetcloak/alt
 	worn_icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
@@ -44,7 +40,7 @@
 	icon_state = "hornet"
 
 
-/obj/item/clothing/neck/cloak/admiral_drag
+/obj/item/clothing/neck/cloak/admiral_vex
 	name = "NT-QCAC Series VII \"Assurance Mantle\""
 	desc = "A weighty mantle, only fit for a very angry lady."
 	worn_icon = 'monkestation/code/modules/veth_misc_items/drag/drag_misc.dmi'
