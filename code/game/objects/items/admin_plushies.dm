@@ -612,7 +612,6 @@
 	inhand_icon_state = "drag-inhand"
 	pet_message = "Vex glares at you. That bitch."
 	gender = FEMALE
-	squeak_override = list('sound/effects/slosh.ogg' = 1)
 
 /obj/item/toy/plush/admin/vex/click_alt(mob/living/user)
 	switch(icon_state)
