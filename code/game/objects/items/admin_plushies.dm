@@ -608,8 +608,10 @@
 /obj/item/toy/plush/admin/vex
 	name = "\"Snuggle with Standards\" Collectable Plush"
 	desc = "Strangely, you feel like hitting someone with a rock."
+	lefthand_file = 'icons/mob/inhands/items/plushes_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/items/plushes_righthand.dmi'
 	icon_state = "drag"
-	inhand_icon_state = "drag-inhand"
+	inhand_icon_state = "drag"
 	pet_message = "Vex glares at you. That bitch."
 	gender = FEMALE
 
