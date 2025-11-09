@@ -394,7 +394,7 @@
 
 /obj/item/toy/plush/admin/jay
 	name = "jay kouri"
-	desc = "Doesn't seem to get a return. From making sure his underlings in the war dont die, to making sure the station's crew doesn't kill each other. Has beautiful blue eyes though, too bad he doesn't take off his sunglasses."
+	desc = "Doesn't seem to get a break. From making sure his underlings in the war dont die, to making sure the station's crew doesn't kill each other. Has beautiful blue eyes though, too bad he doesn't take off his sunglasses."
 	icon_state = "jay"
 	squeak_override = list('sound/weapons/gun/rifle/shot.ogg'=1)
 /datum/loadout_item/plushies/jay
