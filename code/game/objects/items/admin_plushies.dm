@@ -639,3 +639,59 @@
 	name = "\"Snuggle with Standards\" Collectable Plush"
 	item_path = /obj/item/toy/plush/admin/vex
 	item_cost = 7500
+
+/obj/item/toy/plush/admin/aster
+	name = "Aster"
+	desc = "Eugh, this asshole?"
+	icon_state = "aster"
+	squeak_override = list(
+		'monkestation/sound/items/aster1.ogg' = 1,
+		'monkestation/sound/items/aster2.ogg' = 1,
+		'monkestation/sound/items/aster3.ogg' = 1,
+		'monkestation/sound/items/aster4.ogg' = 1,
+		'monkestation/sound/items/aster5.ogg' = 1,
+		'monkestation/sound/items/aster6.ogg' = 1,
+		'monkestation/sound/items/aster7.ogg' = 1,
+		'monkestation/sound/items/aster8.ogg' = 1,
+	)
+	gender = MALE
+
+/datum/loadout_item/plushies/aster
+	name = "Aster Plush"
+	item_path = /obj/item/toy/plush/admin/aster
+
+/datum/store_item/plushies/aster
+	name = "Aster Plush"
+	item_path = /obj/item/toy/plush/admin/aster
+	item_cost = 7500
+
+/obj/item/toy/plush/admin/gebor
+	name = "G.E.B.O.R."
+	desc = "One day, a changeling \"Accidentally\" got pushed into a plushie machine, and this happened to be the result!"
+	icon_state = "aster"
+	squeak_override = list('monkestation/sound/items/gebor.ogg' = 1)
+	gender = NEUTRAL
+
+/datum/loadout_item/plushies/gebor
+	name = "Gebor Plush"
+	item_path = /obj/item/toy/plush/admin/gebor
+
+/datum/store_item/plushies/gebor
+	name = "Gebor Plush"
+	item_path = /obj/item/toy/plush/admin/gebor
+	item_cost = 7500
+
+/obj/item/toy/plush/admin/plutella
+	name = "Plutella Plush"
+	desc = "A very adorable moff.. Hes also a goober."
+	icon_state = "plutella"
+	gender = MALE
+
+/datum/loadout_item/plushies/plutella
+	name = "Plutella Plush"
+	item_path = /obj/item/toy/plush/admin/plutella
+
+/datum/store_item/plushies/plutella
+	name = "Plutella Plush"
+	item_path = /obj/item/toy/plush/admin/plutella
+	item_cost = 7500
