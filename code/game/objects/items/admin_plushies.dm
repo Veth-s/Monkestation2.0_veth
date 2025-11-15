@@ -668,9 +668,9 @@
 /obj/item/toy/plush/admin/gebor
 	name = "G.E.B.O.R."
 	desc = "One day, a changeling \"Accidentally\" got pushed into a plushie machine, and this happened to be the result!"
-	icon_state = "aster"
+	icon_state = "gebor"
 	squeak_override = list('monkestation/sound/items/gebor.ogg' = 1)
-	gender = NEUTRAL
+	gender = FEMALE
 
 /datum/loadout_item/plushies/gebor
 	name = "Gebor Plush"
@@ -685,7 +685,7 @@
 	name = "Plutella Plush"
 	desc = "A very adorable moff.. Hes also a goober."
 	icon_state = "plutella"
-	gender = MALE
+	gender = NEUTER
 
 /datum/loadout_item/plushies/plutella
 	name = "Plutella Plush"
