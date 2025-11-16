@@ -656,6 +656,14 @@
 	)
 	gender = MALE
 
+/obj/item/toy/plush/admin/aster/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
+	if(weapon == /obj/item/toy/plush/admin/jackary)
+		qdel(weapon)
+		qdel(src)
+		var/obj/item/toy/plush/admin/wolfnaster/plush = new(get_turf(user))
+		user.put_in_hands(plush)
+	. = ..()
+
 /datum/loadout_item/plushies/aster
 	name = "Aster Plush"
 	item_path = /obj/item/toy/plush/admin/aster
@@ -710,3 +718,44 @@
 	name = "Wolfy Plush"
 	item_path = /obj/item/toy/plush/admin/wolfy
 	item_cost = 7500
+
+/obj/item/toy/plush/admin/jackary
+	name = "Wolf"
+	desc = "A plushie of a shirtless man. Put some clothes on, weirdo!"
+	icon_state = "wolf"
+	squeak_override = list('monkestation/sound/items/wolfscream.ogg' = 1)
+	gender = MALE
+
+/obj/item/toy/plush/admin/jackary/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
+	(obj/item/weapon, mob/user, list/modifiers, list/attack_modifiers)
+	if(weapon == /obj/item/toy/plush/admin/aster)
+		qdel(weapon)
+		qdel(src)
+		var/obj/item/toy/plush/admin/wolfnaster/plush = new(get_turf(user))
+		user.put_in_hands(plush)
+
+
+/datum/loadout_item/plushies/jackary
+	name = "Wolf Plush"
+	item_path = /obj/item/toy/plush/admin/jackary
+
+/datum/store_item/plushies/jackary
+	name = "Wolf Plush"
+	item_path = /obj/item/toy/plush/admin/jackary
+	item_cost = 7500
+
+
+
+/obj/item/toy/plush/admin/wolfnaster
+	name = "Wolf and Aster"
+	desc = "Love wins."
+	icon_state = "wolfnaster"
+	squeak_override = list('monkestation/sound/items/squee.ogg' = 1)
+	gender = NEUTER
+
+/obj/item/toy/plush/admin/wolfnaster/click_alt(mob/user)
+	qdel(src)
+	var/obj/item/toy/plush/admin/jackary/plush1 = new(get_turf(user))
+	var/obj/item/toy/plush/admin/aster/plush2 = new(get_turf(user))
+	user.put_in_hands(plush1)
+	user.put_in_hands(plush2)
