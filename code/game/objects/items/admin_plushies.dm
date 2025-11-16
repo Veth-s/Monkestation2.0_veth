@@ -695,3 +695,18 @@
 	name = "Plutella Plush"
 	item_path = /obj/item/toy/plush/admin/plutella
 	item_cost = 7500
+
+/obj/item/toy/plush/admin/wolfy
+	name = "Wolfy"
+	desc = "It's Wolfy! You feel like she's staring at you."
+	icon_state = "wolfy"
+	gender = FEMALE
+
+/datum/loadout_item/plushies/wolfy
+	name = "Wolfy Plush"
+	item_path = /obj/item/toy/plush/admin/wolfy
+
+/datum/store_item/plushies/wolfy
+	name = "Wolfy Plush"
+	item_path = /obj/item/toy/plush/admin/wolfy
+	item_cost = 7500
