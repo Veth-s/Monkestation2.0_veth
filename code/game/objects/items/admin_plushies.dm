@@ -657,7 +657,7 @@
 	gender = MALE
 
 /obj/item/toy/plush/admin/aster/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
-	if(attacking_item == /obj/item/toy/plush/admin/jackary)
+	if(attacking_item.type == /obj/item/toy/plush/admin/jackary)
 		qdel(attacking_item)
 		qdel(src)
 		var/obj/item/toy/plush/admin/wolfnaster/plush = new(get_turf(user))
@@ -727,7 +727,7 @@
 	gender = MALE
 
 /obj/item/toy/plush/admin/jackary/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
-	if(attacking_item == /obj/item/toy/plush/admin/aster)
+	if(attacking_item.type == /obj/item/toy/plush/admin/aster)
 		qdel(attacking_item)
 		qdel(src)
 		var/obj/item/toy/plush/admin/wolfnaster/plush = new(get_turf(user))
