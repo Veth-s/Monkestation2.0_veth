@@ -34,6 +34,7 @@
 /obj/structure/chemical_tank/factory/Initialize(mapload)
 	. = ..()
 	load_styles()
+	START_PROCESSING(SSobj, src)
 
 /obj/structure/chemical_tank/factory/proc/load_styles()
 	//expertly copypasted from chemmasters
@@ -148,3 +149,7 @@
 /obj/structure/chemical_tank/factory/attack_hand(mob/living/user, list/modifiers)
 	. = ..()
 	generate_product(user)
+
+/obj/structure/chemical_tank/factory/Destroy()
+	STOP_PROCESSING(SSobj, src)
+	. = ..()
