@@ -748,6 +748,7 @@
 /obj/item/toy/plush/admin/wolfnaster
 	name = "Wolf and Aster"
 	desc = "Love wins."
+	icon = 'icons/obj/admin_plushies_expanded.dmi'
 	icon_state = "wolfnaster"
 	squeak_override = list('monkestation/sound/items/squee.ogg' = 1)
 	gender = NEUTER
