@@ -785,5 +785,5 @@
 	to_chat(user, span_notice("You pull the drawstring on the back of the plush"))
 	say(pick(slogans))
 	if(grenade && !grenade.active)
-			user.log_message("activated a hidden grenade in [src].", LOG_VICTIM)
-			grenade.arm_grenade(user, msg = FALSE, volume = 10)
+		user.log_message("activated a hidden grenade in [src].", LOG_VICTIM)
+		grenade.arm_grenade(user, msg = FALSE, volume = 10)
