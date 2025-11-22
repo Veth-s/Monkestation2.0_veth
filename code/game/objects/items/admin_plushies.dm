@@ -759,3 +759,31 @@
 	var/obj/item/toy/plush/admin/aster/plush2 = new(get_turf(user))
 	user.put_in_hands(plush1)
 	user.put_in_hands(plush2)
+
+/obj/item/toy/plush/admin/brit
+	name = "Commander Beverly Valon"
+	desc = "A plushie of Centcom Commander Beverly Valon."
+	icon_state = "brit"
+	gender = FEMALE
+	var/list/slogans = list(
+		"Your drain on NT resources has come to an end.",
+		"I don't have the time nor the crayons to explain it to you.",
+		"The MATRIARCH AI is hard at work continuously iterating on the PORG IPC personality values. It'll come on station when I think it's ready to.",
+		"Did you know I didn't even want this job at first?",
+		"I am the Head of Artificial Intelligence and Silicon Research and Development. My dream is to build the perfect personality for an Nanotrasen research station")
+
+/datum/loadout_item/plushies/brit
+	name = "Commander Beverly Valon Plush"
+	item_path = /obj/item/toy/plush/admin/brit
+
+/datum/store_item/plushies/brit
+	name = "Commander Beverly Valon Plush"
+	item_path = /obj/item/toy/plush/admin/brit
+	item_cost = 7500
+
+/obj/item/toy/plush/admin/brit/attack_self(mob/user)
+	to_chat(user, span_notice("You pull the drawstring on the back of the plush"))
+	say(pick(slogans))
+	if(grenade && !grenade.active)
+			user.log_message("activated a hidden grenade in [src].", LOG_VICTIM)
+			grenade.arm_grenade(user, msg = FALSE, volume = 10)
