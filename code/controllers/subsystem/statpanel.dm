@@ -171,10 +171,10 @@ SUBSYSTEM_DEF(statpanels)
 	target.stat_panel.send_message("update_interviews", data)
 	// Monkestation Addition: Token Manager START
 	var/list/token_data = list(
-		"accepted" = SStoken_manager?.accepted_count || 0,
-		"pending" = length(SStoken_manager?.pending_requests) || 0,
-		"rejected" = SStoken_manager?.rejected_count || 0,
-		"timed_out" = SStoken_manager?.timed_out_count || 0,
+		"accepted" = SStoken_manager.accepted_count || 0,
+		"pending" = length(SStoken_manager.pending_requests) || 0,
+		"rejected" = SStoken_manager.rejected_count || 0,
+		"timed_out" = SStoken_manager.timed_out_count || 0,
 	)
 	target.stat_panel.send_message("update_tokens", token_data)
 	// Monkestation Addition END

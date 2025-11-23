@@ -1,7 +1,7 @@
 SUBSYSTEM_DEF(token_manager)
 	name = "Token Manager"
-	flags = SS_NO_FIRE
-	init_order = INIT_ORDER_DEFAULT
+	flags = SS_NO_INIT | SS_NO_FIRE
+
 
 	/// List of all pending token requests - list of /datum/token_request
 	var/list/pending_requests = list()
@@ -12,9 +12,6 @@ SUBSYSTEM_DEF(token_manager)
 	/// Count of timed out tokens this round
 	var/timed_out_count = 0
 
-/datum/controller/subsystem/token_manager/Initialize()
-	. = ..()
-	return SS_INIT_SUCCESS
 
 /// Adds the request to the subsystem
 /datum/controller/subsystem/token_manager/proc/add_pending_request(datum/token_request/request)
@@ -58,10 +55,9 @@ SUBSYSTEM_DEF(token_manager)
 		return // Request was already handled
 
 	var/admin_message = span_adminnotice("[span_adminsay("TOKEN WARNING:")] [key_name_admin(request.requester_client)]'s token request for [span_bold(request.details)] will timeout in [span_boldwarning("1 MINUTE")]!")
-	var/admin_href = " (<a href='?_src_=holder;[HrefToken()];token_approve=[REF(request)]'>APPROVE</a>) (<a href='?_src_=holder;[HrefToken()];token_reject=[REF(request)]'>REJECT</a>) (<a href='?_src_=holder;[HrefToken()];token_manager=1'>PANEL</a>)"
+	var/admin_href = " (<a href='byond://?_src_=holder;[HrefToken()];token_approve=[REF(request)]'>APPROVE</a>) (<a href='byond://?_src_=holder;[HrefToken()];token_reject=[REF(request)]'>REJECT</a>) (<a href='byond://?_src_=holder;[HrefToken()];token_manager=1'>PANEL</a>)"
 
 	for(var/client/admin_client as anything in GLOB.admins)
-		to_chat(admin_client, "[admin_message][admin_href]")
 		SEND_SOUND(admin_client, sound('sound/machines/buzz-sigh.ogg', volume = 50))
 
 
@@ -109,9 +105,6 @@ SUBSYSTEM_DEF(token_manager)
 
 /// Compiles all round statistics into a list for TGUI. These stats are used to determine token acceptance, so is handy to have them all in the same place.
 /datum/controller/subsystem/token_manager/proc/get_round_statistics()
-	// Update crew info from SSgamemode before gathering stats
-	if(SSgamemode)
-		SSgamemode.update_crew_infos() // This might be unnessecary please tell me if it is.
 
 	return list(
 		// Time
@@ -149,10 +142,6 @@ SUBSYSTEM_DEF(token_manager)
 /datum/controller/subsystem/token_manager/ui_state(mob/user)
 	return ADMIN_STATE(R_ADMIN)
 
-/datum/controller/subsystem/token_manager/ui_static_data(mob/user) // Probably unnessecary, someone smarter than me will know
-	var/list/data = list()
-	return data
-
 /datum/controller/subsystem/token_manager/ui_data(mob/user)
 	var/list/data = list()
 
@@ -173,7 +162,7 @@ SUBSYSTEM_DEF(token_manager)
 	if(.)
 		return
 
-	var/mob/user = usr
+	var/mob/user = ui.user
 	// Allows for approval/deny from the panel itself
 	switch(action)
 		if("approve")
@@ -183,7 +172,6 @@ SUBSYSTEM_DEF(token_manager)
 				return TRUE
 			request.approve(user)
 			log_admin("[key_name(user)] approved [request.requester_ckey]'s token request for [request.details].")
-			message_admins("[key_name_admin(user)] approved [request.requester_ckey]'s token request for [request.details].")
 			return TRUE
 
 		if("reject")
@@ -201,7 +189,7 @@ SUBSYSTEM_DEF(token_manager)
 		// Vuap view on the player if the admin wants more info.
 		if("view_player")
 			var/datum/token_request/request = locate(params["id"]) in pending_requests
-			if(!request || !request.requester_client?.mob)
+			if(!request?.requester_client?.mob)
 				to_chat(user, span_warning("That player is no longer available."))
 				return TRUE
 			var/datum/admins/admin = GLOB.admin_datums[user.ckey]
@@ -289,9 +277,6 @@ SUBSYSTEM_DEF(token_manager)
 /datum/token_request/proc/timeout()
 	timeout_timer = null // Timer has fired, clear the reference (necessary? IDK!)
 
-	if(QDELETED(holder_ref))
-		qdel(src)
-		return
-
-	holder_ref.timeout_antag_token()
+	if(!QDELETED(holder_ref))
+		holder_ref.timeout_antag_token()
 	qdel(src)
