@@ -58,6 +58,7 @@ SUBSYSTEM_DEF(token_manager)
 	var/admin_href = " (<a href='byond://?_src_=holder;[HrefToken()];token_approve=[REF(request)]'>APPROVE</a>) (<a href='byond://?_src_=holder;[HrefToken()];token_reject=[REF(request)]'>REJECT</a>) (<a href='byond://?_src_=holder;[HrefToken()];token_manager=1'>PANEL</a>)"
 
 	for(var/client/admin_client as anything in GLOB.admins)
+		to_chat(admin_client, "[admin_message][admin_href]")
 		SEND_SOUND(admin_client, sound('sound/machines/buzz-sigh.ogg', volume = 50))
 
 
