@@ -289,5 +289,5 @@ SUBSYSTEM_DEF(token_manager)
 // Admin Verb
 // ============================================================
 ADMIN_VERB(token_manager, R_ADMIN, FALSE, "Token Manager", "TGUI Token Manager", ADMIN_CATEGORY_MAIN)
-	SStoken_manager.ui_interact(user)
+	SStoken_manager.ui_interact(user.mob)
 	BLACKBOX_LOG_ADMIN_VERB("Token Manager")
