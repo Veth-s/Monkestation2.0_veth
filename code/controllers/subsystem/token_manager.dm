@@ -284,9 +284,4 @@ SUBSYSTEM_DEF(token_manager)
 		holder_ref.timeout_antag_token()
 	qdel(src)
 
-// ============================================================
-// Admin Verb
-// ============================================================
-ADMIN_VERB(token_manager, R_ADMIN, FALSE,"Token Manager", "TGUI Token Manager", ADMIN_CATEGORY_MAIN)
-	var/datum/controller/subsystem/token_manager/ui = new(user)
-	ui.open()
+
