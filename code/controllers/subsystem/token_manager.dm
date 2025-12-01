@@ -51,7 +51,7 @@ SUBSYSTEM_DEF(token_manager)
 
 /// Alerts all admins that a token request is about to timeout (1 minute warning)
 /datum/controller/subsystem/token_manager/proc/alert_admins_timeout_warning(datum/token_request/request)
-	if(QDELETED(request) || !(request in pending_requests))
+	if(QDELETED(request) || request.handled || !(request in pending_requests))
 		return // Request was already handled
 
 	var/admin_message = span_adminnotice("[span_adminsay("TOKEN WARNING:")] [key_name_admin(request.requester_client)]'s token request for [span_bold(request.details)] will timeout in [span_boldwarning("1 MINUTE")]!")
@@ -228,6 +228,8 @@ SUBSYSTEM_DEF(token_manager)
 	var/timeout_timer
 	/// Timer ID for the 1-minute warning
 	var/warning_timer
+	/// Handler for not 1 minute warning tokens that have been approved or denied.
+	var/handled = FALSE
 
 /datum/token_request/New(mob/requester, datum/meta_token_holder/holder, details, tier, is_donor = FALSE)
 	. = ..()
@@ -262,7 +264,7 @@ SUBSYSTEM_DEF(token_manager)
 /datum/token_request/proc/approve(mob/admin)
 	if(QDELETED(holder_ref))
 		return FALSE
-
+	handled = TRUE
 	holder_ref.approve_antag_token()
 	qdel(src)
 	return TRUE
@@ -270,7 +272,7 @@ SUBSYSTEM_DEF(token_manager)
 /datum/token_request/proc/reject(mob/admin)
 	if(QDELETED(holder_ref))
 		return FALSE
-
+	handled = TRUE
 	holder_ref.reject_antag_token()
 	qdel(src)
 	return TRUE
@@ -281,3 +283,10 @@ SUBSYSTEM_DEF(token_manager)
 	if(!QDELETED(holder_ref))
 		holder_ref.timeout_antag_token()
 	qdel(src)
+
+// ============================================================
+// Admin Verb
+// ============================================================
+ADMIN_VERB(token_manager, R_ADMIN, FALSE,"Token Manager", "TGUI Token Manager", ADMIN_CATEGORY_MAIN)
+	var/datum/controller/subsystem/token_manager/ui = new(user)
+	ui.open()
