@@ -29,22 +29,22 @@
 	lefthand_file = 'icons/mob/inhands/clothing/cloaks_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/clothing/cloaks_righthand.dmi'
 
-/datum/loadout_item/neck/donator/hornet_cloak/alt
+/datum/loadout_item/neck/donator/hornetcloak/alt
 	name = "Hornet Cloak (alt)"
 	item_path = /obj/item/clothing/neck/hornetcloak/alt
 
-/datum/store_item/neck/hornet_cloak/alt
+/datum/store_item/neck/hornetcloak/alt
 	name = "Hornet Cloak (alt)"
 	item_path = /obj/item/clothing/neck/hornetcloak/alt
 	item_cost = 5000
 
-/datum/loadout_item/neck/donator/knight_cloak/alt
+/datum/loadout_item/neck/donator/knightcloak/alt
 	name = "Hornet Cloak (alt)"
-	item_path = /obj/item/clothing/neck/hornetcloak/alt
+	item_path = /obj/item/clothing/neck/knightcloak/alt
 
-/datum/store_item/neck/knight_cloak/alt
+/datum/store_item/neck/knightcloak/alt
 	name = "Hornet Cloak (alt)"
-	item_path = /obj/item/clothing/neck/hornetcloak/alt
+	item_path = /obj/item/clothing/neck/knightcloak/alt
 	item_cost = 5000
 
 /datum/sprite_accessory/hair/hornet
