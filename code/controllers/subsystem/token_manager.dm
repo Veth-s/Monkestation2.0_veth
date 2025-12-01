@@ -285,3 +285,9 @@ SUBSYSTEM_DEF(token_manager)
 	qdel(src)
 
 
+// ============================================================
+// Admin Verb
+// ============================================================
+ADMIN_VERB(token_manager, R_ADMIN, FALSE, "Token Manager", "TGUI Token Manager", ADMIN_CATEGORY_MAIN)
+	SStoken_manager.ui_interact(user)
+	BLACKBOX_LOG_ADMIN_VERB("Token Manager")
