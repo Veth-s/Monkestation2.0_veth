@@ -63,6 +63,11 @@
 	},
 /turf/open/space/basic,
 /area/space)
+"i" = (
+/obj/structure/ladder,
+/obj/effect/landmark/blobstart,
+/turf/open/floor/plating,
+/area/station/commons/dorms)
 "j" = (
 /turf/closed/wall,
 /area/station/command/bridge)
@@ -33017,7 +33022,7 @@ f
 F
 F
 I
-t
+i
 U
 F
 F
