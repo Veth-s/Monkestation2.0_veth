@@ -66,13 +66,14 @@
 	design_ids = list(
 		"borg_upgrade_advanalyzer",
 		"borg_upgrade_beakerapp",
+		"borg_upgrade_breathingbag",
 		"borg_upgrade_defibrillator",
 		"borg_upgrade_expandedsynthesiser",
 		"borg_upgrade_piercinghypospray",
 		"borg_upgrade_pinpointer",
 		"borg_upgrade_surgical_database",
 		"borg_upgrade_surgical_omnitool_advanced",
-		"borg_upgrade_breathingbag"
+		"borg_upgrade_piercing_syringe" // Doesn't require Chemical Weaponry tech because cyborgs don't have syringe guns.
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_1_POINTS) // Lots of upgrades shall be regular cost.
 	announce_channels = list(RADIO_CHANNEL_SCIENCE)
@@ -163,13 +164,13 @@
 	display_name = "Cyborg Upgrades: Bluespace"
 	description = "Enabling compatibility of our bluespace technology for usage within cyborgs."
 	prereq_ids = list(
-		"cyborg_upgrades_engineering",
-		"cyborg_upgrades_mining",
+		"adv_robotics",
 		"practical_bluespace"
 	)
 	design_ids = list(
 		"borg_upgrade_bs_rped",
-		"borg_upgrade_holding"
+		"borg_upgrade_holding",
+		"borg_upgrade_bluespace_syringe",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_1_POINTS / 2)
 	announce_channels = list(RADIO_CHANNEL_SCIENCE)
